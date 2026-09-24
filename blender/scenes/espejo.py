@@ -50,7 +50,22 @@ SOP = M('soporte')                       # grafito
 MARCO = mat_prop('marco', '#2B2019', rough=0.38, coat=0.6)
 FONDO = mat_prop('cartela', '#2A1E17', rough=0.9)
 ESPEJO = M('espejo')                     # azogue pulido
-VAHO = mat_prop('vaho', '#8E8A83', rough=1.0)
+FACETA = mat_prop('azogue_facetas', bb.TOK['azogue'], met=1.0, rough=0.16)   # facetas: algo más rugosas, captan luz
+
+
+def mat_vaho():
+    """Vaho mate con degradado por color de vértice (centro lechoso → borde que se funde con el azogue oscuro)."""
+    m = mat_prop('vaho', '#FFFFFF', rough=1.0)
+    nt = m.node_tree
+    b = nt.nodes.get('Principled BSDF')
+    vc = nt.nodes.new('ShaderNodeVertexColor')
+    vc.layer_name = 'Col'
+    nt.links.new(vc.outputs['Color'], b.inputs['Base Color'])
+    m.diffuse_color = bb.lin('#8E8A83')
+    return m
+
+
+VAHO = mat_vaho()
 HUECO = mat_prop('hueco', '#070605', rough=1.0)
 LOGOS = M('logos')
 AUS = M('ausencia')
@@ -383,7 +398,7 @@ for i, poly in enumerate(celdas):
         nl = mid - n0 * mid.dot(n0)
         lat[len(tipos)] = nl.normalized() if nl.length > 1e-6 else n0
         tipos.append('l')
-    ob = bb._obj_from_bm('faceta_%03d' % i, bm, ESPEJO, None, P0)
+    ob = bb._obj_from_bm('faceta_%03d' % i, bm, FACETA, None, P0)
     me = ob.data
     normales = []
     for poly_m in me.polygons:
@@ -422,18 +437,27 @@ def radio_vaho(phi):
     return 0.27 * (1 + 0.16 * math.sin(3 * phi + 0.7) + 0.09 * math.sin(5 * phi + 2.1) + 0.05 * math.sin(9 * phi + 0.3))
 
 
-def en_vaho(u, v):
-    d = Vector((u, v)) - VC2
-    return d.length <= radio_vaho(math.atan2(d.y, d.x))
-
-
-PV, _ = cap(VC2.x, VC2.y, 0.007)
+OFF_V = 0.024              # el vaho flota sobre las miniaturas (que quedan debajo, tapadas)
+PV, _ = cap(VC2.x, VC2.y, OFF_V)
 bm = bmesh.new()
 NR, NS = 9, 72
+V_CEN, V_BOR = Vector(bb.lin('#B8B2A8')[:3]), Vector(bb.lin('#3A3E41')[:3])
+colv = {}
+
+
+def col_mix(a, b, t):
+    c = a.lerp(b, max(0.0, min(1.0, t)))
+    return (c.x, c.y, c.z, 1.0)
+
+
 centro_v = bm.verts.new(Vector((0, 0, 0)))
+colv[centro_v] = col_mix(V_CEN, V_BOR, 0)
 anillos = []
 for ir in range(1, NR + 1):
     fila = []
+    tt = ir / NR
+    ss = max(0.0, (tt - 0.5) / 0.5)
+    cc = col_mix(V_CEN, V_BOR, ss * ss * (3 - 2 * ss) * 0.92)
     for js in range(NS):
         phi = 2 * math.pi * js / NS
         rr = radio_vaho(phi) * ir / NR
@@ -441,8 +465,10 @@ for ir in range(1, NR + 1):
         m = math.hypot(u, v)
         if m > 0.575:
             u, v = u * 0.575 / m, v * 0.575 / m
-        pp, _ = cap(u, v, 0.007)
-        fila.append(bm.verts.new(pp - PV))
+        pp, _ = cap(u, v, OFF_V)
+        vv = bm.verts.new(pp - PV)
+        colv[vv] = cc
+        fila.append(vv)
     anillos.append(fila)
 for js in range(NS):
     bm.faces.new((centro_v, anillos[0][js], anillos[0][(js + 1) % NS]))
@@ -458,51 +484,46 @@ for _ in range(95):
     if math.hypot(u, v) > 0.57:
         continue
     rg = 0.011 * (1.45 - f) + 0.003 * rnd_v.random()
-    pc, nc = cap(u, v, 0.007)
+    pc, nc = cap(u, v, OFF_V)
     t1 = nc.cross(Vector((0, 0, 1))).normalized()
     t2 = nc.cross(t1)
+    cg = col_mix(V_CEN, V_BOR, 0.35 + 0.9 * (f - 1.0))
     c0 = bm.verts.new(pc - PV)
+    colv[c0] = cg
     anillo_g = [bm.verts.new(pc - PV + (t1 * math.cos(2 * math.pi * q / 8) + t2 * math.sin(2 * math.pi * q / 8)) * rg) for q in range(8)]
+    for vv in anillo_g:
+        colv[vv] = cg
     for q in range(8):
         bm.faces.new((c0, anillo_g[q], anillo_g[(q + 1) % 8]))
+capa = bm.loops.layers.float_color.new('Col')
+for fc in bm.faces:
+    for lp in fc.loops:
+        lp[capa] = colv[lp.vert]
 vaho = objeto('vaho_opacidad', bm, VAHO, None, PV)
 
-# ---- la sala reducida: miniaturas de los emblemas sobre el casquete (el emblema tapado por el vaho no aparece)
+# ---- la sala reducida: miniaturas de los emblemas sobre el casquete. Completa en el estado 0;
+#      el vaho (que flota por encima) tapa después la voluta y un tramo del octógono.
 MINIS = {'monada': 180, 'tabla': 222, 'elipse': 40, 'nucleo': 318, 'abierto': 0, 'voluta': 140}
 minis = []
 for tipo, ang in MINIS.items():
     u, v = 0.37 * math.cos(math.radians(ang)), 0.37 * math.sin(math.radians(ang))
-    if en_vaho(u, v):
-        continue
     p, nrm = cap(u, v, 0.002)
     e = bb.grupo('mini_' + tipo, p)
     e.rotation_mode = 'XYZ'
     e.rotation_euler = Vector((0, -1, 0)).rotation_difference(nrm).to_euler('XYZ')
     emblema(tipo, 'mini_emblema_' + tipo, e, k=0.2)
     minis.append(e)
-# octógono reducido (la cornisa de la sala) que se interrumpe bajo el vaho
-seg_oct = []
+# octógono reducido (la cornisa de la sala), completo: el vaho lo tapa por encima
+oct_pts = []
 for kk in range(8):
     a0 = math.radians(22.5 + 45 * kk)
     a1 = math.radians(22.5 + 45 * (kk + 1))
     pa = Vector((0.5 * math.cos(a0), 0.5 * math.sin(a0)))
     pb = Vector((0.5 * math.cos(a1), 0.5 * math.sin(a1)))
-    trozo = []
-    for jj in range(13):
-        q = pa.lerp(pb, jj / 12)
-        if en_vaho(q.x, q.y):
-            if len(trozo) > 1:
-                seg_oct.append(trozo)
-            trozo = []
-        else:
-            trozo.append(q)
-    if len(trozo) > 1:
-        seg_oct.append(trozo)
+    oct_pts += [pa.lerp(pb, jj / 12) for jj in range(12)]
 PO, _ = cap(0, 0)
 bm = bmesh.new()
-for trozo in seg_oct:
-    pts = [cap(q.x, q.y, 0.004)[0] - PO for q in trozo]
-    tubo_bm(bm, pts, 0.0045, segs=6)
+tubo_bm(bm, [cap(q.x, q.y, 0.004)[0] - PO for q in oct_pts], 0.0045, segs=6, cerrado=True)
 oct_mini = objeto('mini_octogono', bm, EMB, None, PO)
 minis.append(oct_mini)
 
@@ -560,6 +581,7 @@ for i, dst in enumerate(destinos):
     ob.rotation_mode = 'XYZ'
     ob.rotation_euler = Vector((0, 0, 1)).rotation_difference(d.normalized()).to_euler('XYZ')
     rayos.append(ob)
+foco = bb.esfera('logos_foco', 0.075, RC, LOGOS, None, subdiv=3)   # de dónde parten los rayos (sólo estado 2)
 
 # ---------------------------------------------------------------- puntos de vista (la ciudad leibniziana) — estado 2
 PV0 = Vector((0, YB, 1.45))
@@ -571,11 +593,12 @@ bm = bmesh.new()
 for i in range(9):
     a = math.radians(230 + 80 * i / 8)
     p = Vector((RPV * math.cos(a), RPV * math.sin(a), 0))
-    esfera_bm(bm, p, 0.06, 12, 8)
+    esfera_bm(bm, p, 0.07, 12, 7)                       # el ojo
     dirm = (Vector((0, 0, 0.4)) - p).normalized()
-    g = bmesh.ops.create_cone(bm, cap_ends=True, segments=10, radius1=0.045, radius2=0.0, depth=0.16)
+    cilindro_bm(bm, p + dirm * 0.11, p + dirm * 0.5, 0.011, segs=6)   # línea de mirada
+    g = bmesh.ops.create_cone(bm, cap_ends=True, segments=10, radius1=0.042, radius2=0.0, depth=0.14)
     q = Vector((0, 0, 1)).rotation_difference(dirm)
-    bmesh.ops.transform(bm, matrix=Matrix.Translation(p + dirm * 0.14) @ q.to_matrix().to_4x4(), verts=g['verts'])
+    bmesh.ops.transform(bm, matrix=Matrix.Translation(p + dirm * 0.57) @ q.to_matrix().to_4x4(), verts=g['verts'])
 objeto('puntos_ojos', bm, TRAY, puntos)
 
 # ---------------------------------------------------------------- neobarroco: contorno del hueco y trayecto
@@ -591,29 +614,39 @@ bb.polilinea_punteada('trayecto_guiones', tr_pts, guion=0.1, hueco=0.07, r=0.016
                       flecha={'r': 0.05, 'largo': 0.14})
 
 # ---------------------------------------------------------------- etiquetas
+CF = Vector((-0.6, 0.5, 0.0))        # centro del anillo-logos caído (estado 4)
+SF = 0.55                            # escala de los segmentos caídos
 S.etiqueta('reductor', 'reflejo reductor', (0, YB - 0.3, ZC + 1.12), clase='serif')
-S.etiqueta('opaco', 'opacidad', (-1.25, YB - 0.2, ZC + 0.5), clase='serif')
-S.etiqueta('sala', 'la sala, reducida', (-1.42, YB - 0.2, ZC - 0.42), clase='')
+S.etiqueta('opaco', 'opacidad', (-1.04, YB - 0.2, ZC + 0.44), clase='serif')
+S.etiqueta('sala', 'la sala, reducida', (-1.24, YB - 0.2, ZC - 0.36), clase='')
 S.etiqueta('vaneyck', 'Van Eyck, 1434 (aún no barroco) · Góngora: «aunque cóncavo fiel»', (-0.3, YB - 0.2, ZC - 1.03), clase='nota')
-S.etiqueta('logos', 'logos exterior', (RC.x - 1.35, RC.y - 0.4, RC.z + 0.55), clase='serif')
+S.etiqueta('logos', 'logos exterior', (RC.x + 2.6, RC.y - 0.3, RC.z + 0.9), clase='serif')
 S.etiqueta('dios', 'el dios jesuita · el rey', (RC.x + RL + 1.05, RC.y - 0.3, RC.z + 0.15), clase='nota')
 S.etiqueta('puntos', 'infinitud de puntos de vista', (0.0, YB - RPV - 0.1, 0.95), clase='trayecto')
 S.etiqueta('pantalla', 'el logos: una pantalla', (0, A - 0.45, ZC + 1.05), clase='serif')
 S.etiqueta('pulverizado', 'reflejo pulverizado', (-1.95, A - 1.0, ZC + 1.72), clase='serif')
 S.etiqueta('carencia', 'carencia', (0, A - 0.2, ZC), clase='grande')
 S.etiqueta('trayecto', 'trayecto dividido por la ausencia', (-0.35, A - 0.45, ZC - 1.12), clase='trayecto')
-S.etiqueta('destronado', 'logos destronado', (-1.55, 1.05, 0.35), clase='nota')
+S.etiqueta('destronado', 'logos destronado', (CF.x, CF.y - 0.1, 0.05), clase='nota')
 
 # ---------------------------------------------------------------- línea de tiempo
+TINY3 = (TINY, TINY, TINY)
 # estado 1 (0 → 2,0 s): el vaho se extiende
 S.mostrar(vaho, 0.4, 1.8)
-# estado 2 (2,0 → 3,8 s): rayos del logos y puntos de vista
+# estado 2 (2,0 → 3,8 s): foco y rayos del logos; puntos de vista (todo oculto por completo fuera de este tramo)
+S.clave(foco, 0, esc=TINY, interp=C)
+S.clave(foco, 2.0, esc=TINY)
+S.clave(foco, 2.4, esc=1.0)
+S.clave(foco, 4.0, esc=1.0)
+S.clave(foco, 4.5, esc=TINY)
 for i, r in enumerate(rayos):
-    S.clave(r, 0, esc=(1, 1, TINY), interp=C)
-    S.clave(r, 2.2 + 0.08 * i, esc=(1, 1, TINY))
-    S.clave(r, 3.1 + 0.08 * i, esc=(1, 1, 1))
+    t0 = 2.2 + 0.08 * i
+    S.clave(r, 0, esc=TINY3, interp=C)
+    S.clave(r, t0, esc=(1, 1, TINY))
+    S.clave(r, t0 + 0.9, esc=(1, 1, 1))
     S.clave(r, 4.0, esc=(1, 1, 1))
-    S.clave(r, 4.5, esc=(1, 1, TINY))
+    S.clave(r, 4.5, esc=(1, 1, TINY), interp=C)
+    S.clave(r, 4.5 + 1.0 / bb.FPS, esc=TINY3, interp=C)
 S.mostrar(puntos, 2.4, 3.4)
 S.ocultar(puntos, 4.0, 4.5)
 # estado 3 (3,8 → 10 s): pulverización
@@ -623,11 +656,22 @@ S.ocultar(vaho, 4.2, 4.7)
 for mn in minis:
     S.clave(mn, 0, esc=1.0)
     S.ocultar(mn, 4.2, 4.7)
+# las facetas se ordenan en torno al hueco, pero el anillo NO se cierra (l. 881-882: saber que ya no está
+# «apaciblemente» cerrado sobre sí mismo): queda un vano abierto arriba a la derecha
+GAP_C, GAP_W = math.radians(30), math.radians(55)
+
+
+def abrir(th):
+    a0 = GAP_C + GAP_W / 2
+    rel = (th - a0) % (2 * math.pi)
+    return a0 + rel * (2 * math.pi - GAP_W) / (2 * math.pi)
+
+
 for (ob, c2, P0, n0) in facetas:
     rho = c2.length / RCAP
     th = math.atan2(c2.y, c2.x)
     rho2 = 1.05 + 0.74 * min(rho, 1.0) ** 0.9 + random.uniform(-0.06, 0.06)
-    th2 = th + 0.32 + random.uniform(-0.1, 0.1)
+    th2 = abrir(th + 0.32 + random.uniform(-0.1, 0.1))
     x = rho2 * math.cos(th2)
     z = ZC + 0.86 * rho2 * math.sin(th2)
     y = YB - (0.36 + 0.9 * random.random())
@@ -664,27 +708,40 @@ for fila, k in enumerate(orden):
 for k, lm in enumerate(laminas):
     ob = lm['ob']
     ts = 5.9 + 0.14 * lm['orden']
-    S.clave(ob, 0, loc=lm['pos0'], rot=lm['rot0'])
+    S.clave(ob, 0, loc=lm['pos0'], rot=lm['rot0'], esc=1.0)
     S.clave(ob, ts, loc=lm['pos0'], rot=lm['rot0'])
     S.clave(ob, ts + 2.3, loc=lm['pos1'], rot=lm['rot1'])
-# estado 4 (10 → 13,6 s): la pantalla se retira y se deposita (destronada); aparece el hueco
-# destronado: la pantalla se retira hacia delante y queda tendida en el suelo (los arcos, anidados, boca abajo)
-PSI_S = math.radians(-9)
-BASE_S = Vector((-0.45, 1.9, 0.03))
-ROT_S = Matrix.Rotation(PSI_S, 3, 'Z') @ Matrix.Rotation(math.pi, 3, 'X')
+# estado 4 (10 → 13,6 s): la pantalla se retira y aparece el hueco. Lectura de l. 871-872 («ruptura ... del logos
+# en tanto que absoluto») y l. 883 («destronamiento»): el anillo que estaba arriba queda roto en el suelo.
+rnd_f = random.Random(883)
 for k, lm in enumerate(laminas):
     ob = lm['ob']
     o = lm['orden']
     t0 = 10.2 + 0.05 * o
-    S.clave(ob, t0, loc=lm['pos1'], rot=lm['rot1'])
+    S.clave(ob, t0, loc=lm['pos1'], rot=lm['rot1'], esc=1.0)
     adel = lm['pos1'] + Vector((0, -0.95, -0.05))
-    S.clave(ob, t0 + 0.8, loc=adel, rot=lm['rot1'])
-    suelo = BASE_S + Matrix.Rotation(PSI_S, 3, 'Z') @ Vector((0.0, -o * 0.215, 0.0))
-    r2 = ROT_S.to_euler('XYZ')
-    r2.make_compatible(lm['rot1'])
+    S.clave(ob, t0 + 0.8, loc=adel, rot=lm['rot1'], esc=1.0)
+    phi = 2 * math.pi * k / NSEG + math.radians(8 + rnd_f.uniform(-6, 6))
+    U = Vector((math.cos(phi), math.sin(phi), 0))
+    Tg = Vector((-math.sin(phi), math.cos(phi), 0))
+    R3f = Matrix((Tg, U, Vector((0, 0, -1)))).transposed()
+    suelto = k in (4, 6)                     # dos segmentos, más desplazados (hacia fuera, lejos de las facetas): la corona rota
+    tw = math.radians(rnd_f.uniform(-8, 8) + (18 if suelto else 0))
+    R3f = Matrix.Rotation(tw, 3, 'Z') @ R3f
+    pos = CF + U * (RL * SF + rnd_f.uniform(-0.04, 0.07) + (0.24 if suelto else 0.0)) + Vector((0, 0, 0.045 * SF / 2 + 0.005))
+    r2 = euler_de(R3f, compat=lm['rot1'])
     tl = 11.0 + 0.08 * (7 - o)
-    S.clave(ob, tl, loc=adel, rot=lm['rot1'])
-    S.clave(ob, tl + 1.1, loc=suelo, rot=r2)
+    S.clave(ob, tl, loc=adel, rot=lm['rot1'], esc=1.0)
+    S.clave(ob, tl + 1.1, loc=pos, rot=r2, esc=SF)
+# la etiqueta «logos destronado» acompaña a la pantalla en su caída (no espera sobre el suelo vacío)
+lb = bpy.data.objects['lbl_destronado']
+p_ini = Vector((0.0, YP - 0.2, ZC - 0.95))
+p_adel = p_ini + Vector((0, -0.95, -0.05))
+S.clave(lb, 0, loc=p_ini)
+S.clave(lb, 10.2, loc=p_ini)
+S.clave(lb, 11.0, loc=p_adel)
+S.clave(lb, 11.3, loc=p_adel)
+S.clave(lb, 12.4, loc=Vector((CF.x, CF.y - 0.1, 0.05)))
 S.mostrar(contorno, 11.4, 12.2)
 S.clave(trayecto, 0, esc=TINY, rot=(0, -1.9, 0), interp=C)
 S.clave(trayecto, 12.2, esc=TINY, rot=(0, -1.9, 0))
@@ -698,9 +755,9 @@ def vista(cam, look, fov):
 D0 = 39.0 / ESC            # distancia del tele (≤ 40 m reales)
 FRENTE = vista((0.0, -D0 * math.cos(math.radians(4.5)), 2.55 + D0 * math.sin(math.radians(4.5))), (0.0, 0, 2.55), 7.0)
 CERCA = vista((1.05, A - 5.0, 2.12), (0.62, A, 1.70), 34)
-VISTA = vista((5.6, -7.4, 5.6), (0.35, 1.3, 2.95), 42)
-NEO = vista((2.8, -5.6, 2.5), (1.35, 2.1, 1.95), 40)
-NEO2 = vista((2.4, -5.9, 4.3), (1.25, 2.0, 1.6), 40)
+VISTA = vista((2.6, -10.8, 7.8), (1.9, 1.0, 2.35), 38)     # frontal alta: los 5 muros, los 6 emblemas y el logos
+NEO = vista((2.0, -7.0, 4.0), (1.25, 1.8, 1.8), 38)
+NEO2 = vista((1.9, -7.4, 4.9), (1.15, 1.5, 1.45), 40)      # incluye el anillo caído en el suelo
 
 # todo lo construido cuelga de una raíz escalada (las cámaras de los estados se crean después, ya en metros reales)
 raiz = bb.grupo('raiz')
@@ -712,29 +769,31 @@ raiz.scale = (ESC, ESC, ESC)
 S.estado('La sala y el espejo',
          'Una capilla barroca abstracta. En su muro, un espejo convexo devuelve la sala reducida: '
          'la estructura barroca es «reflejo reductor» de lo que la envuelve.',
-         'Sarduy 1972 · b] Espejo (l. 839-846)', etiquetas=['reductor'], orbita=False, t1=0, **FRENTE)
+         'Sarduy 1972 · b] Espejo (l. 841-845)', etiquetas=['reductor'], orbita=False, t1=0, **FRENTE)
 S.estado('Reflejo reductor',
-         'Rasgo de todo barroco: el espejo quiere ser totalizante y minucioso, pero no capta la vastedad '
-         'que lo circunscribe; algo «le opone su opacidad».',
-         'l. 841-852', etiquetas=['sala', 'opaco', 'vaneyck'], t1=2.0, **CERCA)
+         'Rasgo de todo barroco: el espejo quiere ser «totalizante y minucioso», pero no capta '
+         '«la vastedad del lenguaje que lo circunscribe»: algo «le opone su opacidad».',
+         'l. 844-852', etiquetas=['sala', 'opaco', 'vaneyck'], t1=2.0, **CERCA)
 S.estado('Reflejo significante',
          'Barroco histórico: universo descentrado «pero aún armónico», en consonancia con un logos exterior. '
-         'Ninguna vista agota la ciudad; la estructura la contiene en potencia.',
-         'l. 851-867 · la ciudad leibniziana (l. 861-865)', etiquetas=['logos', 'dios', 'puntos'], t1=3.8,
-         slider={'tipo': 'azimut', 'min': -65, 'max': 10, 'etiqueta': 'puntos de vista (la ciudad leibniziana)',
+         'Ninguna vista agota la ciudad leibniziana; la estructura la contiene en potencia.',
+         'l. 852-867', etiquetas=['logos', 'dios', 'puntos'], t1=3.8,
+         slider={'tipo': 'azimut', 'min': -38, 'max': 12, 'etiqueta': 'puntos de vista (la ciudad leibniziana)',
                  'min_txt': 'izquierda', 'max_txt': 'derecha'}, **VISTA)
 S.estado('Pulverización',
-         'Neobarroco: el reflejo se pulveriza en torno a un hueco. El logos ya no organiza desde fuera: '
-         'sus segmentos forman «una pantalla que esconde la carencia».',
-         'l. 868-876', etiquetas=['pantalla', 'pulverizado'], t1=10.0,
+         'Neobarroco: reflejo estructural de «la inarmonía». El espejo se pulveriza en torno a un hueco; '
+         'el logos sólo organiza «una pantalla que esconde la carencia».',
+         'l. 869-876', etiquetas=['pantalla', 'pulverizado'], t1=10.0,
          pregunta='Si el espejo se rompe, ¿qué refleja cada fragmento? ¿Queda un centro?',
          slider={'tipo': 'tiempo', 't0': 3.8, 't1': 10.0, 'etiqueta': 'del reflejo armónico al pulverizado',
                  'min_txt': 'barroco', 'max_txt': 'neobarroco'}, **NEO)
 S.estado('Pantalla y carencia',
          'Retirada la pantalla, aparece la carencia: el trayecto gira en torno a esa ausencia. '
          '«Reflejo necesariamente pulverizado»; «arte del destronamiento y la discusión».',
-         'l. 876-883 · Díaz 2011, ap. 6: esbozos de la futura retombée (l. 1487-1504)',
-         etiquetas=['carencia', 'trayecto', 'destronado', 'pulverizado'], t1=13.6, **NEO2)
+         'l. 871-883 · Díaz 2011, ap. 6 (l. 1487-1504)',
+         etiquetas=['carencia', 'trayecto', 'destronado', 'pulverizado'], t1=13.6,
+         slider={'tipo': 'azimut', 'min': -38, 'max': 10, 'etiqueta': 'otro punto de vista, otro reflejo',
+                 'min_txt': 'izquierda', 'max_txt': 'derecha'}, **NEO2)
 
 S.exportar()
 

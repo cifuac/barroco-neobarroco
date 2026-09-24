@@ -13,7 +13,7 @@ import bpy, bmesh
 from mathutils import Vector, Matrix
 
 random.seed(1972)
-S = bb.Escena('proliferacion', 'Proliferación: del arco abierto a la elipse', dur=13)
+S = bb.Escena('proliferacion', 'Proliferación: del arco abierto a la elipse', dur=9)
 M = bb.mat
 TINY = 0.0001
 T3 = (TINY, TINY, TINY)
@@ -196,6 +196,10 @@ CRISTAL = mat_local('cristal', '#B9C6CC', 0.0, 0.08, 0.0, alpha=0.32)
 AZOGUE = mat_local('azogue_linea', '#9AA4A8', 0.6, 0.28, 0.9)
 NEUTRO = mat_local('gris_neutro', '#8A8A8A', 0.0, 0.55, 0.35)
 SOL = M('logos')
+# el arco es la cadena de significantes: nácar (como en svg/fig2.svg), levemente emisivo para que el punteado se lea
+# igual en el plano y tendido; el cian queda reservado a la lectura (rayos radiales/deceptivos)
+ARCO = mat_local('arco_nacar', '#CFC6B8', 0.0, 0.45, 0.55)
+MAG = 'color:var(--magenta-claro);font-style:italic'      # palabras citadas de Carpentier / Abreu (cita = magenta)
 
 
 def fusionar(g, nombre):
@@ -271,7 +275,7 @@ def lbl(clave):
 # ================================================================ geometría del arco (figura 2)
 R = 1.8                                          # radio del arco
 TH0, TH1 = math.radians(194), math.radians(-15)  # nace abajo-izq., termina abajo-der. (medido sobre el escaneo)
-E_FIN = 0.5                                      # excentricidad final (lectura 1974)
+E_FIN = 0.6                                      # excentricidad final (lectura 1974; el PLAN admite 0-0,6)
 A_FIN = 1.2 * R
 Z0 = 0.9            # altura del centro del arco en la figura plana (estado 0)
 ZARC = 0.06         # altura del arco tendido (a ras de los plintos)
@@ -306,13 +310,16 @@ def desenrollar(a, ref):
 
 
 # tiempos (s)
-T_TEND0, T_TEND1 = 0.1, 1.3            # la figura se tiende en el espacio
-T1 = 2.75                              # fin estado 1 (cadena)
+T_TEND0, T_TEND1 = 0.05, 0.95          # la figura se tiende en el espacio (breve: el visor muestra los rótulos al entrar)
+T1 = 1.75                              # fin estado 1 (cadena)
 T2 = 4.0                               # fin estado 2 (lectura radial)
-T3F = 6.3                              # fin estado 3 (lectura deceptiva)
-TM0, TM1 = 7.1, 9.1                    # deformación círculo → elipse (deslizador)
-TK_A0, TK_A1 = 9.2, 9.8              # aparece la miniatura de Kepler
-TK0, TK1 = 10.0, 11.8                  # Kepler: círculo → elipse (deslizador)
+# Tramos cortos a partir del estado 2: el visor anima la línea de tiempo con ease-in-out durante |Δt| s y enciende
+# los rótulos del estado nuevo al entrar; con tramos breves, geometría y rótulos llegan casi a la vez.
+T3F = 5.1                              # fin estado 3 (lectura deceptiva)
+T4P = T3F + 0.2                        # fin del preludio del estado 4 (se recogen rayos, vuelve el Sdo.)
+TM0, TM1 = 5.35, 6.85                  # deformación círculo → elipse (deslizador)
+TK_A0, TK_A1 = 6.85, 7.15              # aparece la miniatura de Kepler
+TK0, TK1 = 7.25, 8.25                  # Kepler: círculo → elipse (deslizador)
 NS = 8                                 # muestras de la deformación
 
 
@@ -352,12 +359,12 @@ for v, th, c in regs:
     v.co = lugar_guion(c, th, 0)
 bm.verts.index_update()
 regs = [(v.index, th, c) for v, th, c in regs]
-arco = suave(bb._obj_from_bm('arco_punteado', bm, CIAN, orb))
+arco = suave(bb._obj_from_bm('arco_punteado', bm, ARCO, orb))
 arco.shape_key_add(name='Basis')
 forma_elipse = arco.shape_key_add(name='elipse')
 for i, th, c in regs:
     forma_elipse.data[i].co = lugar_guion(c, th, 1)
-flecha = punta_x('arco_punta', R_FL, L_FL, CIAN, orb)
+flecha = punta_x('arco_punta', R_FL, L_FL, ARCO, orb)
 TH_ETC = math.radians(-1)
 S.etiqueta('etc', 'etc.', (0, 0, 0), orb, 'grande snte')
 
@@ -372,17 +379,18 @@ barra = bb.caja('barra', (BW * 1.25, 0.07, 0.035), (0, 0, BH + 0.05), LAM, estel
 SNTE_Z0 = BH + 0.1 + BH / 2
 snte_g = bb.grupo('snte_ausente', (0, 0, SNTE_Z0), estela)
 caja_punteada('snte_hueco', (BW, BD, BH), (0, 0, 0), BERM, snte_g)
-bb.cilindro_entre('snte_tachadura', (-BW * 0.52, -BD / 2 - 0.02, -BH * 0.34), (BW * 0.52, -BD / 2 - 0.02, BH * 0.34),
+# trazo de tachadura casi paralelo al del rótulo HTML (-8°), para que en la figura plana no se crucen en X
+bb.cilindro_entre('snte_tachadura', (-BW * 0.62, -BD / 2 - 0.02, -BH * 0.2), (BW * 0.62, -BD / 2 - 0.02, BH * 0.2),
                   r=0.016, material=BERM, parent=snte_g, segs=10)
 fusionar(snte_g, 'snte_ausente_malla')
 
 S.etiqueta('e_snte', '<s>Snte.</s>', (0, -0.2, 0), snte_g, 'grande tachado')
 S.etiqueta('e_sdo', 'Sdo.', (0, -0.2, BH / 2), sdo_g, 'grande sdo')
 S.etiqueta('e_desorden', 'Sdo. «desorden»', (0, -0.2, BH / 2), sdo_g, 'grande sdo')
-S.etiqueta('e_sdo_foco', 'Sdo. · foco presente', (0, -0.2, BH / 2), sdo_g, 'sdo')
-S.etiqueta('e_snte_foco', '<s>Snte.</s> · foco ausente', (0, -0.2, 0), snte_g, 'tachado')
-S.etiqueta('cita1974', 'lectura posterior · Sarduy 1974, cit. por Díaz 2011', (0, -0.52 * R, 0.1), orb, 'nota')
-S.etiqueta('e_vacio', 'ningún Sdo.', (0, -0.62, 0.0), estela, 'nota')
+S.etiqueta('e_sdo_foco', 'Sdo.<br>foco presente', (0, -0.55, 0.0), sdo_g, 'sdo')        # al pie del foco, en la vista cenital
+S.etiqueta('e_snte_foco', '<s>Snte.</s><br>foco ausente', (0, 0.55, 0.0), snte_g, 'tachado')   # arriba: con el círculo, no pisa al del Sdo.
+S.etiqueta('cita1974', '<span style="color:var(--azogue)">lectura posterior<br>Sarduy 1974, cit. por Díaz 2011</span>', (0, -1.3, 0.1), orb, 'nota')   # en el lado abierto, abajo
+S.etiqueta('e_vacio', 'ningún Sdo.', (0, -0.55, 0.0), estela, 'grande')
 S.etiqueta('e3_snte', '<s>Snte.</s>', (0, 0, BH / 2 + 0.24), snte_g, 'grande tachado')
 S.etiqueta('e3_sdo', 'Sdo.', (0, -0.62, 0.0), sdo_g, 'grande sdo')
 S.etiqueta('e3_desorden', 'Sdo. «desorden»', (0, -0.62, 0.0), sdo_g, 'grande sdo')
@@ -521,20 +529,29 @@ caja_punteada('venir_contorno', (0.46, 0.46, 0.8), (0, 0, 0.4), FANT, o5, guion=
 fusionar(o5, 'por_venir_malla')
 
 ALTO = [0.66, 1.0, 1.14, 1.8, 0.8]
-NOM = ['reloj de sol', 'balanza', 'telescopio', 'armario', 'por venir']
+# las palabras mismas de la cita (l. 234-239), en magenta: son la voz citada de Carpentier
+NOM = ['reloj de sol', 'balanza hidrostática', 'telescopio pequeño', 'armario']
 for n, o in enumerate(OBJS):
-    S.etiqueta(f'obj{n + 1}', f'Snte.<sup>{n + 1}</sup> · {NOM[n]}', (0, 0, ALTO[n] + 0.2), o, 'snte' if n < 4 else 'snte nota')
+    if n == 0:   # el reloj queda delante a la izquierda: rótulo al pie, para no tapar la balanza
+        S.etiqueta('obj1', f'Snte.<sup>1</sup> · <span style="{MAG}">{NOM[0]}</span>', (-0.05, -0.62, -0.02), o, 'snte')
+    elif n < 4:
+        S.etiqueta(f'obj{n + 1}', f'Snte.<sup>{n + 1}</sup> · <span style="{MAG}">{NOM[n]}</span>', (0, 0, ALTO[n] + 0.2), o, 'snte')
+    else:
+        S.etiqueta(f'obj{n + 1}', f'Snte.<sup>{n + 1}</sup> · por venir', (0, 0, ALTO[n] + 0.2), o, 'snte nota')
 
 # ---------------------------------------------------------------- tablillas genéricas (estados 3-5)
 DESORDEN = [(-18, 5), (24, -4), (-10, -6), (16, 6)]      # giro e inclinación en la lectura deceptiva
-MAMP = ['seis cucharas', 'un vaso', 'quizá un plato', 'un ojo sobre una piel']
+MAMP = ['seis cucharas', 'un vaso', 'quizá un plato', 'un ojo sobre una piel']   # l. 262-267
 for n in range(4):
     g = bb.grupo(f'tab{n + 1}', (0, 0, 0), BASES[n])
     bb.caja(f'tab{n + 1}_placa', (0.52, 0.1, 0.36), (0, 0, 0.18), NACAR, g, bevel=0.02)
-    S.etiqueta(f'tab{n + 1}', f'Snte.<sup>{n + 1}</sup>', (0, 0, 0.6), g, 'snte')
-    S.etiqueta(f'mamp{n + 1}', MAMP[n], (0, 0, 0.6), g, 'snte')
+    fuera = Vector((math.cos(TH_S[n]), math.sin(TH_S[n]), 0))
+    # en la vista cenital (estados 4-5) el rótulo queda por fuera del arco, como en la figura
+    S.etiqueta(f'tab{n + 1}', f'Snte.<sup>{n + 1}</sup>', tuple(fuera * (PL_R[n] + 0.3) + Vector((0, 0, 0.2))), g, 'snte')
+    S.etiqueta(f'mamp{n + 1}', f'<span style="{MAG}">{MAMP[n]}</span>', tuple(fuera * (PL_R[n] + 0.42) + Vector((0, 0, 0.1))), g, 'nota')
     TABS.append(g)
-S.etiqueta('tab5', 'Snte.<sup>5</sup>', (0, 0, 1.0), o5, 'snte')
+fuera5 = Vector((math.cos(TH_S[4]), math.sin(TH_S[4]), 0))
+S.etiqueta('tab5', 'Snte.<sup>5</sup>', tuple(fuera5 * (PL_R[4] + 0.3) + Vector((0, 0, 0.2))), o5, 'snte')
 S.etiqueta('mamp5', '¿lo que vendría a cerrarla?', (0, 0, 1.0), o5, 'nota')
 
 # ---------------------------------------------------------------- etiquetas de la figura plana (estado 0)
@@ -549,52 +566,18 @@ def mundo_base(n, k=0.0, z=0.0):
     return Vector((x, y, z))
 
 
-# ---------------------------------------------------------------- lectura radial (estado 2): los rayos convergen
+# ---------------------------------------------------------------- lectura radial (estado 2): de cada objeto, hacia el hueco
+# «órbita de cuya lectura —lectura radial— podemos inferirlo» (l. 215-217): los rayos apuntan al significante ausente
 RAYOS2 = []
 ALT_R = [0.55, 0.62, 0.62, 0.95]
+HUECO = Vector((0, 0, SNTE_Z0))
 for n in range(4):
     a = mundo_base(n, 0, ALT_R[n])
     dxy = Vector((-a.x, -a.y, 0)).normalized()
-    b = Vector((0, 0, BH * 0.55)) - dxy * 0.62
+    b = HUECO - dxy * 0.56
     g = rayo(f'rayo_radial_{n + 1}', tuple(a + dxy * (PL_R[n] * 0.75)), tuple(b), r=0.013, punta=True)
     fusionar(g, f'rayo_radial_{n + 1}_malla')
     RAYOS2.append(g)
-
-# ---------------------------------------------------------------- lectura deceptiva (estado 3): pasan sin encontrarse
-RAYOS3 = []
-LECT = ['Banquete', 'Ojo Profiláctico', 'Primitivismo', 'Ritualidad']   # así en el texto (l. 269-270)
-H3 = [2.3, 1.88, 1.46, 1.04]          # alturas a las que cruzan el eje del centro (por encima del Snte. tachado)
-OFF3 = [0.0, 0.0, 0.0, 0.0]           # todos cruzan el mismo eje, sin encontrarse
-PT_LECT = []
-for n in range(4):
-    a = mundo_base(n, 0, 0.36)
-    dxy = Vector((-a.x, -a.y, 0)).normalized()
-    perp = Vector((-dxy.y, dxy.x, 0))
-    cruce = perp * OFF3[n] + Vector((0, 0, H3[n]))
-    d = (cruce - a).normalized()
-    b = cruce + d * 0.45
-    g = rayo(f'rayo_deceptivo_{n + 1}', tuple(a + d * (PL_R[n] * 0.7)), tuple(b), r=0.012, punta=False)
-    fusionar(g, f'rayo_deceptivo_{n + 1}_malla')
-    RAYOS3.append((g, a, b))
-    PT_LECT.append(cruce)
-    S.etiqueta(f'lect{n + 1}', f'<s>«{LECT[n]}»</s>', tuple(cruce), None, 'tachado')
-
-# ---------------------------------------------------------------- Kepler (miniatura aparte: otro trazo, sin rótulos Snte.)
-RK = 0.78
-KPOS = Vector((-0.2, 1.7, 2.75))
-AZ5, EL5 = -12, 22
-kdir = Vector((math.cos(math.radians(EL5)) * math.sin(math.radians(AZ5)), -math.cos(math.radians(EL5)) * math.cos(math.radians(AZ5)),
-               math.sin(math.radians(EL5))))
-kep = bb.grupo('kepler', tuple(KPOS))
-kep.rotation_mode = 'QUATERNION'
-kep.rotation_quaternion = kdir.to_track_quat('-Y', 'Z')
-kep_orb = toro('kepler_orbita', RK, 0.011, (0, 0, 0), AZOGUE, kep, nu=128, nv=8, plano='XZ')
-kep_sol = bb.esfera('kepler_sol', 0.075, (0, 0, 0), SOL, kep, subdiv=3)
-kep_vac = bb.grupo('kepler_foco_vacio', (0, 0, 0), kep)
-toro('kepler_foco_vacio_anillo', 0.055, 0.008, (0, 0, 0), NEUTRO, kep_vac, nu=32, nv=6, plano='XZ')
-S.etiqueta('kepler', 'Kepler, <em>Astronomia nova</em> (1609)', (0, 0, -RK - 0.28), kep, 'serif')
-S.etiqueta('kep_sol', 'sol', (0, 0, 0.19), kep_sol, 'nota')
-S.etiqueta('kep_vacio', 'foco vacío', (0, 0, -0.19), kep_vac, 'nota')
 
 # ================================================================ línea de tiempo
 # estado 0 → 1: la figura se tiende en el espacio
@@ -604,6 +587,7 @@ clave(orb, T_TEND1, loc=(0, 0, ZARC), rot=(0, 0, 0))
 clave(estela, 0, loc=(0.1 * R, 0, Z0 - BH / 2), interp=C)
 clave(estela, T_TEND0, loc=(0.1 * R, 0, Z0 - BH / 2))
 clave(estela, T_TEND1, loc=(0, 0, 0))
+
 
 # el arco (y todo lo que va sobre él) se deforma en el estado 4: shape key lineal
 def clave_forma(kb, t, v, interp=L):
@@ -638,32 +622,29 @@ for n, g in enumerate(BASES):
         x, y = P(TH_S[n], k, F_N[n])
         clave(g, t, loc=(x, y, -ZARC), interp=L)
 
-# estado 1 · la cadena: aparecen los eslabones, uno tras otro
-ver(plinto_e, (0.3, 1.1, TINY, 1.0))
+# estado 1 · la cadena: aparecen los eslabones, uno tras otro (pronto: el visor enciende los rótulos al entrar)
+ver(plinto_e, (0.2, 0.8, TINY, 1.0))
 for n, g in enumerate(BASES):
-    t0 = 1.15 + 0.25 * n
+    t0 = 0.35 + 0.2 * n
     ver(g, (t0, t0 + 0.5, TINY, 1.0))
 for n, o in enumerate(OBJS[:4]):
-    ver(o, (4.15 + 0.04 * n, 4.55 + 0.04 * n, 1.0, TINY), inicial=1.0)
+    ver(o, (T2 + 0.02 + 0.03 * n, T2 + 0.28 + 0.03 * n, 1.0, TINY), inicial=1.0)
 
 # estado 2 · lectura radial
 for n, g in enumerate(RAYOS2):
-    t0 = 2.9 + 0.15 * n
-    ver(g, (t0, t0 + 0.6, (TINY, 1, 1), 1.0), (4.1, 4.4, 1.0, (TINY, 1, 1)), (4.4, 4.45, (TINY, 1, 1), T3))
+    t0 = 2.3 + 0.2 * n
+    ver(g, (t0, t0 + 0.6, (TINY, 1, 1), 1.0), (T2, T2 + 0.15, 1.0, (TINY, 1, 1)), (T2 + 0.15, T2 + 0.18, (TINY, 1, 1), T3))
 
 # estado 3 · lectura deceptiva: otra cadena de objetos «vaciados» (tablillas genéricas)
 for n, g in enumerate(TABS):
-    t0 = 4.5 + 0.08 * n
+    t0 = T2 + 0.2 + 0.05 * n
     ver(g, (t0, t0 + 0.5, TINY, 1.0))
     yaw, tilt = DESORDEN[n]
     rot_d = (math.radians(tilt), 0, math.radians(yaw))
     clave(g, 0, rot=rot_d, interp=C)
-    clave(g, 6.4, rot=rot_d)
-    clave(g, 6.9, rot=(0, 0, 0))
-ver(sdo_g, (4.5, 4.9, 1.0, TINY), (6.6, 7.0, TINY, 1.0), inicial=1.0)
-for n, (g, a, b) in enumerate(RAYOS3):
-    t0 = 5.2 + 0.15 * n
-    ver(g, (t0, t0 + 0.6, (TINY, 1, 1), 1.0), (6.4, 6.65, 1.0, (TINY, 1, 1)), (6.65, 6.7, (TINY, 1, 1), T3))
+    clave(g, T3F, rot=rot_d)
+    clave(g, T4P, rot=(0, 0, 0))
+ver(sdo_g, (T2 + 0.03, T2 + 0.3, 1.0, TINY), (T3F, T4P, TINY, 1.0), inicial=1.0)
 
 # estado 4 · dos focos: la fracción se desdobla; el arco se vuelve elíptico y sigue abierto
 ver(barra, (TM0, TM0 + 0.35, 1.0, TINY), inicial=1.0)
@@ -676,20 +657,8 @@ for t, k in muestras(TM0, TM1):
     clave(plinto_e, t, loc=(-c, 0, 0), interp=L)
     clave(snte_g, t, loc=(c, 0, SNTE_Z0 - k * (SNTE_Z0 - BH / 2) + 0.12 * k), interp=L)
 
-# estado 5 · Kepler
-ver(kep, (TK_A0, TK_A1, TINY, 1.0))
-clave(kep_orb, 0, esc=1.0, interp=C)
-clave(kep_sol, 0, loc=(0, 0, 0), interp=C)
-clave(kep_vac, 0, loc=(0, 0, 0), interp=C)
-ver(kep_vac, (TK0, TK0 + 0.5, TINY, 1.0))
-for t, k in muestras(TK0, TK1):
-    a, b, c = ejes(k)
-    clave(kep_orb, t, esc=(a / R, 1.0, b / R), interp=L)
-    clave(kep_sol, t, loc=(-c * RK / R, 0, 0), interp=L)
-    clave(kep_vac, t, loc=(c * RK / R, 0, 0), interp=L)
-
 # ================================================================ encuadres (cámaras calculadas para caber en el 60 % izquierdo)
-RECT = (90, 135, 1060, 950)
+RECT = (90, 130, 1070, 955)
 
 
 def pts_arco(k, paso=10):
@@ -718,26 +687,103 @@ def pt_etc(k):
     return (Vector((x, y, ZARC + 0.1)), 50, 30)
 
 
-LBL_OBJ = [175, 130, 150, 130, 130]
-p1 = pts_arco(0) + pts_eslabones(0, ALTO, LBL_OBJ, [a + 0.2 for a in ALTO]) + [pt_etc(0), (Vector((0, 0, 0.9)), 70, 30)]
-CADENA = encuadre('cadena', p1, -16, 30, 34, RECT)
-p2 = p1
-RADIAL = encuadre('radial', p2, -6, 44, 34, RECT)
-p3 = pts_arco(0) + pts_eslabones(0, [0.4] * 4 + [0.8], [0, 0, 0, 0, 150], [0.6] * 4 + [1.0]) + [pt_etc(0)]
-p3 += [(b, 0, 0) for g, a, b in RAYOS3] + [(p, 120, 22) for p in PT_LECT]
-DECEP = encuadre('deceptiva', p3, -8, 20, 34, RECT)
-c1 = ejes(1)[2]
-p4 = pts_arco(1) + pts_eslabones(1, [0.4] * 4 + [0.8], [70] * 5, [0.6] * 4 + [1.0]) + [pt_etc(1)]
-p4 += [(Vector((-c1, -0.2, BH / 2)), 140, 20), (Vector((c1, -0.2, BH / 2 + 0.12)), 150, 20), (Vector((0, -0.52 * R, 0.16)), 240, 20)]
-FOCOS = encuadre('focos', p4, 0, 62, 34, RECT)
-kq = kep.rotation_quaternion
-a1, b1, _ = ejes(1)
-p5 = pts_arco(1) + pts_eslabones(1, [0.4] * 4 + [0.8]) + [pt_etc(1)]
-p5 += [(KPOS + kq @ Vector((RK * a1 / R * math.cos(t), 0, RK * b1 / R * math.sin(t))), 8, 8) for t in [i * math.pi / 8 for i in range(16)]]
-p5 += [(KPOS + kq @ Vector((0, 0, -RK - 0.28)), 190, 24)]
-KEPLER = encuadre('kepler', p5, AZ5, EL5, 34, RECT)
+def ejes_cam(cam, look):
+    f = (Vector(look) - Vector(cam)).normalized()
+    r = f.cross(Vector((0, 0, 1))).normalized()
+    return f, r, r.cross(f)
 
-ZC0 = Z0 + 0.485
+
+def desproy(E, x, y, prof):
+    """Punto del mundo que se ve en el píxel (x, y) a la profundidad `prof` (m) de la cámara E."""
+    cam, look = Vector(E['cam']), Vector(E['look'])
+    f, r, u = ejes_cam(cam, look)
+    wpp = 2 * prof * math.tan(math.radians(E['fov']) / 2) / 1080
+    return cam + f * prof + r * ((x - 960) * wpp) - u * ((y - 540) * wpp), wpp
+
+
+LBL_OBJ = [175, 215, 200, 130, 130]
+p1 = pts_arco(0) + pts_eslabones(0, ALTO, LBL_OBJ, [a + 0.2 for a in ALTO]) + [pt_etc(0), (Vector((0, 0, 0.9)), 70, 30)]
+CADENA = encuadre('cadena', p1, -16, 34, 34, RECT)
+RADIAL = encuadre('radial', p1 + [(Vector((0, -0.62, 0.0)), 170, 30)], -6, 36, 34, RECT)
+
+# ---------------------------------------------------------------- lectura deceptiva (estado 3)
+# Los mismos rayos radiales del estado 2, pero cada uno se queda corto y a otra altura: no convergen (l. 255-275).
+# Delante del lugar vacío del Sdo., la lista de lecturas que se anulan unas a otras, tachadas y en el orden del texto (l. 269-270).
+RAYOS3 = []
+LECT = ['Banquete', 'Ojo Profiláctico', 'Primitivismo', 'Ritualidad']
+R_FIN = [0.8, 0.8, 1.05, 1.0]          # distancia al eje a la que se detiene cada rayo
+DESV = [0.0, 0.0, 0.0, 0.0]            # radiales, como en la lectura radial
+H_FIN = [0.22, 1.25, 0.62, 1.0]        # alturas finales, todas distintas: no se encuentran
+for n in range(4):
+    base = mundo_base(n, 0, 0.0)
+    u = Vector((-base.x, -base.y, 0)).normalized()
+    pp = Vector((-u.y, u.x, 0))
+    a = base + u * (PL_R[n] * 0.6) + Vector((0, 0, 0.36))
+    b = -u * R_FIN[n] + pp * DESV[n] + Vector((0, 0, H_FIN[n]))
+    g = rayo(f'rayo_deceptivo_{n + 1}', tuple(a), tuple(b), r=0.016, punta=True)
+    fusionar(g, f'rayo_deceptivo_{n + 1}_malla')
+    RAYOS3.append((g, a, b))
+Y_LISTA = [-1.12, -1.56, -2.0, -2.44]   # en el lado abierto del arco, bajo «ningún Sdo.»
+PT_LECT = []
+for n in range(4):
+    pt = Vector((0, Y_LISTA[n], 0.05))
+    PT_LECT.append(pt)
+    S.etiqueta(f'lect{n + 1}', f'<s>«{LECT[n]}»</s>', tuple(pt), None, 'tachado')
+for n, (g, a, b) in enumerate(RAYOS3):
+    t0 = T2 + 0.5 + 0.08 * n
+    ver(g, (t0, t0 + 0.35, (TINY, 1, 1), 1.0), (T3F, T3F + 0.12, 1.0, (TINY, 1, 1)), (T3F + 0.12, T3F + 0.15, (TINY, 1, 1), T3))
+
+p3 = pts_arco(0) + pts_eslabones(0, [0.4] * 4 + [0.8], [0, 0, 0, 0, 150], [0.62] * 4 + [1.0]) + [pt_etc(0)]
+for n in range(4):
+    fu = Vector((math.cos(TH_S[n]), math.sin(TH_S[n]), 0))
+    p3.append((mundo_base(n, 0) + fu * (PL_R[n] + 0.42) + Vector((0, 0, 0.1)), 90, 20))
+p3 += [(b, 0, 0) for g, a, b in RAYOS3] + [(p, 125, 24) for p in PT_LECT] + [(Vector((0, -0.55, 0)), 110, 28)]
+p3 = [q for q in p3 if not (q[1] == 90 and q[2] == 20)]   # sin rótulos de tablilla en este estado
+DECEP = encuadre('deceptiva', p3, -12, 42, 34, RECT)
+
+# ---------------------------------------------------------------- dos focos (estado 4): vista casi cenital
+# la elipse ha de leerse como deformación de la figura, no como efecto de perspectiva: cámara casi perpendicular al plano
+c1 = ejes(1)[2]
+p4 = pts_arco(1) + pts_eslabones(1, [0.4] * 4 + [0.8]) + [pt_etc(1)]
+for n in range(5):
+    fu = Vector((math.cos(TH_S[n]), math.sin(TH_S[n]), 0))
+    p4.append((mundo_base(n, 1) + fu * (PL_R[n] + 0.3) + Vector((0, 0, 0.2)), 60, 24))
+p4 += [(Vector((-c1, -0.55, 0.0)), 90, 36), (Vector((c1, -0.55, 0.0)), 90, 36), (Vector((0, -1.3, 0.16)), 160, 30)]
+FOCOS = encuadre('focos', p4, 0, 76, 34, RECT)
+
+# ---------------------------------------------------------------- Kepler (miniatura aparte: otro trazo, sin rótulos Snte.)
+# Misma cámara que «Dos focos»: la miniatura flota arriba a la derecha, sobre el panel, de cara a la cámara.
+E_K = 0.5                                        # la elipse de la miniatura (inscrita en el círculo, como en Kepler)
+fK, rK, uK = ejes_cam(FOCOS['cam'], FOCOS['look'])
+dK = (Vector(FOCOS['look']) - Vector(FOCOS['cam'])).length * 0.72
+KPOS, wppK = desproy(FOCOS, 1480, 320, dK)
+RK = 180 * wppK
+kep = bb.grupo('kepler', tuple(KPOS))
+kep.rotation_mode = 'QUATERNION'
+kep.rotation_quaternion = (-fK).to_track_quat('-Y', 'Z')
+kep_orb = toro('kepler_orbita', RK, 0.011 * RK / 0.78, (0, 0, 0), AZOGUE, kep, nu=128, nv=8, plano='XZ')
+kep_sol = bb.esfera('kepler_sol', 0.075 * RK / 0.78, (0, 0, 0), SOL, kep, subdiv=3)
+kep_vac = bb.grupo('kepler_foco_vacio', (0, 0, 0), kep)
+toro('kepler_foco_vacio_anillo', 0.055 * RK / 0.78, 0.008 * RK / 0.78, (0, 0, 0), NEUTRO, kep_vac, nu=32, nv=6, plano='XZ')
+S.etiqueta('kepler', 'Kepler, <em>Astronomia nova</em> (1609)', (0, 0, -RK * 1.25), kep, 'serif')
+S.etiqueta('kep_sol', 'sol', (0, 0, 0.2 * RK), kep_sol, 'nota')
+S.etiqueta('kep_vacio', 'foco vacío', (0, 0, -0.22 * RK), kep, 'nota')   # ancla propia: con el círculo, los dos focos coinciden en el centro
+ver(kep, (TK_A0, TK_A1, TINY, 1.0))
+clave(kep_orb, 0, esc=1.0, interp=C)
+clave(kep_sol, 0, loc=(0, 0, 0), interp=C)
+clave(kep_vac, 0, loc=(0, 0, 0), interp=C)
+clave(lbl('kep_vacio'), 0, loc=(0, 0, -0.22 * RK), interp=C)
+ver(kep_vac, (TK0, TK0 + 0.3, TINY, 1.0))
+for t, k in muestras(TK0, TK1):
+    e = E_K * k
+    bk = math.sqrt(1 - e * e)                     # semieje menor relativo; el mayor no cambia (elipse inscrita)
+    clave(kep_orb, t, esc=(1.0, 1.0, bk), interp=L)
+    clave(kep_sol, t, loc=(-e * RK, 0, 0), interp=L)
+    clave(kep_vac, t, loc=(e * RK, 0, 0), interp=L)
+    clave(lbl('kep_vacio'), t, loc=(e * RK, 0, -0.22 * RK), interp=L)
+KEPLER = dict(FOCOS)
+
+ZC0 = Z0 + 0.235     # la figura sube un poco: la punta de flecha no debe rozar el panel (también incrustado, 1920×904)
 FRENTE = dict(cam=(-0.165, -39.5, ZC0), look=(-0.165, 0, ZC0), fov=7.0)
 
 # ================================================================ estados
@@ -745,17 +791,17 @@ E_FIG = ['snte1', 'snte2', 'snte3', 'snte4', 'snte5', 'etc', 'e_snte', 'e_sdo']
 E_OBJ = ['obj1', 'obj2', 'obj3', 'obj4', 'obj5', 'etc']
 
 S.estado('Figura 2',
-         'El significante de un significado dado queda tachado; una cadena de significantes, que progresa metonímicamente, traza a su alrededor una órbita <b>abierta</b>: etc.',
+         'El significante de un significado dado queda tachado; una cadena de significantes, que progresa metonímicamente, traza una órbita a su alrededor. En la figura, el arco queda <b>abierto</b>: etc.',
          'Sarduy 1972 · figura 2 (l. 211-228)', etiquetas=E_FIG, orbita=False, t1=0, **FRENTE)
 S.estado('Cadena',
-         'Carpentier, <em>El siglo de las luces</em>: reloj de sol vuelto reloj de luna, balanza para pesar gatos, telescopio por una luceta rota, un astrónomo sobre un armario. La cadena sigue abierta.',
-         'l. 230-239', etiquetas=E_OBJ + ['e3_snte', 'e3_sdo'], t1=T1, **CADENA)
+         'Carpentier, <em>El siglo de las luces</em>: reloj de sol vuelto reloj de luna, balanza para pesar gatos, telescopio por una luceta rota, astrónomo sobre un armario. La cadena sigue abierta.',
+         'l. 230-239', etiquetas=E_OBJ + ['e_snte', 'e3_sdo'], t1=T1, **CADENA)
 S.estado('Lectura radial',
          'De cada objeto la lectura vuelve al centro: el significado, «desorden», está presente; su significante nunca se escribe. Se infiere.',
-         'l. 211-217, 230-233 · rayos: añadido didáctico', etiquetas=E_OBJ + ['e3_snte', 'e3_desorden'], t1=T2,
-         pregunta='¿Qué palabra falta en el centro?', **RADIAL)
+         'l. 211-217 · l. 230-233 · rayos: añadido didáctico', etiquetas=E_OBJ + ['e_snte', 'e3_desorden'], t1=T2,
+         pregunta='¿Y si las lecturas no convergieran en ningún centro?', **RADIAL)
 S.estado('Lectura deceptiva',
-         'Abreu, <em>Mampulorio</em>: cucharas, un vaso, un ojo sobre una piel. Las lecturas no convergen: se anulan unas a otras. El centro no se llena.',
+         'Abreu, <em>Mampulorio</em>: cucharas, un vaso, un ojo sobre una piel. Las lecturas no convergen: los significantes, en vez de completarse, se anulan unos a otros. El centro no se llena.',
          'l. 255-275', etiquetas=['mamp5', 'etc', 'lect1', 'lect2', 'lect3', 'lect4', 'e_vacio'],
          t1=T3F, **DECEP)
 S.estado('Dos focos',
@@ -765,8 +811,9 @@ S.estado('Dos focos',
          slider={'tipo': 'tiempo', 't0': TM0, 't1': TM1, 'etiqueta': 'excentricidad',
                  'min_txt': 'círculo: un centro', 'max_txt': 'elipse: dos focos'}, **FOCOS)
 S.estado('Kepler',
-         'El mismo gesto en la ciencia y en el arte: Kepler hace doble el centro único de la órbita. Parecido sin causa: <em>retombée</em>, «isomorfía no contigua».',
-         'l. 64-67 · Díaz 2011, l. 1507-1509', etiquetas=['kepler', 'kep_sol', 'kep_vacio', 'e_sdo_foco', 'e_snte_foco', 'etc'], t1=TK1,
+         'Kepler: el trayecto de los astros, que se suponía circular, pierde su centro único «para hacerse doble». Más tarde Sarduy llamará <em>retombée</em> a este parecido: «isomorfía no contigua».',
+         'l. 64-67 · Sarduy 1974, cit. por Díaz 2011, l. 1503-1509',
+         etiquetas=['kepler', 'kep_sol', 'kep_vacio', 'tab1', 'tab2', 'tab3', 'tab4', 'tab5', 'e_sdo_foco', 'e_snte_foco', 'etc'], t1=TK1,
          slider={'tipo': 'tiempo', 't0': TK0, 't1': TK1, 'etiqueta': 'la órbita de Kepler',
                  'min_txt': 'círculo', 'max_txt': 'elipse'}, **KEPLER)
 

@@ -383,17 +383,24 @@ for g in (plana_i, plana_d):
     saltar(g, 0.3, 1.0, TINY)
 
 YL = -0.06
+
+
+def LN(html):
+    """Cifras de caja alta: en Cormorant (clase 'grande') el «1» elzeviriano volado se lee como una «I»."""
+    return f'<span style="font-variant-numeric:lining-nums">{html}</span>'
+
+
 S.etiqueta('p_perm', '<em>Permutación</em>', (fx(141), YL, fz(46)), clase='serif')
 S.etiqueta('p_cond', '<em>Condensación</em>', (fx(1055), YL, fz(46)), clase='serif')
-S.etiqueta('p_fon', 'Fonema<sup>1</sup>… Fonema<sup>2</sup>… etc.', (fx(286), YL, fz(113)), clase='grande snte')
-S.etiqueta('p_f', 'F<sup>1</sup>… F<sup>2</sup>… etc.', (fx(729), YL, fz(113)), clase='grande snte')
-S.etiqueta('p_snte1', 'Significante<sup>1</sup>', (fx(287), YL, fz(178)), clase='grande snte')
-S.etiqueta('p_snte2', 'Snte.<sup>2</sup>', (fx(737), YL, fz(176)), clase='grande snte')
+S.etiqueta('p_fon', LN('Fonema<sup>1</sup>… Fonema<sup>2</sup>… etc.'), (fx(286), YL, fz(113)), clase='grande snte')
+S.etiqueta('p_f', LN('F<sup>1</sup>… F<sup>2</sup>… etc.'), (fx(729), YL, fz(113)), clase='grande snte')
+S.etiqueta('p_snte1', LN('Significante<sup>1</sup>'), (fx(287), YL, fz(178)), clase='grande snte')
+S.etiqueta('p_snte2', LN('Snte.<sup>2</sup>'), (fx(737), YL, fz(176)), clase='grande snte')
 S.etiqueta('p_sdo', 'Significado', (fx(461), YL, fz(257)), clase='grande sdo')
-S.etiqueta('c_snte1', 'Snte.<sup>1</sup>', (fx(978), YL, fz(164)), clase='grande snte')
-S.etiqueta('c_snte3', 'Snte.<sup>3</sup>', (fx(1157), YL, fz(124)), clase='grande snte')
+S.etiqueta('c_snte1', LN('Snte.<sup>1</sup>'), (fx(978), YL, fz(164)), clase='grande snte')
+S.etiqueta('c_snte3', LN('Snte.<sup>3</sup>'), (fx(1157), YL, fz(124)), clase='grande snte')
 S.etiqueta('c_sdo', 'Sdo.', (fx(1157), YL, fz(197)), clase='grande sdo')
-S.etiqueta('c_snte2', 'Snte.<sup>2</sup>', (fx(1338), YL, fz(163)), clase='grande snte')
+S.etiqueta('c_snte2', LN('Snte.<sup>2</sup>'), (fx(1338), YL, fz(163)), clase='grande snte')
 ETQ0 = ['p_perm', 'p_cond', 'p_fon', 'p_f', 'p_snte1', 'p_snte2', 'p_sdo', 'c_snte1', 'c_snte3', 'c_sdo', 'c_snte2']
 
 
@@ -616,7 +623,9 @@ DL = INNER3 - INNER2
 # cámaras del estado 3 (el slider de azimut gira alrededor de la vertical que pasa por el objetivo)
 RH3 = 24.0
 ELEV3 = math.radians(5.0)
-LOOK3 = Vector((XC, 0.0, ZB2 - 0.01))
+# el objetivo va 0,25 m a la derecha del panel: el dispositivo queda algo a la izquierda y no roza el panel de
+# texto del visor (sobre todo incrustado en la diapositiva, 1920×904)
+LOOK3 = Vector((XC + 0.25, 0.0, ZB2 - 0.01))
 CAM3 = LOOK3 + Vector((0, -RH3, RH3 * math.tan(ELEV3)))
 VIS_H3 = 2.3                   # alto visible (m) a la distancia del objetivo
 AZ = 40.0
@@ -784,7 +793,10 @@ S.clave(panel, 10.2, esc=(1, 1, 1))
 fijar(txtA, esc=(1, 1, 1))
 fijar(txtB, esc=T3)
 
-S.etiqueta('e3_snte3', 'Snte.<sup>3</sup>', (XC, -0.2, ZB2 + Z_PB + H_ + 0.1), clase='snte')
+# Las etiquetas HTML no cambian con el deslizador: un «Snte.³» fijo rotularía mal AMO (Snte.¹) y ESCLAVO (Snte.²)
+# vistos de lado. Se usa una leyenda que vale para las tres posiciones del lector.
+S.etiqueta('e3_leyenda', 'Snte.<sup>1</sup> desde la izquierda · <b>Snte.<sup>3</sup> de frente</b> · '
+           'Snte.<sup>2</sup> desde la derecha', (XC, -0.2, ZB2 + Z_PB + H_ + 0.15), clase='snte')
 S.etiqueta('e3_nota', 'dispositivo didáctico genérico; no reproduce obras de Cruz-Diez ni de Le Parc',
            (XC - 0.85, 0.0, ZB2 - 0.36), clase='nota')
 
@@ -811,7 +823,9 @@ def acercar(cam, look, k):
 
 c1_, l1_ = acercar((XP - 1.4, -7.4, ZB1 + 2.3), (XP + 0.05, 0.0, ZB1 - 0.05), 1.33)
 E1 = dict(cam=c1_, look=l1_, fov=30)
-c2_, l2_ = acercar((XC - 0.9, -7.0, ZB2 + 1.25), (XC + 0.24, 0.0, ZB2 - 0.1), 1.25)
+# cámara y objetivo 0,28 m más abajo: la fila sube en el cuadro y «Snte.²» no toca el panel de texto
+# (en la diapositiva el visor mide 1920×904 y el panel crece con el deslizador)
+c2_, l2_ = acercar((XC - 0.9, -7.0, ZB2 + 1.25 - 0.28), (XC + 0.24, 0.0, ZB2 - 0.1 - 0.28), 1.25)
 E2 = dict(cam=c2_, look=l2_, fov=30)
 E3 = dict(cam=tuple(CAM3), look=tuple(LOOK3), fov=2 * math.degrees(math.atan(VIS_H3 / 2 / (CAM3 - LOOK3).length)))
 SLIDER_LECTOR = {'tipo': 'azimut', 'min': -AZ, 'max': AZ, 'etiqueta': 'posición del lector',
@@ -828,22 +842,27 @@ S.estado('Permutación',
          etiquetas=['e1_snte1', 'e1_snte2', 'e1_sdo', 'e1_yll'], t1=3.4,
          slider={'tipo': 'tiempo', 't0': 1.45, 't1': 3.35, 'etiqueta': 'permutación y ⇄ ll',
                  'min_txt': 'vaya un gallo', 'max_txt': 'valla un gayo'}, **E1)
+# Estado 2: la pregunta de predicción no se responde en el texto (se ve en la escena). Con la curva de
+# aceleración del visor, el viaje de las letras dura ~1 s en tiempo real: el deslizador permite recorrerlo despacio.
 S.estado('Condensación',
-         'Letras de AMO y de ESCLAVO viajan y se funden en AMOSCLAVO, sobre el Sdo. Los dos significantes '
-         '<b>permanecen</b> a los lados: «puesta en escena».',
-         '«puesta en escena»: l. 399-404 · amosclavo: l. 341-342',
+         'Letras de AMO y de ESCLAVO viajan y componen AMOSCLAVO, el tercer término, sobre el Sdo. '
+         'Mira los laterales: es la «puesta en escena» de dos significantes.',
+         'Cabrera Infante, «amosclavo» · «puesta en escena» · l. 341-342 · l. 399-404',
          etiquetas=['e2_snte1', 'e2_snte2', 'e2_snte3', 'e2_sdo'], t1=7.9,
+         slider={'tipo': 'tiempo', 't0': 4.85, 't1': 7.9, 'etiqueta': 'condensación',
+                 'min_txt': 'AMO · ESCLAVO', 'max_txt': 'AMOSCLAVO'},
          pregunta='¿Desaparecen AMO y ESCLAVO cuando surge el tercer término?', **E2)
+# Estado 3: el tercer término no es la «vista verdadera»; la obra es el recorrido (Sarduy sobre Cruz-Diez).
 S.estado('El lector dentro',
-         'Desde la izquierda se lee AMO; desde la derecha, ESCLAVO; de frente, el tercer término, AMOSCLAVO. '
-         'El desplazamiento del espectador es «comparable a la lectura».',
-         'tercer término: l. 320-321 · el espectador que se desplaza: l. 357-358',
-         etiquetas=['e3_snte3', 'e2_sdo', 'e3_nota'], t1=10.3, orbita=False, slider=SLIDER_LECTOR, **E3)
+         'Desde la izquierda, AMO; desde la derecha, ESCLAVO; de frente, AMOSCLAVO. Ninguna vista sola es la obra: '
+         'el desplazamiento del lector, «comparable a la lectura», condensa las tres.',
+         'Sarduy sobre Cruz-Diez · l. 320-321 · l. 353-359',
+         etiquetas=['e3_leyenda', 'e2_sdo', 'e3_nota'], t1=10.3, orbita=False, slider=SLIDER_LECTOR, **E3)
 S.estado('Maquinoscrito',
          'El mismo mecanismo: MÁQUINA desde la izquierda, MANUSCRITO desde la derecha y, de frente, '
          'el tercer término, MAQUINOSCRITO.',
          'Cabrera Infante, «maquinoscrito» · l. 341-342',
-         etiquetas=['e3_snte3', 'e2_sdo', 'e3_nota'], t1=12.1, orbita=False, slider=SLIDER_LECTOR, **E3)
+         etiquetas=['e3_leyenda', 'e2_sdo', 'e3_nota'], t1=12.1, orbita=False, slider=SLIDER_LECTOR, **E3)
 
 # ---------------------------------------------------------------- recuento
 tris = 0
@@ -853,4 +872,15 @@ for ob in bpy.data.objects:
 print(f'[condensacion] triángulos ≈ {tris} (las viajeras comparten malla con los originales)')
 
 aplicar_interpolaciones()
+
+# luz frontal pareja sólo para pósters (el GLB no exporta luces): el texto de los listones queda legible
+_ld = bpy.data.lights.new('frontal_poster', 'AREA')
+_ld.energy, _ld.size, _ld.color = 900, 8.0, (1.0, 0.96, 0.9)
+_lo = bpy.data.objects.new('frontal_poster', _ld)
+_lo.location = (0.8, -9.0, 2.2)
+_lo.rotation_mode = 'QUATERNION'
+_lo.rotation_quaternion = (Vector((0.8, 0.0, 0.0)) - Vector(_lo.location)).to_track_quat('-Z', 'Y')
+_lo['poster_only'] = True
+bpy.context.scene.collection.objects.link(_lo)
+
 S.exportar()

@@ -57,8 +57,8 @@
   },
   {
    "nombre": "Condensación",
-   "texto": "Letras de AMO y de ESCLAVO viajan y se funden en AMOSCLAVO, sobre el Sdo. Los dos significantes <b>permanecen</b> a los lados: «puesta en escena».",
-   "ref": "«puesta en escena»: §2 c · amosclavo: §2 c",
+   "texto": "Letras de AMO y de ESCLAVO viajan y componen AMOSCLAVO, el tercer término, sobre el Sdo. Mira los laterales: es la «puesta en escena» de dos significantes.",
+   "ref": "Cabrera Infante, «amosclavo» · «puesta en escena» · §2 c",
    "cam": "cam_2",
    "look": "look_2",
    "fov": 30,
@@ -70,19 +70,26 @@
     "lbl_e2_sdo"
    ],
    "orbita": true,
-   "slider": null,
+   "slider": {
+    "tipo": "tiempo",
+    "t0": 4.85,
+    "t1": 7.9,
+    "etiqueta": "condensación",
+    "min_txt": "AMO · ESCLAVO",
+    "max_txt": "AMOSCLAVO"
+   },
    "pregunta": "¿Desaparecen AMO y ESCLAVO cuando surge el tercer término?"
   },
   {
    "nombre": "El lector dentro",
-   "texto": "Desde la izquierda se lee AMO; desde la derecha, ESCLAVO; de frente, el tercer término, AMOSCLAVO. El desplazamiento del espectador es «comparable a la lectura».",
-   "ref": "tercer término: §2 c · el espectador que se desplaza: §2 c",
+   "texto": "Desde la izquierda, AMO; desde la derecha, ESCLAVO; de frente, AMOSCLAVO. Ninguna vista sola es la obra: el desplazamiento del lector, «comparable a la lectura», condensa las tres.",
+   "ref": "Sarduy sobre Cruz-Diez · §2 c",
    "cam": "cam_3",
    "look": "look_3",
    "fov": 5.465802333713535,
    "t1": 10.3,
    "etiquetas": [
-    "lbl_e3_snte3",
+    "lbl_e3_leyenda",
     "lbl_e2_sdo",
     "lbl_e3_nota"
    ],
@@ -106,7 +113,7 @@
    "fov": 5.465802333713535,
    "t1": 12.1,
    "etiquetas": [
-    "lbl_e3_snte3",
+    "lbl_e3_leyenda",
     "lbl_e2_sdo",
     "lbl_e3_nota"
    ],
@@ -132,19 +139,19 @@
    "clase": "serif"
   },
   "lbl_p_fon": {
-   "html": "Fonema<sup>1</sup>… Fonema<sup>2</sup>… etc.",
+   "html": "<span style=\"font-variant-numeric:lining-nums\">Fonema<sup>1</sup>… Fonema<sup>2</sup>… etc.</span>",
    "clase": "grande snte"
   },
   "lbl_p_f": {
-   "html": "F<sup>1</sup>… F<sup>2</sup>… etc.",
+   "html": "<span style=\"font-variant-numeric:lining-nums\">F<sup>1</sup>… F<sup>2</sup>… etc.</span>",
    "clase": "grande snte"
   },
   "lbl_p_snte1": {
-   "html": "Significante<sup>1</sup>",
+   "html": "<span style=\"font-variant-numeric:lining-nums\">Significante<sup>1</sup></span>",
    "clase": "grande snte"
   },
   "lbl_p_snte2": {
-   "html": "Snte.<sup>2</sup>",
+   "html": "<span style=\"font-variant-numeric:lining-nums\">Snte.<sup>2</sup></span>",
    "clase": "grande snte"
   },
   "lbl_p_sdo": {
@@ -152,11 +159,11 @@
    "clase": "grande sdo"
   },
   "lbl_c_snte1": {
-   "html": "Snte.<sup>1</sup>",
+   "html": "<span style=\"font-variant-numeric:lining-nums\">Snte.<sup>1</sup></span>",
    "clase": "grande snte"
   },
   "lbl_c_snte3": {
-   "html": "Snte.<sup>3</sup>",
+   "html": "<span style=\"font-variant-numeric:lining-nums\">Snte.<sup>3</sup></span>",
    "clase": "grande snte"
   },
   "lbl_c_sdo": {
@@ -164,7 +171,7 @@
    "clase": "grande sdo"
   },
   "lbl_c_snte2": {
-   "html": "Snte.<sup>2</sup>",
+   "html": "<span style=\"font-variant-numeric:lining-nums\">Snte.<sup>2</sup></span>",
    "clase": "grande snte"
   },
   "lbl_e1_snte1": {
@@ -199,8 +206,8 @@
    "html": "Sdo.",
    "clase": "sdo"
   },
-  "lbl_e3_snte3": {
-   "html": "Snte.<sup>3</sup>",
+  "lbl_e3_leyenda": {
+   "html": "Snte.<sup>1</sup> desde la izquierda · <b>Snte.<sup>3</sup> de frente</b> · Snte.<sup>2</sup> desde la derecha",
    "clase": "snte"
   },
   "lbl_e3_nota": {

@@ -22,7 +22,7 @@
   },
   {
    "nombre": "Reflejo reductor",
-   "texto": "Rasgo de todo barroco: el espejo quiere ser totalizante y minucioso, pero no capta la vastedad que lo circunscribe; algo «le opone su opacidad».",
+   "texto": "Rasgo de todo barroco: el espejo quiere ser «totalizante y minucioso», pero no capta «la vastedad del lenguaje que lo circunscribe»: algo «le opone su opacidad».",
    "ref": "§4 b",
    "cam": "cam_1",
    "look": "look_1",
@@ -39,11 +39,11 @@
   },
   {
    "nombre": "Reflejo significante",
-   "texto": "Barroco histórico: universo descentrado «pero aún armónico», en consonancia con un logos exterior. Ninguna vista agota la ciudad; la estructura la contiene en potencia.",
-   "ref": "§4 b · la ciudad leibniziana (§4 b)",
+   "texto": "Barroco histórico: universo descentrado «pero aún armónico», en consonancia con un logos exterior. Ninguna vista agota la ciudad leibniziana; la estructura la contiene en potencia.",
+   "ref": "§4 b",
    "cam": "cam_2",
    "look": "look_2",
-   "fov": 42,
+   "fov": 38,
    "t1": 3.8,
    "etiquetas": [
     "lbl_logos",
@@ -53,8 +53,8 @@
    "orbita": true,
    "slider": {
     "tipo": "azimut",
-    "min": -65,
-    "max": 10,
+    "min": -38,
+    "max": 12,
     "etiqueta": "puntos de vista (la ciudad leibniziana)",
     "min_txt": "izquierda",
     "max_txt": "derecha"
@@ -63,11 +63,11 @@
   },
   {
    "nombre": "Pulverización",
-   "texto": "Neobarroco: el reflejo se pulveriza en torno a un hueco. El logos ya no organiza desde fuera: sus segmentos forman «una pantalla que esconde la carencia».",
+   "texto": "Neobarroco: reflejo estructural de «la inarmonía». El espejo se pulveriza en torno a un hueco; el logos sólo organiza «una pantalla que esconde la carencia».",
    "ref": "§4 b",
    "cam": "cam_3",
    "look": "look_3",
-   "fov": 40,
+   "fov": 38,
    "t1": 10.0,
    "etiquetas": [
     "lbl_pantalla",
@@ -87,7 +87,7 @@
   {
    "nombre": "Pantalla y carencia",
    "texto": "Retirada la pantalla, aparece la carencia: el trayecto gira en torno a esa ausencia. «Reflejo necesariamente pulverizado»; «arte del destronamiento y la discusión».",
-   "ref": "§4 b · Díaz 2011, ap. 6: esbozos de la futura retombée (ap. 6)",
+   "ref": "§4 b · Díaz 2011, ap. 6 (ap. 6)",
    "cam": "cam_4",
    "look": "look_4",
    "fov": 40,
@@ -99,7 +99,14 @@
     "lbl_pulverizado"
    ],
    "orbita": true,
-   "slider": null,
+   "slider": {
+    "tipo": "azimut",
+    "min": -38,
+    "max": 10,
+    "etiqueta": "otro punto de vista, otro reflejo",
+    "min_txt": "izquierda",
+    "max_txt": "derecha"
+   },
    "pregunta": null
   }
  ],

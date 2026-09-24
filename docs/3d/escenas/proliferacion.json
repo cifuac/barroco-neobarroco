@@ -3,11 +3,11 @@
  "titulo": "Proliferación: del arco abierto a la elipse",
  "fondo": "#14100D",
  "fps": 30,
- "duracion": 13.0,
+ "duracion": 9.0,
  "estados": [
   {
    "nombre": "Figura 2",
-   "texto": "El significante de un significado dado queda tachado; una cadena de significantes, que progresa metonímicamente, traza a su alrededor una órbita <b>abierta</b>: etc.",
+   "texto": "El significante de un significado dado queda tachado; una cadena de significantes, que progresa metonímicamente, traza una órbita a su alrededor. En la figura, el arco queda <b>abierto</b>: etc.",
    "ref": "Sarduy 1972 · figura 2 (§2 b)",
    "cam": "cam_0",
    "look": "look_0",
@@ -29,12 +29,12 @@
   },
   {
    "nombre": "Cadena",
-   "texto": "Carpentier, <em>El siglo de las luces</em>: reloj de sol vuelto reloj de luna, balanza para pesar gatos, telescopio por una luceta rota, un astrónomo sobre un armario. La cadena sigue abierta.",
+   "texto": "Carpentier, <em>El siglo de las luces</em>: reloj de sol vuelto reloj de luna, balanza para pesar gatos, telescopio por una luceta rota, astrónomo sobre un armario. La cadena sigue abierta.",
    "ref": "§2 b",
    "cam": "cam_1",
    "look": "look_1",
    "fov": 34,
-   "t1": 2.75,
+   "t1": 1.75,
    "etiquetas": [
     "lbl_obj1",
     "lbl_obj2",
@@ -42,7 +42,7 @@
     "lbl_obj4",
     "lbl_obj5",
     "lbl_etc",
-    "lbl_e3_snte",
+    "lbl_e_snte",
     "lbl_e3_sdo"
    ],
    "orbita": true,
@@ -52,7 +52,7 @@
   {
    "nombre": "Lectura radial",
    "texto": "De cada objeto la lectura vuelve al centro: el significado, «desorden», está presente; su significante nunca se escribe. Se infiere.",
-   "ref": "§2 b, 230-233 · rayos: añadido didáctico",
+   "ref": "§2 b · rayos: añadido didáctico",
    "cam": "cam_2",
    "look": "look_2",
    "fov": 34,
@@ -64,21 +64,21 @@
     "lbl_obj4",
     "lbl_obj5",
     "lbl_etc",
-    "lbl_e3_snte",
+    "lbl_e_snte",
     "lbl_e3_desorden"
    ],
    "orbita": true,
    "slider": null,
-   "pregunta": "¿Qué palabra falta en el centro?"
+   "pregunta": "¿Y si las lecturas no convergieran en ningún centro?"
   },
   {
    "nombre": "Lectura deceptiva",
-   "texto": "Abreu, <em>Mampulorio</em>: cucharas, un vaso, un ojo sobre una piel. Las lecturas no convergen: se anulan unas a otras. El centro no se llena.",
+   "texto": "Abreu, <em>Mampulorio</em>: cucharas, un vaso, un ojo sobre una piel. Las lecturas no convergen: los significantes, en vez de completarse, se anulan unos a otros. El centro no se llena.",
    "ref": "§2 b",
    "cam": "cam_3",
    "look": "look_3",
    "fov": 34,
-   "t1": 6.3,
+   "t1": 5.1,
    "etiquetas": [
     "lbl_mamp5",
     "lbl_etc",
@@ -99,7 +99,7 @@
    "cam": "cam_4",
    "look": "look_4",
    "fov": 34,
-   "t1": 9.1,
+   "t1": 6.85,
    "etiquetas": [
     "lbl_tab1",
     "lbl_tab2",
@@ -114,8 +114,8 @@
    "orbita": true,
    "slider": {
     "tipo": "tiempo",
-    "t0": 7.1,
-    "t1": 9.1,
+    "t0": 5.35,
+    "t1": 6.85,
     "etiqueta": "excentricidad",
     "min_txt": "círculo: un centro",
     "max_txt": "elipse: dos focos"
@@ -124,16 +124,21 @@
   },
   {
    "nombre": "Kepler",
-   "texto": "El mismo gesto en la ciencia y en el arte: Kepler hace doble el centro único de la órbita. Parecido sin causa: <em>retombée</em>, «isomorfía no contigua».",
-   "ref": "§1 · Díaz 2011, ap. 6",
+   "texto": "Kepler: el trayecto de los astros, que se suponía circular, pierde su centro único «para hacerse doble». Más tarde Sarduy llamará <em>retombée</em> a este parecido: «isomorfía no contigua».",
+   "ref": "§1 · Sarduy 1974, cit. por Díaz 2011, ap. 6",
    "cam": "cam_5",
    "look": "look_5",
    "fov": 34,
-   "t1": 11.8,
+   "t1": 8.25,
    "etiquetas": [
     "lbl_kepler",
     "lbl_kep_sol",
     "lbl_kep_vacio",
+    "lbl_tab1",
+    "lbl_tab2",
+    "lbl_tab3",
+    "lbl_tab4",
+    "lbl_tab5",
     "lbl_e_sdo_foco",
     "lbl_e_snte_foco",
     "lbl_etc"
@@ -141,8 +146,8 @@
    "orbita": true,
    "slider": {
     "tipo": "tiempo",
-    "t0": 10.0,
-    "t1": 11.8,
+    "t0": 7.25,
+    "t1": 8.25,
     "etiqueta": "la órbita de Kepler",
     "min_txt": "círculo",
     "max_txt": "elipse"
@@ -168,20 +173,20 @@
    "clase": "grande sdo"
   },
   "lbl_e_sdo_foco": {
-   "html": "Sdo. · foco presente",
+   "html": "Sdo.<br>foco presente",
    "clase": "sdo"
   },
   "lbl_e_snte_foco": {
-   "html": "<s>Snte.</s> · foco ausente",
+   "html": "<s>Snte.</s><br>foco ausente",
    "clase": "tachado"
   },
   "lbl_cita1974": {
-   "html": "lectura posterior · Sarduy 1974, cit. por Díaz 2011",
+   "html": "<span style=\"color:var(--azogue)\">lectura posterior<br>Sarduy 1974, cit. por Díaz 2011</span>",
    "clase": "nota"
   },
   "lbl_e_vacio": {
    "html": "ningún Sdo.",
-   "clase": "nota"
+   "clase": "grande"
   },
   "lbl_e3_snte": {
    "html": "<s>Snte.</s>",
@@ -196,19 +201,19 @@
    "clase": "grande sdo"
   },
   "lbl_obj1": {
-   "html": "Snte.<sup>1</sup> · reloj de sol",
+   "html": "Snte.<sup>1</sup> · <span style=\"color:var(--magenta-claro);font-style:italic\">reloj de sol</span>",
    "clase": "snte"
   },
   "lbl_obj2": {
-   "html": "Snte.<sup>2</sup> · balanza",
+   "html": "Snte.<sup>2</sup> · <span style=\"color:var(--magenta-claro);font-style:italic\">balanza hidrostática</span>",
    "clase": "snte"
   },
   "lbl_obj3": {
-   "html": "Snte.<sup>3</sup> · telescopio",
+   "html": "Snte.<sup>3</sup> · <span style=\"color:var(--magenta-claro);font-style:italic\">telescopio pequeño</span>",
    "clase": "snte"
   },
   "lbl_obj4": {
-   "html": "Snte.<sup>4</sup> · armario",
+   "html": "Snte.<sup>4</sup> · <span style=\"color:var(--magenta-claro);font-style:italic\">armario</span>",
    "clase": "snte"
   },
   "lbl_obj5": {
@@ -220,32 +225,32 @@
    "clase": "snte"
   },
   "lbl_mamp1": {
-   "html": "seis cucharas",
-   "clase": "snte"
+   "html": "<span style=\"color:var(--magenta-claro);font-style:italic\">seis cucharas</span>",
+   "clase": "nota"
   },
   "lbl_tab2": {
    "html": "Snte.<sup>2</sup>",
    "clase": "snte"
   },
   "lbl_mamp2": {
-   "html": "un vaso",
-   "clase": "snte"
+   "html": "<span style=\"color:var(--magenta-claro);font-style:italic\">un vaso</span>",
+   "clase": "nota"
   },
   "lbl_tab3": {
    "html": "Snte.<sup>3</sup>",
    "clase": "snte"
   },
   "lbl_mamp3": {
-   "html": "quizá un plato",
-   "clase": "snte"
+   "html": "<span style=\"color:var(--magenta-claro);font-style:italic\">quizá un plato</span>",
+   "clase": "nota"
   },
   "lbl_tab4": {
    "html": "Snte.<sup>4</sup>",
    "clase": "snte"
   },
   "lbl_mamp4": {
-   "html": "un ojo sobre una piel",
-   "clase": "snte"
+   "html": "<span style=\"color:var(--magenta-claro);font-style:italic\">un ojo sobre una piel</span>",
+   "clase": "nota"
   },
   "lbl_tab5": {
    "html": "Snte.<sup>5</sup>",

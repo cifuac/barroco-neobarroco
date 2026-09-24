@@ -29,7 +29,7 @@ function post(msg) { if (window.parent !== window) window.parent.postMessage({ f
 
 async function init() {
   $('poster').src = `posters/${ID}-${estadoInicial}.webp`;
-  $('poster').onerror = () => { $('poster').src = `posters/${ID}.webp`; };
+  $('poster').onerror = () => { $('poster').onerror = null; $('poster').src = `posters/${ID}.webp`; };
   man = await fetch(`escenas/${ID}.json`, { cache: 'no-cache' }).then((r) => { if (!r.ok) throw new Error('manifiesto'); return r.json(); });
   document.title = `${man.titulo} · Esquema 3D`;
   $('titulo').textContent = man.titulo;
@@ -171,7 +171,13 @@ function ir(n, inmediato = false) {
   }
   // etiquetas
   const vis = new Set(e.etiquetas || []);
-  for (const [nombre, div] of Object.entries(etiquetas)) div.classList.toggle('on', vis.has(nombre));
+  clearTimeout(ir._t);
+  const retraso = (!inmediato && !reduce && tweenT) ? Math.min(tweenT.dur * 0.8, 3.5) * 1000 : 0;
+  for (const [nombre, div] of Object.entries(etiquetas)) {
+    if (!vis.has(nombre)) div.classList.remove('on');           // lo que sale, se va de inmediato
+    else if (!retraso) div.classList.add('on');
+  }
+  if (retraso) ir._t = setTimeout(() => { for (const n of vis) if (etiquetas[n]) etiquetas[n].classList.add('on'); }, retraso);
   // textos
   $('texto').innerHTML = e.texto || '';
   $('ref').textContent = e.ref || '';

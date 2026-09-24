@@ -8,7 +8,7 @@
   {
    "nombre": "Superficie",
    "texto": "La página de frente: renglones paralelos y regulares, un solo sentido de lectura. Debajo hay otros textos.",
-   "ref": "«recorrido lineal, fijado, “normal” de la página» · l. 615",
+   "ref": "«recorrido lineal, fijado, “normal” de la página» · §3 b",
    "cam": "cam_0",
    "look": "look_0",
    "fov": 6.8,
@@ -23,7 +23,7 @@
   {
    "nombre": "Cita",
    "texto": "La cita: un texto ajeno pegado sobre la superficie, «sin que su voz se altere». García Márquez incorpora una frase de Rulfo y personajes de otros autores.",
-   "ref": "Intertextualidad: la cita · l. 530-547",
+   "ref": "Intertextualidad: la cita · §3 a",
    "cam": "cam_1",
    "look": "look_1",
    "fov": 34,
@@ -42,7 +42,7 @@
   {
    "nombre": "Filigrana",
    "texto": "A contraluz, la superficie se vuelve translúcida y deja ver otro texto debajo: el romance de Lope que el de Góngora desfigura y que «hay que leer en filigrana».",
-   "ref": "Jammes, cit. por Sarduy · l. 408-424",
+   "ref": "Jammes, cit. por Sarduy · §3",
    "cam": "cam_2",
    "look": "look_2",
    "fov": 34,
@@ -59,7 +59,7 @@
   {
    "nombre": "Reminiscencia",
    "texto": "A diferencia de la cita, la reminiscencia no aflora: se funde con el texto receptor y lo tiñe desde abajo, «modificando con sus texturas su geología».",
-   "ref": "l. 533-538; ejemplos, l. 589-602",
+   "ref": "§3 a; ejemplos, §3 a",
    "cam": "cam_3",
    "look": "look_3",
    "fov": 32,
@@ -76,7 +76,7 @@
   {
    "nombre": "Gramas",
    "texto": "Intratextualidad, «escritura entre la escritura». Gramas fonéticos: las letras del renglón admiten otra lectura. Grama sémico: bajo la línea, dos indicadores convergen hacia un idiom que no aflora.",
-   "ref": "l. 604-686 · palíndromo, l. 655 · Paradiso, l. 670-677",
+   "ref": "§3 b · Cabrera Infante, §3 b · Paradiso, §3 b",
    "cam": "cam_4",
    "look": "look_4",
    "fov": 32,
@@ -95,7 +95,7 @@
   {
    "nombre": "Red en volumen",
    "texto": "Todos los estratos a la vez: una red de conexiones, de sucesivas filigranas. Sarduy lo formula en condicional: su expresión gráfica «no sería lineal… sino en volumen».",
-   "ref": "l. 459-462 (condicional)",
+   "ref": "§3 (condicional)",
    "cam": "cam_5",
    "look": "look_5",
    "fov": 36,
@@ -145,7 +145,7 @@
   },
   "lbl_gongora": {
    "html": "Góngora: el romance visible",
-   "clase": "snte"
+   "clase": "serif"
   },
   "lbl_lope": {
    "html": "Lope: el romance anterior, debajo",
@@ -168,15 +168,15 @@
    "clase": "ajeno"
   },
   "lbl_fonetico": {
-   "html": "gramas fonéticos: las mismas letras, leídas en los dos sentidos",
+   "html": "grama fonético: un palíndromo, legible en los dos sentidos",
    "clase": "trayecto"
   },
   "lbl_ind1": {
-   "html": "«mal de muerte»",
+   "html": "«mal de<br>muerte»",
    "clase": "trayecto"
   },
   "lbl_ind2": {
-   "html": "«traspiés en la alabanza»",
+   "html": "«traspiés en<br>la alabanza»",
    "clase": "trayecto"
   },
   "lbl_ojo": {

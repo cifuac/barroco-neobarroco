@@ -180,7 +180,7 @@ PAPEL = M('lamina')                         # superficie: el texto visible
 NACAR = M('significante')                   # texto en filigrana
 TINTA = mat_hex('tinta_renglon', '#3A322B', rough=0.5)
 SEPIA = mat_hex('sepia_renglon', '#7A4024', rough=0.55)
-VELO = mat_hex('papel_contraluz', '#F1EADC', rough=0.45, alpha=0.36)   # único translúcido
+VELO = mat_hex('papel_contraluz', '#F1EADC', rough=0.45, emi='#F3EDE2', emis=0.5, alpha=0.36)   # único translúcido (luz a contraluz)
 MAG = M('ajeno')
 COSTURA = mat_hex('costura', '#F3EDE2', rough=0.5)
 CIAN = M('trayecto')
@@ -218,7 +218,7 @@ for k in range(6):
     llenas[k] = bb.caja(f'losa{k}', (W, D, H), (0, 0, zc(k)), MAT_BASE[k], capas[k], bevel=BEV)
     if k >= 2:
         llenas_t[k] = bb.caja(f'losa{k}_tinte', (W, D, H), (0, 0, zc(k)), MAT_TINTE[k], capas[k], bevel=BEV)
-    cortadas[k] = bb.caja(f'losa{k}_corte', (W, Y1 - YC, H), (0, (YC + Y1) / 2, zc(k)), MAT_TINTE[k], capas[k], bevel=BEV)
+    cortadas[k] = bb.caja(f'losa{k}_corte', (W, Y1 - YC, H), (0, (YC + Y1) / 2, zc(k)), MAT_BASE[k], capas[k], bevel=BEV)
 velo = bb.caja('losa0_velo', (W, D, H), (0, 0, zc(0)), VELO, capas[0], bevel=BEV)
 
 # cámara oval bajo el último renglón (grama sémico): hueco por Boolean en las losas cortadas
@@ -246,7 +246,7 @@ for k in (1, 2, 3):
 bpy.data.objects.remove(cort)
 
 # rebanada frontal que cae en el estado 4 (colores finales)
-piezas = [bb.caja(f'rebanada{k}', (W, YC - Y0, H), (0, 0, zc(k) + 0.6), MAT_TINTE[k], None, bevel=BEV) for k in range(6)]
+piezas = [bb.caja(f'rebanada{k}', (W, YC - Y0, H), (0, 0, zc(k) + 0.6), MAT_BASE[k], None, bevel=BEV) for k in range(6)]
 reb = unir(piezas, 'rebanada')
 reb.parent = bloque
 reb.location = (0, (Y0 + YC) / 2, -0.6)
@@ -298,23 +298,24 @@ for j in range(13):
 lope = malla('renglones_filigrana', bm, SEPIA, capas[1])
 
 # ---------------------------------------------------------------- citas: placas magenta de borde vivo, con costura
-CITAS = [('rulfo', 1, -0.95, 1.1, 'una frase de Rulfo'),
-         ('hugues', 4, 0.8, 0.66, 'Víctor Hugues · Carpentier'),
-         ('rocamadour', 6, -0.55, 0.72, 'Rocamadour · Cortázar'),
-         ('cruz', 8, 0.95, 0.66, 'Artemio Cruz · Fuentes')]
-PH, PT = 0.17, 0.03
+CITAS = [('rulfo', 1, -0.95, 1.1, 'una frase de Rulfo', 2.5),
+         ('hugues', 4, 0.8, 0.7, 'Víctor Hugues · Carpentier', -3.0),
+         ('rocamadour', 6, -0.55, 0.76, 'Rocamadour · Cortázar', 3.0),
+         ('cruz', 8, 0.95, 0.7, 'Artemio Cruz · Fuentes', -2.0)]
+PH, PT = 0.25, 0.05
 ZP = ztop(0) + BZ + PT / 2
 citas = []
-for clave, i, x, L, html in CITAS:
+for clave, i, x, L, html, giro in CITAS:
     placa = bb.caja('cita_' + clave, (L, PH, PT), (0, 0, 0), MAG, None)
-    ix, iy = L / 2 - 0.028, PH / 2 - 0.028
+    ix, iy = L / 2 - 0.036, PH / 2 - 0.036
     rect = [(-ix, -iy, PT / 2 + 0.002), (ix, -iy, PT / 2 + 0.002), (ix, iy, PT / 2 + 0.002),
             (-ix, iy, PT / 2 + 0.002), (-ix, -iy, PT / 2 + 0.002)]
-    cos_ = bb.polilinea_punteada('costura_' + clave, rect, guion=0.04, hueco=0.026, r=0.0065, material=COSTURA, parent=None)
+    cos_ = bb.polilinea_punteada('costura_' + clave, rect, guion=0.045, hueco=0.03, r=0.008, material=COSTURA, parent=None)
     g = unir([placa, cos_], 'cita_' + clave)
     g.parent = capas[0]
     g.location = (x, YL[i], ZP)
-    S.etiqueta('c_' + clave, html, (x, YL[i] + 0.05, ZP + 0.2), parent=capas[0], clase='ajeno')
+    g.rotation_euler = (0, 0, math.radians(giro))
+    S.etiqueta('c_' + clave, html, (x, YL[i] + 0.08, ZP + 0.22), parent=capas[0], clase='ajeno')
     citas.append(g)
 
 # ---------------------------------------------------------------- gramas fonéticos: palíndromo (l. 655)
@@ -423,12 +424,12 @@ for m, (k, ua, ub) in enumerate(GAPS_RED):
 LBL_RECEPTOR = (-0.3, 1.9, 0.12)
 LBL_GONGORA = (-1.0, 1.75, zc(0))
 LBL_LOPE = (-0.6, -1.8, zc(1))
-LBL_MARCA = (3.45, 0.5, 0.1)
+LBL_MARCA = (3.1, 0.9, 0.1)
 LBL_CITA_SUP = (-0.5, 1.9, 0.15)
 LBL_REMIN = (3.1, -1.5, -1.75)
 LBL_EJEMPLOS = (-2.35, -1.62, zc(5) - 0.08)
-LBL_IND1 = (xi1 - 0.5, YC - 0.05, -0.12)
-LBL_IND2 = (xi2 + 0.55, YC - 0.05, -0.12)
+LBL_IND1 = (xi1 - 0.3, YC - 0.05, -0.2)
+LBL_IND2 = (xi2 + 0.42, YC - 0.05, -0.2)
 LBL_SEMICO = (XC + 1.45, YC - 0.05, ZC + 0.02)
 LBL_RCOND = (0.6, 1.95, zc(0) + 0.3)
 
@@ -438,7 +439,7 @@ S.etiqueta('lectura', 'lectura lineal', (-2.5, 1.375, 0.05), parent=capas[0], cl
 # estado 1
 S.etiqueta('receptor', 'texto receptor: García Márquez, <i>Cien años de soledad</i>', LBL_RECEPTOR, parent=capas[0], clase='snte')
 # estado 2
-S.etiqueta('gongora', 'Góngora: el romance visible', LBL_GONGORA, parent=capas[0], clase='snte')
+S.etiqueta('gongora', 'Góngora: el romance visible', LBL_GONGORA, parent=capas[0], clase='serif')
 S.etiqueta('lope', 'Lope: el romance anterior, debajo', LBL_LOPE, parent=capas[1], clase='serif')
 S.etiqueta('marca', 'filigrana: la marca de agua, visible a contraluz', LBL_MARCA, parent=capas[0], clase='nota')
 # estado 3
@@ -446,9 +447,9 @@ S.etiqueta('cita_sup', 'cita: marcas visibles en la superficie', LBL_CITA_SUP, p
 S.etiqueta('remin', 'reminiscencia: tiñe desde abajo, sin aflorar', LBL_REMIN, parent=bloque, clase='serif')
 S.etiqueta('ejemplos', 'Lisandro Otero, <i>La situación</i> · Amelia Peláez', LBL_EJEMPLOS, parent=capas[5], clase='ajeno')
 # estado 4
-S.etiqueta('fonetico', 'gramas fonéticos: las mismas letras, leídas en los dos sentidos', (xs[12], y9, Z0 + ALTO_ARCO + 0.16), parent=capas[0], clase='trayecto')
-S.etiqueta('ind1', '«mal de muerte»', LBL_IND1, parent=bloque, clase='trayecto')
-S.etiqueta('ind2', '«traspiés en la alabanza»', LBL_IND2, parent=bloque, clase='trayecto')
+S.etiqueta('fonetico', 'grama fonético: un palíndromo, legible en los dos sentidos', (xs[12], y9, Z0 + ALTO_ARCO + 0.16), parent=capas[0], clase='trayecto')
+S.etiqueta('ind1', '«mal de<br>muerte»', LBL_IND1, parent=bloque, clase='trayecto')
+S.etiqueta('ind2', '«traspiés en<br>la alabanza»', LBL_IND2, parent=bloque, clase='trayecto')
 S.etiqueta('ojo', '«mal de ojo»', (XC, YC - 0.05, ZC - 0.42), parent=bloque, clase='grande sdo')
 S.etiqueta('semico', 'grama sémico, bajo la línea · Lezama, <i>Paradiso</i>', LBL_SEMICO, parent=bloque, clase='nota')
 # estado 5
@@ -555,9 +556,13 @@ for k, t in zip((5, 4, 3, 2), (4.9, 5.25, 5.6, 5.95)):
     salto(llenas_t[k], t, OFF, 1.0)
 S.clave(llenas[1], 0, esc=1.0, interp=C)
 
-# ── estado 4 (6.1 → 8.5 s): corte bajo el renglón; gramas
+# ── estado 4 (6.1 → 8.5 s): el tinte se retira (los gramas son intratextuales, no «alógenos», l. 606-608);
+#    corte bajo el renglón; gramas
 TCUT = 6.5
-arriba = {k: (llenas_t[k] if k >= 2 else llenas[k]) for k in range(6)}
+for k, t in zip((2, 3, 4, 5), (6.15, 6.22, 6.29, 6.36)):
+    salto(llenas_t[k], t, 1.0, OFF)
+    salto(llenas[k], t, OFF, 1.0)
+arriba = llenas
 for k in range(6):
     salto(arriba[k], TCUT, 1.0, OFF)
     S.clave(cortadas[k], 0, esc=OFF, interp=C)
@@ -613,6 +618,10 @@ for f in (fl1, fl2):
 for k in range(6):
     salto(cortadas[k], T5 + 0.36, 1.0, OFF)
     salto(arriba[k], T5 + 0.36, OFF, 1.0)
+# la reminiscencia vuelve a teñir los estratos profundos (desde abajo) antes del despiece
+for k, t in zip((5, 4, 3, 2), (9.0, 9.07, 9.14, 9.21)):
+    salto(llenas[k], t, 1.0, OFF)
+    salto(llenas_t[k], t, OFF, 1.0)
 TE0, TE1 = 9.3, 10.5
 for k in range(6):
     S.clave(capas[k], TE0, loc=(0, 0, 0))
@@ -624,12 +633,35 @@ for n, h in enumerate(hilos):
     S.clave(h, t + 0.35, esc=1.0)
 T_FIN = TE1 + 0.06 * (len(hilos) - 1) + 0.4
 
+# ── rótulos: el visor los enciende al entrar en el estado, antes de que termine la animación.
+#    Cada ancla espera «aparcada» fuera del plano lejano de la cámara (el CSS2DRenderer oculta lo que
+#    queda fuera de [-1, 1] en z) y salta a su sitio cuando aparece su objeto.
+PARK = Vector((0, 0, 900))
+
+
+def aparcar(clave, t_on):
+    ob = bpy.data.objects['lbl_' + clave]
+    real = Vector(ob.location)
+    fr = int(round(t_on * bb.FPS))
+    S.clave(ob, 0, loc=real + PARK)
+    S.clave(ob, (fr - 1) / bb.FPS, loc=real + PARK)
+    S.clave(ob, fr / bb.FPS, loc=real)
+
+
+for clave, t_on in [('receptor', 1.5),
+                    ('c_rulfo', 1.45 + 0.4), ('c_hugues', 1.59 + 0.4), ('c_rocamadour', 1.73 + 0.4), ('c_cruz', 1.87 + 0.4),
+                    ('gongora', 3.0), ('lope', 3.0), ('marca', 3.0),
+                    ('cita_sup', 4.95), ('remin', 5.0), ('ejemplos', 5.0),
+                    ('ind1', 6.9), ('ind2', 6.9), ('fonetico', 7.35), ('semico', 7.35), ('ojo', 7.55),
+                    ('rcond', 9.3), ('r0', 10.0), ('r1', 10.0), ('r3', 10.0)]:
+    aparcar(clave, t_on)
+
 # ---------------------------------------------------------------- estados
 FRENTE = dict(cam=(0, -46, -0.35), look=(0, 0, -0.35), fov=6.8)
 CITA = dict(cam=(-0.57, -7.29, 4.95), look=(1.8, 0.0, -1.47), fov=34)
 FILI = dict(cam=(1.07, -4.09, 8.3), look=(1.5, 0.0, -0.92), fov=34)
 REMI = dict(cam=(-4.14, -7.34, 2.07), look=(1.2, 0.0, -1.06), fov=32)
-GRAM = dict(cam=(0.97, -6.8, 0.68), look=(0.51, -0.27, -0.12), fov=32)
+GRAM = dict(cam=(0.72, -6.8, 0.68), look=(0.26, -0.27, -0.12), fov=32)
 RED = dict(cam=(-4.95, -9.49, 4.73), look=(1.7, 0.0, 0.05), fov=36)
 
 S.estado('Superficie',
@@ -651,7 +683,7 @@ S.estado('Reminiscencia',
          etiquetas=['cita_sup', 'remin', 'ejemplos'], t1=6.1, **REMI)
 S.estado('Gramas',
          'Intratextualidad, «escritura entre la escritura». Gramas fonéticos: las letras del renglón admiten otra lectura. Grama sémico: bajo la línea, dos indicadores convergen hacia un idiom que no aflora.',
-         'l. 604-686 · palíndromo, l. 655 · Paradiso, l. 670-677',
+         'l. 604-686 · Cabrera Infante, l. 655 · Paradiso, l. 670-677',
          etiquetas=['fonetico', 'ind1', 'ind2', 'ojo', 'semico'], t1=8.5, **GRAM)
 S.estado('Red en volumen',
          'Todos los estratos a la vez: una red de conexiones, de sucesivas filigranas. Sarduy lo formula en condicional: su expresión gráfica «no sería lineal… sino en volumen».',
@@ -661,4 +693,18 @@ S.estado('Red en volumen',
                  'min_txt': 'bloque', 'max_txt': 'red'}, **RED)
 
 fijar_interpolacion()
+
+# pósters (EEVEE): el velo translúcido se ve casi opaco con las luces de póster; sólo para el render
+# de los pósters se aclara (el GLB ya se exportó con los valores del visor).
+_posters_bb = S._posters
+
+
+def _posters_velo(res):
+    b = VELO.node_tree.nodes.get('Principled BSDF')
+    b.inputs['Alpha'].default_value = 0.16
+    b.inputs['Emission Strength'].default_value = 0.0
+    _posters_bb(res)
+
+
+S._posters = _posters_velo
 S.exportar()

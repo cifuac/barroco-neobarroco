@@ -264,6 +264,27 @@ def aplicar(ob):
         bpy.ops.object.modifier_apply(modifier=m.name)
     return ob
 
+def fcurves_de(ob):
+    """F-curves del objeto, compatible con acciones por capas (Blender 4.4+/5.x) y con la API antigua."""
+    ad = ob.animation_data
+    if not ad or not ad.action:
+        return []
+    act = ad.action
+    out = []
+    try:
+        for layer in act.layers:
+            for strip in layer.strips:
+                for cb in strip.channelbags:
+                    out += list(cb.fcurves)
+    except Exception:
+        pass
+    if not out:
+        try:
+            out = list(act.fcurves)
+        except Exception:
+            pass
+    return out
+
 # ---------------------------------------------------------------- escena, animación, estados
 class Escena:
     def __init__(self, id, titulo, fondo='#14100D', dur=None):
@@ -296,23 +317,26 @@ class Escena:
     def f(self, t):
         return int(round(t * FPS))
 
-    def clave(self, ob, t, loc=None, rot=None, esc=None, interp=None):
-        prefs = bpy.context.preferences.edit
-        old = prefs.keyframe_new_interpolation_type
-        if interp:
-            prefs.keyframe_new_interpolation_type = interp
-        fr = self.f(t)
+    def clave(self, ob, t, loc=None, rot=None, esc=None, interp=None, frame=None):
+        fr = self.f(t) if frame is None else frame
+        props = []
         if loc is not None:
             ob.location = loc
-            ob.keyframe_insert('location', frame=fr)
+            ob.keyframe_insert('location', frame=fr); props.append('location')
         if rot is not None:
             ob.rotation_mode = 'XYZ'
             ob.rotation_euler = rot
-            ob.keyframe_insert('rotation_euler', frame=fr)
+            ob.keyframe_insert('rotation_euler', frame=fr); props.append('rotation_euler')
         if esc is not None:
             ob.scale = esc if isinstance(esc, (tuple, list)) else (esc, esc, esc)
-            ob.keyframe_insert('scale', frame=fr)
-        prefs.keyframe_new_interpolation_type = old
+            ob.keyframe_insert('scale', frame=fr); props.append('scale')
+        # Blender 5.2 ignora keyframe_new_interpolation_type: se fija en la curva misma
+        modo = interp or 'BEZIER'
+        for fc in fcurves_de(ob):
+            if fc.data_path in props:
+                for kp in fc.keyframe_points:
+                    if abs(kp.co[0] - fr) < 0.01:
+                        kp.interpolation = modo
 
     def mostrar(self, ob, t0, t1=None, desde=0.0001):
         """Aparece por escala entre t0 y t1 (si t1 es None, aparece de golpe en t0). Antes de t0 está oculto."""
@@ -337,8 +361,9 @@ class Escena:
     def salto(self, ob, t, antes, despues):
         """Cambio instantáneo de escala en t (sin interpolación que se filtre desde claves anteriores).
         antes/despues: escalar o tupla. Úsalo para aparecer/desaparecer de golpe a mitad de la línea de tiempo."""
-        self.clave(ob, t - 1.0 / FPS, esc=antes, interp='CONSTANT')
-        self.clave(ob, t, esc=despues, interp='CONSTANT')
+        fr = self.f(t)
+        self.clave(ob, t, esc=antes, interp='CONSTANT', frame=fr - 1)
+        self.clave(ob, t, esc=despues, interp='CONSTANT', frame=fr)
 
     def mover(self, ob, t0, t1, a, b):
         self.clave(ob, t0, loc=a)
