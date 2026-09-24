@@ -26,7 +26,7 @@
     if (el.dataset.cargado) return Promise.resolve();
     const url = el.dataset.svg;
     el.dataset.cargado = '1';
-    const p = svgCache[url] || (svgCache[url] = fetch(url).then((r) => r.text()));
+    const p = svgCache[url] || (svgCache[url] = (window.SVG_DATOS && window.SVG_DATOS[url]) ? Promise.resolve(window.SVG_DATOS[url]) : fetch(url).then((r) => r.text()));
     return p.then((t) => { el.innerHTML = t; aplicarPasos(el.closest('.slide')); });
   }
 

@@ -54,14 +54,15 @@ svg [data-from]:not(.on) { transform: none; }
 [data-until].off { opacity: 0; }
 
 /* ============================================================ pie */
-.pie { position: absolute; left: 120px; right: 120px; bottom: 34px; height: 40px; display: flex; align-items: center; justify-content: space-between; z-index: 60; pointer-events: none; font-family: var(--f-neo); font-weight: 600; font-size: 20px; letter-spacing: .08em; color: rgba(var(--linea-rgb),.62); }
+.pie { position: absolute; left: 120px; right: 190px; bottom: 30px; height: 40px; display: flex; align-items: center; justify-content: space-between; z-index: 60; pointer-events: none; font-family: var(--f-neo); font-weight: 400; font-size: 15px; letter-spacing: .1em; color: rgba(var(--linea-rgb),.7); }
 body.sin-pie .pie { opacity: 0; }
-.pie .obra { text-transform: uppercase; letter-spacing: .14em; }
-.pie .modulos { display: flex; gap: 34px; list-style: none; margin: 0; padding: 0; text-transform: uppercase; letter-spacing: .12em; }
+.pie .obra { text-transform: uppercase; letter-spacing: .16em; }
+.pie .modulos { display: flex; gap: 30px; list-style: none; margin: 0; padding: 0; text-transform: uppercase; letter-spacing: .12em; }
 .pie .modulos li { position: relative; transition: color .3s; }
 .pie .modulos li.actual { color: var(--oro); }
-.pie .modulos li.actual::after { content: ""; position: absolute; left: 0; right: 0; bottom: -8px; height: 2px; background: var(--oro); }
-.pie .num { font-size: 22px; color: var(--nacar); }
+.pie .modulos li.actual { font-weight: 700; }
+.pie .modulos li.actual::after { content: ""; position: absolute; left: 0; right: 0; bottom: -7px; height: 1.5px; background: var(--oro); }
+.pie .num { font-size: 16px; letter-spacing: .08em; color: var(--nacar); }
 .pie .num b { color: var(--perla); font-weight: 700; }
 #progreso { position: absolute; left: 0; bottom: 0; height: 4px; width: 1920px; z-index: 61; pointer-events: none; }
 #progreso::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: calc(var(--p, 0) * 100%); background: linear-gradient(90deg, var(--oro-viejo), var(--oro)); transition: width .5s ease; }
@@ -69,9 +70,9 @@ body.sin-pie #progreso { opacity: .5; }
 body.pie-claro .pie { color: #7a6a5c; } body.pie-claro .pie .num, body.pie-claro .pie .num b { color: var(--tinta-2); } body.pie-claro .pie .modulos li.actual { color: var(--oro-viejo); } body.pie-claro .pie .modulos li.actual::after { background: var(--oro-viejo); }
 
 /* controles discretos (arriba a la derecha) */
-.controles { position: absolute; right: 30px; top: 22px; z-index: 70; display: flex; gap: 12px; opacity: 0; transition: opacity .3s; }
-#stage:hover .controles { opacity: .85; }
-.controles .btn-icono { --t: 54px; }
+.controles { position: absolute; right: 44px; bottom: 26px; z-index: 70; display: flex; gap: 10px; opacity: .5; transition: opacity .3s; }
+#stage:hover .controles, .controles:focus-within { opacity: 1; }
+.controles .btn-icono { --t: 44px; box-shadow: none; }
 #vivo { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 
 /* índice */
@@ -101,7 +102,6 @@ body.pie-claro .pie { color: #7a6a5c; } body.pie-claro .pie .num, body.pie-claro
 .marco-img.contener img { object-fit: contain; background: var(--barro); }
 .marco-img .credito { left: 16px; bottom: 12px; background: rgba(var(--fondo-rgb),.72); padding: 5px 10px; border-radius: 4px; }
 /* filete de oro interrumpido en imágenes IA */
-.marco-img.ia::after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: linear-gradient(90deg, var(--oro) 0 34%, transparent 34% 40%, var(--oro) 40% 46%, transparent 46%); }
 
 /* imagen a sangre con velo */
 .sangre { position: absolute; inset: 0; background-size: cover; background-position: center; }
