@@ -1,0 +1,36 @@
+<svg class="fig" viewBox="0 0 1400 780" role="img" aria-labelledby="mun-titulo mun-desc">
+<title id="mun-titulo">La metáfora al cuadrado: muñecas rusas</title>
+<desc id="mun-desc">Marcos anidados e incompletos, abiertos en una esquina, que aparecen de dentro hacia fuera (Sarduy 1972, §2). 0: nivel denotativo, supuesto, un núcleo punteado con la palabra «halcones». 1: la metáfora poética. 2: Góngora, Soledades: «raudos torbellinos de Noruega». 3: Dámaso Alonso, 1956, que la descifra. 4: Sarduy, 1972, que comenta a Alonso. 5: Díaz, 2011, que anota a Sarduy. 6: esta clase.</desc>
+
+<g>
+<path class="f-none s-azogue dash-fino w3 redondo" opacity="1" d="M833 308 L904 308 Q920 308 920 324 L920 368M816 432 L496 432 Q480 432 480 416 L480 324 Q480 308 496 308 L498 308"/>
+<text class="halo f-azogue" x="510" y="318" font-size="38"><tspan class="neo f-azogue" font-size="36">0</tspan>  denotativo (supuesto)</text>
+<text class="halo it f-nacar" x="700" y="384" font-size="44" text-anchor="middle">halcones</text>
+</g>
+<g data-from="1">
+<path class="f-none s-nacar w3 redondo" opacity=".6" d="M689 262 L979 262 Q995 262 995 278 L995 414M891 478 L421 478 Q405 478 405 462 L405 278 Q405 262 421 262 L423 262"/>
+<text class="halo f-nacar" x="435" y="272" font-size="38"><tspan class="neo f-nacar" font-size="36">1</tspan>  metáfora poética</text>
+</g>
+<g data-from="2">
+<path class="f-none s-nacar w3 redondo" opacity=".75" d="M661 216 L1054 216 Q1070 216 1070 232 L1070 460M966 524 L807 524 M348 524 L346 524 Q330 524 330 508 L330 232 Q330 216 346 216 L348 216"/>
+<text class="halo f-perla" x="360" y="226" font-size="38"><tspan class="neo f-magenta" font-size="36">2</tspan>  Góngora, <tspan class="it">Soledades</tspan></text>
+<text class="halo it f-magenta" x="360" y="534" font-size="38">«raudos torbellinos de Noruega»</text>
+</g>
+<g data-from="3">
+<path class="f-none s-nacar w3 redondo" opacity=".85" d="M607 170 L1129 170 Q1145 170 1145 186 L1145 506M1041 570 L271 570 Q255 570 255 554 L255 186 Q255 170 271 170 L273 170"/>
+<text class="halo f-perla" x="285" y="180" font-size="38"><tspan class="neo f-nacar" font-size="36">3</tspan>  Dámaso Alonso, 1956</text>
+</g>
+<g data-from="4">
+<path class="f-none s-perla w3 redondo" opacity="1" d="M414 124 L1204 124 Q1220 124 1220 140 L1220 552M1116 616 L196 616 Q180 616 180 600 L180 140 Q180 124 196 124 L198 124"/>
+<text class="halo f-perla" x="210" y="134" font-size="38"><tspan class="neo f-perla" font-size="36">4</tspan>  Sarduy, 1972</text>
+</g>
+<g data-from="5">
+<path class="f-none s-azogue w3 redondo" opacity="1" d="M305 78 L1279 78 Q1295 78 1295 94 L1295 598M1191 662 L121 662 Q105 662 105 646 L105 94 Q105 78 121 78 L123 78"/>
+<text class="halo f-azogue" x="135" y="88" font-size="38"><tspan class="neo f-azogue" font-size="36">5</tspan>  Díaz, 2011</text>
+</g>
+<g data-from="6">
+<path class="f-none s-cian w3 redondo" opacity="1" d="M231 32 L1354 32 Q1370 32 1370 48 L1370 644M1266 708 L46 708 Q30 708 30 692 L30 48 Q30 32 46 32 L48 32"/>
+<text class="halo f-cian" x="60" y="42" font-size="38"><tspan class="neo f-cian" font-size="36">6</tspan>  esta clase</text>
+</g>
+<text class="halo neo f-azogue" x="1370" y="768" font-size="36" text-anchor="end">Sarduy 1972 · §2</text>
+</svg>

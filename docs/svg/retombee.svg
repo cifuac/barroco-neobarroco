@@ -1,0 +1,50 @@
+<svg class="fig" viewBox="0 0 1500 620" role="img" aria-labelledby="ret-titulo ret-desc">
+<title id="ret-titulo">Retombée: parecidos sin causa</title>
+<desc id="ret-desc">A la izquierda, la elipse de Kepler (1609) con el sol en un foco y el otro foco vacío. A la derecha, la planta oval de San Carlo alle Quattro Fontane (Borromini, 1634-41), en esquema; es un ejemplo añadido. Entre ambas, ondas concéntricas sin flecha. Paso 1: aparece una flecha de causa a efecto. Paso 2: la flecha se tacha en bermellón y aparece el rótulo «retombée: causalidad acrónica, isomorfía no contigua» (Sarduy 1974, citado por Díaz 2011, ap. 6).</desc>
+
+<g>
+<path class="f-none s-azogue w3 redondo" opacity="0.9" d="M712.7 238.7 A44 44 0 0 0 712.7 285.3"/>
+<path class="f-none s-azogue w3 redondo" opacity="0.9" d="M787.3 285.3 A44 44 0 0 0 787.3 238.7"/>
+<path class="f-none s-azogue w3 redondo" opacity="0.7" d="M675.4 215.4 A88 88 0 0 0 675.4 308.6"/>
+<path class="f-none s-azogue w3 redondo" opacity="0.7" d="M824.6 308.6 A88 88 0 0 0 824.6 215.4"/>
+<path class="f-none s-azogue w3 redondo" opacity="0.5" d="M638.1 192.1 A132 132 0 0 0 638.1 331.9"/>
+<path class="f-none s-azogue w3 redondo" opacity="0.5" d="M861.9 331.9 A132 132 0 0 0 861.9 192.1"/>
+<path class="f-none s-azogue w3 redondo" opacity="0.32" d="M600.7 168.7 A176 176 0 0 0 600.7 355.3"/>
+<path class="f-none s-azogue w3 redondo" opacity="0.32" d="M899.3 355.3 A176 176 0 0 0 899.3 168.7"/>
+</g>
+<g>
+<ellipse class="f-none s-nacar w3" cx="300" cy="262" rx="200" ry="132"/>
+<circle class="f-none s-oro w3" opacity=".45" cx="149.7" cy="262" r="27"/>
+<circle class="f-oro" cx="149.7" cy="262" r="15"/>
+<circle class="f-none s-azogue w3" style="stroke-dasharray:5 5" cx="450.3" cy="262" r="12"/>
+<circle class="f-nacar" cx="188.2" cy="371.4" r="8"/>
+<text class="neo f-nacar" x="300" y="470" font-size="32" text-anchor="middle">Kepler, 1609</text>
+<text class="f-azogue" x="300" y="506" font-size="28" text-anchor="middle">elipse: sol en un foco, el otro vacío</text>
+</g>
+<g>
+<path class="f-none s-nacar w3 redondo" d="M1154 148.3 A46 46 0 0 1 1246 148.3 A100 128 0 0 1 1295 222 A40 40 0 0 1 1295 302 A100 128 0 0 1 1246 375.7 A46 46 0 0 1 1211.9 420.1 M1188.1 420.1 A46 46 0 0 1 1154 375.7 A100 128 0 0 1 1105 302 A40 40 0 0 1 1105 222 A100 128 0 0 1 1154 148.3"/>
+<ellipse class="f-none s-nacar w3 dash-fino" opacity=".55" cx="1200" cy="262" rx="70" ry="94"/>
+<circle class="f-nacar" cx="1154" cy="148.3" r="6"/>
+<circle class="f-nacar" cx="1105" cy="222" r="6"/>
+<circle class="f-nacar" cx="1154" cy="375.7" r="6"/>
+<circle class="f-nacar" cx="1105" cy="302" r="6"/>
+<circle class="f-nacar" cx="1246" cy="148.3" r="6"/>
+<circle class="f-nacar" cx="1295" cy="222" r="6"/>
+<circle class="f-nacar" cx="1246" cy="375.7" r="6"/>
+<circle class="f-nacar" cx="1295" cy="302" r="6"/>
+<text class="neo f-nacar" x="1200" y="470" font-size="32" text-anchor="middle">San Carlo, Borromini</text>
+<text class="f-azogue" x="1200" y="506" font-size="28" text-anchor="middle">planta oval, 1634-41 · ejemplo añadido</text>
+</g>
+<g data-from="1" data-until="2">
+<path class="f-none s-perla w4 redondo" d="M404 122 Q750 8 1066 112"/>
+<path class="f-perla" d="M1080 117 L1052.2 118.3 L1060.7 110.6 L1058.4 99.4 Z"/>
+<text class="neo f-perla" x="404" y="94" font-size="28" text-anchor="end">causa</text>
+<text class="neo f-perla" x="1092" y="94" font-size="28">efecto</text>
+</g>
+<g data-from="2">
+<g opacity=".35"><path class="f-none s-perla w4 redondo" d="M404 122 Q750 8 1066 112"/><path class="f-perla" d="M1080 117 L1052.2 118.3 L1060.7 110.6 L1058.4 99.4 Z"/><text class="neo f-perla" x="404" y="94" font-size="28" text-anchor="end">causa</text><text class="neo f-perla" x="1092" y="94" font-size="28">efecto</text></g>
+<line class="s-bermellon w6 redondo" x1="724" y1="92" x2="776" y2="28"/>
+<text class="serif it f-perla" x="750" y="570" font-size="44" text-anchor="middle">«retombée: causalidad acrónica, isomorfía no contigua»</text>
+<text class="neo f-azogue" x="750" y="608" font-size="28" text-anchor="middle">Sarduy 1974, cit. por Díaz 2011 · ap. 6</text>
+</g>
+</svg>

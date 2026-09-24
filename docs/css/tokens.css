@@ -1,0 +1,31 @@
+/* Tokens de diseño — «La perla y el foco tachado»
+   Registro histórico: barro, nácar, oro como resto. Registro neobarroco: offset cian/magenta. */
+:root {
+  --tinta: #14100D;        /* fondo principal */
+  --tinta-2: #1B1411;
+  --barro: #241A14;        /* paneles */
+  --barro-2: #2E2119;
+  --tierra: #5A4030;       /* decorativo */
+  --perla: #F3EDE2;        /* texto principal / fondo claro */
+  --nacar: #CFC6B8;        /* significante presente, texto secundario */
+  --oro: #D4A62A;          /* significado, foco lleno (solo en fragmentos) */
+  --oro-viejo: #7A5A10;
+  --bermellon: #C8372D;    /* tachadura, ausencia (formas) */
+  --bermellon-claro: #E0584C; /* bermellón legible como texto */
+  --cian: #3BB8D6;         /* trayecto, lectura radial, lector */
+  --cian-prof: #006B82;
+  --magenta: #E23C8E;      /* cita, lo ajeno, parodia */
+  --magenta-claro: #EC5FA2;
+  --azogue: #9AA4A8;       /* espejo, voz de Díaz */
+  --grafito: #4A443E;
+
+  --f-barroco: "Cormorant Garamond", "Cormorant", Georgia, "Times New Roman", serif;
+  --f-neo: "Syne", "Helvetica Neue", Arial, sans-serif;
+  --f-texto: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", "Helvetica Neue", Arial, sans-serif;
+
+  /* lienzo fijo */
+  --W: 1920px;
+  --H: 1080px;
+  --safe-x: 96px;
+  --safe-y: 54px;
+}

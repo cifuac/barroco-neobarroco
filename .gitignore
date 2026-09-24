@@ -1,0 +1,7 @@
+# Nunca publicar material de trabajo (vive fuera de repo/, en _privado/)
+blender/out/
+*.blend
+*.blend1
+node_modules/
+.DS_Store
+docs/svg/_prueba.html

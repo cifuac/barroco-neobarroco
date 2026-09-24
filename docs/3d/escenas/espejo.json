@@ -1,0 +1,156 @@
+{
+ "id": "espejo",
+ "titulo": "Espejo: tres reflejos",
+ "fondo": "#14100D",
+ "fps": 30,
+ "duracion": 14.0,
+ "estados": [
+  {
+   "nombre": "La sala y el espejo",
+   "texto": "Una capilla barroca abstracta. En su muro, un espejo convexo devuelve la sala reducida: la estructura barroca es «reflejo reductor» de lo que la envuelve.",
+   "ref": "Sarduy 1972 · b] Espejo (§4 b)",
+   "cam": "cam_0",
+   "look": "look_0",
+   "fov": 7.0,
+   "t1": 0,
+   "etiquetas": [
+    "lbl_reductor"
+   ],
+   "orbita": false,
+   "slider": null,
+   "pregunta": null
+  },
+  {
+   "nombre": "Reflejo reductor",
+   "texto": "Rasgo de todo barroco: el espejo quiere ser totalizante y minucioso, pero no capta la vastedad que lo circunscribe; algo «le opone su opacidad».",
+   "ref": "§4 b",
+   "cam": "cam_1",
+   "look": "look_1",
+   "fov": 34,
+   "t1": 2.0,
+   "etiquetas": [
+    "lbl_sala",
+    "lbl_opaco",
+    "lbl_vaneyck"
+   ],
+   "orbita": true,
+   "slider": null,
+   "pregunta": null
+  },
+  {
+   "nombre": "Reflejo significante",
+   "texto": "Barroco histórico: universo descentrado «pero aún armónico», en consonancia con un logos exterior. Ninguna vista agota la ciudad; la estructura la contiene en potencia.",
+   "ref": "§4 b · la ciudad leibniziana (§4 b)",
+   "cam": "cam_2",
+   "look": "look_2",
+   "fov": 42,
+   "t1": 3.8,
+   "etiquetas": [
+    "lbl_logos",
+    "lbl_dios",
+    "lbl_puntos"
+   ],
+   "orbita": true,
+   "slider": {
+    "tipo": "azimut",
+    "min": -65,
+    "max": 10,
+    "etiqueta": "puntos de vista (la ciudad leibniziana)",
+    "min_txt": "izquierda",
+    "max_txt": "derecha"
+   },
+   "pregunta": null
+  },
+  {
+   "nombre": "Pulverización",
+   "texto": "Neobarroco: el reflejo se pulveriza en torno a un hueco. El logos ya no organiza desde fuera: sus segmentos forman «una pantalla que esconde la carencia».",
+   "ref": "§4 b",
+   "cam": "cam_3",
+   "look": "look_3",
+   "fov": 40,
+   "t1": 10.0,
+   "etiquetas": [
+    "lbl_pantalla",
+    "lbl_pulverizado"
+   ],
+   "orbita": true,
+   "slider": {
+    "tipo": "tiempo",
+    "t0": 3.8,
+    "t1": 10.0,
+    "etiqueta": "del reflejo armónico al pulverizado",
+    "min_txt": "barroco",
+    "max_txt": "neobarroco"
+   },
+   "pregunta": "Si el espejo se rompe, ¿qué refleja cada fragmento? ¿Queda un centro?"
+  },
+  {
+   "nombre": "Pantalla y carencia",
+   "texto": "Retirada la pantalla, aparece la carencia: el trayecto gira en torno a esa ausencia. «Reflejo necesariamente pulverizado»; «arte del destronamiento y la discusión».",
+   "ref": "§4 b · Díaz 2011, ap. 6: esbozos de la futura retombée (ap. 6)",
+   "cam": "cam_4",
+   "look": "look_4",
+   "fov": 40,
+   "t1": 13.6,
+   "etiquetas": [
+    "lbl_carencia",
+    "lbl_trayecto",
+    "lbl_destronado",
+    "lbl_pulverizado"
+   ],
+   "orbita": true,
+   "slider": null,
+   "pregunta": null
+  }
+ ],
+ "etiquetas": {
+  "lbl_reductor": {
+   "html": "reflejo reductor",
+   "clase": "serif"
+  },
+  "lbl_opaco": {
+   "html": "opacidad",
+   "clase": "serif"
+  },
+  "lbl_sala": {
+   "html": "la sala, reducida",
+   "clase": ""
+  },
+  "lbl_vaneyck": {
+   "html": "Van Eyck, 1434 (aún no barroco) · Góngora: «aunque cóncavo fiel»",
+   "clase": "nota"
+  },
+  "lbl_logos": {
+   "html": "logos exterior",
+   "clase": "serif"
+  },
+  "lbl_dios": {
+   "html": "el dios jesuita · el rey",
+   "clase": "nota"
+  },
+  "lbl_puntos": {
+   "html": "infinitud de puntos de vista",
+   "clase": "trayecto"
+  },
+  "lbl_pantalla": {
+   "html": "el logos: una pantalla",
+   "clase": "serif"
+  },
+  "lbl_pulverizado": {
+   "html": "reflejo pulverizado",
+   "clase": "serif"
+  },
+  "lbl_carencia": {
+   "html": "carencia",
+   "clase": "grande"
+  },
+  "lbl_trayecto": {
+   "html": "trayecto dividido por la ausencia",
+   "clase": "trayecto"
+  },
+  "lbl_destronado": {
+   "html": "logos destronado",
+   "clase": "nota"
+  }
+ }
+}

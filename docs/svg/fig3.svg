@@ -1,0 +1,41 @@
+<svg class="fig" viewBox="0 0 1600 420" role="img" aria-labelledby="fig3-titulo fig3-desc">
+<title id="fig3-titulo">Figura 3 de Sarduy (1972): permutación y condensación</title>
+<desc id="fig3-desc">Dos esquemas lado a lado. A la izquierda, «Permutación»: la cadena «Fonema 1… Fonema 2… etc.» bajo un corchete rotulado «Significante 1» y la cadena «F 1… F 2… etc.» bajo otro corchete rotulado «Snte. 2»; ambos sobre una única barra larga con «Significado» debajo: dos cadenas fonéticas y un solo significado. A la derecha, «Condensación»: Snte. 1 y Snte. 2 a los lados de un signo central, Snte. 3 sobre Sdo.; entre cada lado y el centro, un par de flechas opuestas. Paso 1: «vaya un gallo» y «valla un gayo» intercambian y y ll. Paso 2: AMO, AMOSCLAVO, ESCLAVO. Paso 3: MÁQUINA, MAQUINOSCRITO, MANUSCRITO (Cabrera Infante, §2 c).</desc>
+
+<g>
+<text class="it f-nacar" x="30" y="56" font-size="36">Permutación</text>
+<text class="f-nacar" x="270" y="148" font-size="38" text-anchor="middle">Fonema<tspan baseline-shift="super" font-size="60%">1</tspan>… Fonema<tspan baseline-shift="super" font-size="60%">2</tspan>… etc.</text>
+<path class="f-none s-nacar w3 redondo" d="M30 124 L30 156 Q30 168 42 168 L498 168 Q510 168 510 156 L510 124"/>
+<text class="f-nacar" x="270" y="216" font-size="38" text-anchor="middle">Significante<tspan baseline-shift="super" font-size="60%">1</tspan></text>
+<text class="f-nacar" x="700" y="148" font-size="38" text-anchor="middle">F<tspan baseline-shift="super" font-size="60%">1</tspan>… F<tspan baseline-shift="super" font-size="60%">2</tspan>… etc.</text>
+<path class="f-none s-nacar w3 redondo" d="M580 124 L580 156 Q580 168 592 168 L808 168 Q820 168 820 156 L820 124"/>
+<text class="f-nacar" x="700" y="216" font-size="38" text-anchor="middle">Snte.<tspan baseline-shift="super" font-size="60%">2</tspan></text>
+<line class="s-nacar w4" x1="30" y1="246" x2="830" y2="246"/>
+<text class="f-oro" x="430" y="296" font-size="38" text-anchor="middle">Significado</text>
+<text class="it f-nacar" x="900" y="56" font-size="36">Condensación</text>
+<text class="f-nacar" x="1040" y="204" font-size="40" text-anchor="end">Snte.<tspan baseline-shift="super" font-size="60%">1</tspan></text>
+<text class="f-nacar" x="1440" y="204" font-size="40">Snte.<tspan baseline-shift="super" font-size="60%">2</tspan></text>
+<text class="f-nacar" x="1240" y="172" font-size="40" text-anchor="middle">Snte.<tspan baseline-shift="super" font-size="60%">3</tspan></text>
+<line class="s-nacar w3" x1="1164" y1="190" x2="1316" y2="190"/>
+<text class="f-oro" x="1240" y="238" font-size="40" text-anchor="middle">Sdo.</text>
+<line class="s-nacar w3" x1="1054" y1="180" x2="1138" y2="180"/><path class="f-nacar" d="M1152 180 L1132 188 L1136.4 180 L1132 172 Z"/>
+<line class="s-nacar w3" x1="1150" y1="228" x2="1069.7" y2="210.9"/><path class="f-nacar" d="M1056 208 L1077.2 204.3 L1071.3 211.2 L1073.9 220 Z"/>
+<line class="s-nacar w3" x1="1426" y1="180" x2="1342" y2="180"/><path class="f-nacar" d="M1328 180 L1348 172 L1343.6 180 L1348 188 Z"/>
+<line class="s-nacar w3" x1="1330" y1="228" x2="1410.3" y2="210.9"/><path class="f-nacar" d="M1424 208 L1406.1 220 L1408.7 211.2 L1402.8 204.3 Z"/>
+</g>
+<g data-from="1">
+<text class="it f-magenta" x="430" y="366" font-size="34" text-anchor="middle">va<tspan class="f-cian" font-weight="700">y</tspan>a un ga<tspan class="f-cian" font-weight="700">ll</tspan>o <tspan class="f-azogue">⇄</tspan> va<tspan class="f-cian" font-weight="700">ll</tspan>a un ga<tspan class="f-cian" font-weight="700">y</tspan>o</text>
+<text class="neo f-cian" x="1580" y="56" font-size="28" text-anchor="end">Cabrera Infante · §2 c</text>
+</g>
+<g data-from="2">
+<text class="f-nacar" x="1144.5" y="318" font-size="28" text-anchor="end">AMO <tspan class="f-azogue">⇄</tspan></text>
+<text class="f-perla" x="1240" y="318" font-size="28" text-anchor="middle" font-weight="700">AMOSCLAVO</text>
+<text class="f-nacar" x="1335.5" y="318" font-size="28"><tspan class="f-azogue">⇄</tspan> ESCLAVO</text>
+</g>
+<g data-from="3">
+<text class="f-nacar" x="1112" y="368" font-size="28" text-anchor="end">MÁQUINA <tspan class="f-azogue">⇄</tspan></text>
+<text class="f-perla" x="1240" y="368" font-size="28" text-anchor="middle" font-weight="700">MAQUINOSCRITO</text>
+<text class="f-nacar" x="1368" y="368" font-size="28"><tspan class="f-azogue">⇄</tspan> MANUSCRITO</text>
+</g>
+<text class="neo f-azogue" x="30" y="410" font-size="28">Figura 3 según Sarduy 1972 · reconstrucción</text>
+</svg>

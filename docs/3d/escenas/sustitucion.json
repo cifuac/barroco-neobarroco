@@ -1,0 +1,216 @@
+{
+ "id": "sustitucion",
+ "titulo": "Sustitución: la figura 1 en profundidad",
+ "fondo": "#14100D",
+ "fps": 30,
+ "duracion": 9.0,
+ "estados": [
+  {
+   "nombre": "Figura 1",
+   "texto": "La figura tal como la dibuja Sarduy: el significante que corresponde al significado queda <b>tachado</b>; otro, lejano, ocupa su lugar a distancia.",
+   "ref": "Sarduy 1972 · figura 1 (§2 a)",
+   "cam": "cam_0",
+   "look": "look_0",
+   "fov": 5.6,
+   "t1": 0,
+   "etiquetas": [
+    "lbl_snte",
+    "lbl_sdo",
+    "lbl_snte1"
+   ],
+   "orbita": false,
+   "slider": null,
+   "pregunta": null
+  },
+  {
+   "nombre": "Volumen",
+   "texto": "Lo mismo, visto en volumen: la barra separa y a la vez une; el nombre tachado sigue ahí, como hueco.",
+   "ref": "§2 a",
+   "cam": "cam_1",
+   "look": "look_1",
+   "fov": 33,
+   "t1": 0.5,
+   "etiquetas": [
+    "lbl_snte",
+    "lbl_sdo",
+    "lbl_snte1"
+   ],
+   "orbita": true,
+   "slider": null,
+   "pregunta": null
+  },
+  {
+   "nombre": "Distancia",
+   "texto": "La distancia semántica se vuelve distancia espacial: Snte.¹ no ocupa el hueco; funciona <em>desde lejos</em>.",
+   "ref": "§2 a",
+   "cam": "cam_2",
+   "look": "look_2",
+   "fov": 33,
+   "t1": 3.0,
+   "etiquetas": [
+    "lbl_snte",
+    "lbl_sdo",
+    "lbl_snte1"
+   ],
+   "orbita": true,
+   "slider": null,
+   "pregunta": "¿Dónde queda el nuevo significante respecto del hueco?"
+  },
+  {
+   "nombre": "Falla",
+   "texto": "Del arte clásico (adherencia de los dos términos del signo) a la <b>abertura</b> barroca. Mueve el deslizador.",
+   "ref": "«Abertura, falla entre lo [nombrante] y lo nombrado» (§2 a)",
+   "cam": "cam_3",
+   "look": "look_3",
+   "fov": 35,
+   "t1": 5.5,
+   "etiquetas": [
+    "lbl_sdo",
+    "lbl_snte1",
+    "lbl_snte",
+    "lbl_falla"
+   ],
+   "orbita": true,
+   "slider": {
+    "tipo": "tiempo",
+    "t0": 3.5,
+    "t1": 5.5,
+    "etiqueta": "distancia entre nombrante y nombrado",
+    "min_txt": "adherencia clásica",
+    "max_txt": "abertura barroca"
+   },
+   "pregunta": null
+  },
+  {
+   "nombre": "Contexto",
+   "texto": "El sustituto sólo significa dentro de un contexto que liga los dos términos a distancia.",
+   "ref": "«sólo en el contexto erótico del relato funciona» (§2 a)",
+   "cam": "cam_4",
+   "look": "look_4",
+   "fov": 40,
+   "t1": 6.7,
+   "etiquetas": [
+    "lbl_snte",
+    "lbl_sdo",
+    "lbl_snte1",
+    "lbl_contexto"
+   ],
+   "orbita": true,
+   "slider": null,
+   "pregunta": null
+  },
+  {
+   "nombre": "Lezama",
+   "texto": "En <em>Paradiso</em>, el significante de «virilidad» es escamoteado y sustituido por otro, totalmente alejado.",
+   "ref": "Lezama Lima, Paradiso · §2 a",
+   "cam": "cam_5",
+   "look": "look_5",
+   "fov": 33,
+   "t1": 6.7,
+   "etiquetas": [
+    "lbl_snte",
+    "lbl_ej_sdo",
+    "lbl_snte1",
+    "lbl_ej_snte1"
+   ],
+   "orbita": true,
+   "slider": null,
+   "pregunta": null
+  },
+  {
+   "nombre": "Porro",
+   "texto": "En la arquitectura de Ricardo Porro, el desagüe no se vuelve gárgola (el significante ya codificado) sino flauta, fémur o falo.",
+   "ref": "§2 a",
+   "cam": "cam_6",
+   "look": "look_6",
+   "fov": 33,
+   "t1": 6.7,
+   "etiquetas": [
+    "lbl_porro_sdo",
+    "lbl_porro_tach",
+    "lbl_snte1",
+    "lbl_porro_snte1"
+   ],
+   "orbita": true,
+   "slider": null,
+   "pregunta": null
+  },
+  {
+   "nombre": "Papaya",
+   "texto": "Una fuente con forma de papaya: la sustitución no es simple permutación, <b>erotiza la totalidad</b> de la obra.",
+   "ref": "§2 a",
+   "cam": "cam_7",
+   "look": "look_7",
+   "fov": 40,
+   "t1": 8.8,
+   "etiquetas": [
+    "lbl_papaya_sdo",
+    "lbl_snte",
+    "lbl_snte1",
+    "lbl_papaya_snte1",
+    "lbl_papaya_nota"
+   ],
+   "orbita": true,
+   "slider": null,
+   "pregunta": null
+  }
+ ],
+ "etiquetas": {
+  "lbl_snte": {
+   "html": "<s>Snte.</s>",
+   "clase": "grande tachado"
+  },
+  "lbl_sdo": {
+   "html": "Sdo.",
+   "clase": "grande sdo"
+  },
+  "lbl_snte1": {
+   "html": "Snte.<sup>1</sup>",
+   "clase": "grande snte"
+  },
+  "lbl_clasico": {
+   "html": "Snte.",
+   "clase": "grande snte"
+  },
+  "lbl_falla": {
+   "html": "abertura, falla",
+   "clase": "serif"
+  },
+  "lbl_contexto": {
+   "html": "contexto (§2 a)",
+   "clase": "nota"
+  },
+  "lbl_ej_sdo": {
+   "html": "«virilidad»",
+   "clase": "sdo"
+  },
+  "lbl_ej_snte1": {
+   "html": "«el aguijón del leptosomático macrogenitoma»",
+   "clase": "snte"
+  },
+  "lbl_porro_sdo": {
+   "html": "canal de desagüe",
+   "clase": "sdo"
+  },
+  "lbl_porro_tach": {
+   "html": "<s>gárgola</s>  (significante codificado)",
+   "clase": "tachado"
+  },
+  "lbl_porro_snte1": {
+   "html": "flauta, fémur o falo",
+   "clase": "snte"
+  },
+  "lbl_papaya_sdo": {
+   "html": "fuente",
+   "clase": "sdo"
+  },
+  "lbl_papaya_snte1": {
+   "html": "papaya",
+   "clase": "snte"
+  },
+  "lbl_papaya_nota": {
+   "html": "en argot cubano, también el sexo femenino: erotiza la obra entera",
+   "clase": "nota"
+  }
+ }
+}

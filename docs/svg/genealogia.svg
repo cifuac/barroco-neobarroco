@@ -1,0 +1,40 @@
+<svg class="fig" viewBox="0 0 1600 520" role="img" aria-labelledby="gen-titulo gen-desc">
+<title id="gen-titulo">Genealogía del nombre: del Barroco al Transbarroco</title>
+<desc id="gen-desc">Un arco punteado abierto que termina en punta de flecha y «etc.». Sobre él aparecen, uno por paso, los nombres que según Díaz (2011, nota 13, ap. 4) se engendran uno a otro: Barroco; Neobarroco (Haroldo de Campos 1955, Sarduy 1972); Neobarroso (Perlongher); Neoborroso (Kamenszain); Hiperbarroco; Transbarroco (Haroldo de Campos 2004).</desc>
+
+<g>
+<path class="f-none s-nacar w3" style="stroke-dasharray:14 10" d="M171.8 457.7 A640 250 0 1 1 1428.2 457.7"/>
+<path class="f-nacar" d="M1416.7 481 L1419.3 453.2 L1425.7 462.8 L1437.2 462.2 Z"/>
+<text class="f-nacar" x="1468.2" y="491.7" font-size="40">etc.</text>
+<text class="neo f-azogue" x="800" y="500" font-size="28" text-anchor="middle">Díaz 2011, nota 13 · ap. 4</text>
+</g>
+<g data-from="1">
+<circle class="f-nacar" cx="169.7" cy="366.6" r="10"/>
+<text class="serif it f-perla" x="197.7" y="379.6" font-size="52" text-anchor="start">Barroco</text>
+</g>
+<g data-from="2">
+<circle class="f-nacar" cx="324.4" cy="242.7" r="10"/>
+<text class="neo f-perla" x="352.4" y="276.7" font-size="36" text-anchor="start">Neobarroco</text>
+<text class="f-azogue" x="352.4" y="310.7" font-size="28" text-anchor="start">Haroldo de Campos 1955</text>
+<text class="f-azogue" x="352.4" y="342.7" font-size="28" text-anchor="start">Sarduy 1972</text>
+</g>
+<g data-from="3">
+<circle class="f-nacar" cx="612.9" cy="170.9" r="10"/>
+<text class="neo f-perla" x="612.9" y="107.9" font-size="36" text-anchor="middle">Neobarroso</text>
+<text class="f-azogue" x="612.9" y="141.9" font-size="28" text-anchor="middle">Perlongher</text>
+</g>
+<g data-from="4">
+<circle class="f-nacar" cx="987.1" cy="170.9" r="10"/>
+<text class="neo f-perla" x="987.1" y="107.9" font-size="36" text-anchor="middle">Neoborroso</text>
+<text class="f-azogue" x="987.1" y="141.9" font-size="28" text-anchor="middle">Kamenszain</text>
+</g>
+<g data-from="5">
+<circle class="f-nacar" cx="1275.6" cy="242.7" r="10"/>
+<text class="neo f-perla" x="1247.6" y="276.7" font-size="36" text-anchor="end">Hiperbarroco</text>
+</g>
+<g data-from="6">
+<circle class="f-nacar" cx="1430.3" cy="366.6" r="10"/>
+<text class="neo f-perla" x="1402.3" y="379.6" font-size="36" text-anchor="end">Transbarroco</text>
+<text class="f-azogue" x="1402.3" y="413.6" font-size="28" text-anchor="end">Haroldo de Campos 2004</text>
+</g>
+</svg>

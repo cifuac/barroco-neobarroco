@@ -1,0 +1,207 @@
+{
+ "id": "estratos",
+ "titulo": "Leer en filigrana: cita, reminiscencia y gramas",
+ "fondo": "#14100D",
+ "fps": 30,
+ "duracion": 11.666666666666666,
+ "estados": [
+  {
+   "nombre": "Superficie",
+   "texto": "La página de frente: renglones paralelos y regulares, un solo sentido de lectura. Debajo hay otros textos.",
+   "ref": "«recorrido lineal, fijado, “normal” de la página» · l. 615",
+   "cam": "cam_0",
+   "look": "look_0",
+   "fov": 6.8,
+   "t1": 0,
+   "etiquetas": [
+    "lbl_lectura"
+   ],
+   "orbita": false,
+   "slider": null,
+   "pregunta": null
+  },
+  {
+   "nombre": "Cita",
+   "texto": "La cita: un texto ajeno pegado sobre la superficie, «sin que su voz se altere». García Márquez incorpora una frase de Rulfo y personajes de otros autores.",
+   "ref": "Intertextualidad: la cita · l. 530-547",
+   "cam": "cam_1",
+   "look": "look_1",
+   "fov": 34,
+   "t1": 2.5,
+   "etiquetas": [
+    "lbl_receptor",
+    "lbl_c_rulfo",
+    "lbl_c_hugues",
+    "lbl_c_rocamadour",
+    "lbl_c_cruz"
+   ],
+   "orbita": true,
+   "slider": null,
+   "pregunta": null
+  },
+  {
+   "nombre": "Filigrana",
+   "texto": "A contraluz, la superficie se vuelve translúcida y deja ver otro texto debajo: el romance de Lope que el de Góngora desfigura y que «hay que leer en filigrana».",
+   "ref": "Jammes, cit. por Sarduy · l. 408-424",
+   "cam": "cam_2",
+   "look": "look_2",
+   "fov": 34,
+   "t1": 3.9,
+   "etiquetas": [
+    "lbl_gongora",
+    "lbl_lope",
+    "lbl_marca"
+   ],
+   "orbita": true,
+   "slider": null,
+   "pregunta": "Para Jammes, esa dependencia la hace «menor». ¿Y para Sarduy?"
+  },
+  {
+   "nombre": "Reminiscencia",
+   "texto": "A diferencia de la cita, la reminiscencia no aflora: se funde con el texto receptor y lo tiñe desde abajo, «modificando con sus texturas su geología».",
+   "ref": "l. 533-538; ejemplos, l. 589-602",
+   "cam": "cam_3",
+   "look": "look_3",
+   "fov": 32,
+   "t1": 6.1,
+   "etiquetas": [
+    "lbl_cita_sup",
+    "lbl_remin",
+    "lbl_ejemplos"
+   ],
+   "orbita": true,
+   "slider": null,
+   "pregunta": null
+  },
+  {
+   "nombre": "Gramas",
+   "texto": "Intratextualidad, «escritura entre la escritura». Gramas fonéticos: las letras del renglón admiten otra lectura. Grama sémico: bajo la línea, dos indicadores convergen hacia un idiom que no aflora.",
+   "ref": "l. 604-686 · palíndromo, l. 655 · Paradiso, l. 670-677",
+   "cam": "cam_4",
+   "look": "look_4",
+   "fov": 32,
+   "t1": 8.5,
+   "etiquetas": [
+    "lbl_fonetico",
+    "lbl_ind1",
+    "lbl_ind2",
+    "lbl_ojo",
+    "lbl_semico"
+   ],
+   "orbita": true,
+   "slider": null,
+   "pregunta": null
+  },
+  {
+   "nombre": "Red en volumen",
+   "texto": "Todos los estratos a la vez: una red de conexiones, de sucesivas filigranas. Sarduy lo formula en condicional: su expresión gráfica «no sería lineal… sino en volumen».",
+   "ref": "l. 459-462 (condicional)",
+   "cam": "cam_5",
+   "look": "look_5",
+   "fov": 36,
+   "t1": 11.62,
+   "etiquetas": [
+    "lbl_r0",
+    "lbl_r1",
+    "lbl_r3",
+    "lbl_rcond"
+   ],
+   "orbita": true,
+   "slider": {
+    "tipo": "tiempo",
+    "t0": 9.3,
+    "t1": 11.62,
+    "etiqueta": "de la página al volumen",
+    "min_txt": "bloque",
+    "max_txt": "red"
+   },
+   "pregunta": null
+  }
+ ],
+ "etiquetas": {
+  "lbl_c_rulfo": {
+   "html": "una frase de Rulfo",
+   "clase": "ajeno"
+  },
+  "lbl_c_hugues": {
+   "html": "Víctor Hugues · Carpentier",
+   "clase": "ajeno"
+  },
+  "lbl_c_rocamadour": {
+   "html": "Rocamadour · Cortázar",
+   "clase": "ajeno"
+  },
+  "lbl_c_cruz": {
+   "html": "Artemio Cruz · Fuentes",
+   "clase": "ajeno"
+  },
+  "lbl_lectura": {
+   "html": "lectura lineal",
+   "clase": "trayecto"
+  },
+  "lbl_receptor": {
+   "html": "texto receptor: García Márquez, <i>Cien años de soledad</i>",
+   "clase": "snte"
+  },
+  "lbl_gongora": {
+   "html": "Góngora: el romance visible",
+   "clase": "snte"
+  },
+  "lbl_lope": {
+   "html": "Lope: el romance anterior, debajo",
+   "clase": "serif"
+  },
+  "lbl_marca": {
+   "html": "filigrana: la marca de agua, visible a contraluz",
+   "clase": "nota"
+  },
+  "lbl_cita_sup": {
+   "html": "cita: marcas visibles en la superficie",
+   "clase": "ajeno"
+  },
+  "lbl_remin": {
+   "html": "reminiscencia: tiñe desde abajo, sin aflorar",
+   "clase": "serif"
+  },
+  "lbl_ejemplos": {
+   "html": "Lisandro Otero, <i>La situación</i> · Amelia Peláez",
+   "clase": "ajeno"
+  },
+  "lbl_fonetico": {
+   "html": "gramas fonéticos: las mismas letras, leídas en los dos sentidos",
+   "clase": "trayecto"
+  },
+  "lbl_ind1": {
+   "html": "«mal de muerte»",
+   "clase": "trayecto"
+  },
+  "lbl_ind2": {
+   "html": "«traspiés en la alabanza»",
+   "clase": "trayecto"
+  },
+  "lbl_ojo": {
+   "html": "«mal de ojo»",
+   "clase": "grande sdo"
+  },
+  "lbl_semico": {
+   "html": "grama sémico, bajo la línea · Lezama, <i>Paradiso</i>",
+   "clase": "nota"
+  },
+  "lbl_r0": {
+   "html": "superficie y citas",
+   "clase": "ajeno"
+  },
+  "lbl_r1": {
+   "html": "texto en filigrana",
+   "clase": "snte"
+  },
+  "lbl_r3": {
+   "html": "estratos teñidos: reminiscencia",
+   "clase": "ajeno"
+  },
+  "lbl_rcond": {
+   "html": "Sarduy, en condicional: «se presentaría… como una red»",
+   "clase": "nota"
+  }
+ }
+}

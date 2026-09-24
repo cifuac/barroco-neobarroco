@@ -1,0 +1,43 @@
+<svg class="fig" viewBox="0 0 1200 620" role="img" aria-labelledby="fig2-titulo fig2-desc">
+<title id="fig2-titulo">Figura 2 de Sarduy (1972): la proliferación</title>
+<desc id="fig2-desc">En el centro, el significante (Snte.) tachado sobre el significado (Sdo.). Alrededor, un arco punteado abierto por abajo, más o menos la mitad superior de una circunferencia, pasa por Snte. 1, Snte. 2, Snte. 3, Snte. 4 y Snte. 5 y termina en una punta de flecha seguida de «etc.»; el arco nunca se cierra. Paso 1: sobre Snte. 1 a 4, el ejemplo de Carpentier (reloj de sol con horas de luna, balanza que pesa gatos, telescopio por la luceta rota, astrónomo en lo alto de un armario; §2 b). Paso 2, añadido didáctico: rayos de la lectura radial apuntan hacia el centro y el Sdo. se rotula «desorden».</desc>
+
+<g data-from="2">
+<line class="s-cian w3 redondo" x1="376" y1="400" x2="488.9" y2="371.8" opacity=".85"/>
+<path class="f-cian" opacity=".85" d="M502.5 368.4 L488.7 379 L490.4 371.4 L485.3 365.5 Z"/>
+<line class="s-cian w3 redondo" x1="416.5" y1="271.5" x2="497.3" y2="303.4" opacity=".85"/>
+<path class="f-cian" opacity=".85" d="M510.3 308.6 L492.9 309.2 L498.7 304 L498 296.2 Z"/>
+<line class="s-cian w3 redondo" x1="561.1" y1="179.4" x2="580.4" y2="261.2" opacity=".85"/>
+<path class="f-cian" opacity=".85" d="M583.7 274.9 L573.2 260.9 L580.8 262.7 L586.8 257.7 Z"/>
+<line class="s-cian w3 redondo" x1="728.5" y1="216.5" x2="668.3" y2="276.2" opacity=".85"/>
+<path class="f-cian" opacity=".85" d="M658.4 286.1 L664.8 269.8 L667.2 277.3 L674.7 279.8 Z"/>
+<line class="s-cian w3 redondo" x1="807.7" y1="316.1" x2="715.9" y2="328.4" opacity=".85"/>
+<path class="f-cian" opacity=".85" d="M702 330.3 L716.9 321.2 L714.4 328.6 L718.8 335.1 Z"/>
+<text class="it f-oro" x="600" y="470" font-size="36" text-anchor="middle">«desorden»</text>
+<text class="neo f-cian" x="600" y="522" font-size="28" text-anchor="middle">lectura radial (añadido)</text>
+</g>
+<g>
+<path class="f-none s-nacar w3" style="stroke-dasharray:16 11" d="M368.2 462.1 A240 240 0 1 1 833.8 454"/>
+<path class="f-nacar" d="M827.6 481.3 L824.1 451.7 L832.5 460 L843.6 456.2 Z"/>
+<text class="f-nacar" x="338" y="418" font-size="46" text-anchor="end">Snte.<tspan baseline-shift="super" font-size="60%">1</tspan></text>
+<text class="f-nacar" x="378" y="246" font-size="46" text-anchor="end">Snte.<tspan baseline-shift="super" font-size="60%">2</tspan></text>
+<text class="f-nacar" x="532" y="132" font-size="46" text-anchor="middle">Snte.<tspan baseline-shift="super" font-size="60%">3</tspan></text>
+<text class="f-nacar" x="742" y="170" font-size="46">Snte.<tspan baseline-shift="super" font-size="60%">4</tspan></text>
+<text class="f-nacar" x="846" y="282" font-size="46">Snte.<tspan baseline-shift="super" font-size="60%">5</tspan></text>
+<text class="f-nacar" x="872" y="418" font-size="46">etc.</text>
+<text class="f-nacar" x="600" y="346" font-size="46" text-anchor="middle" opacity=".62">Snte.</text>
+<line class="s-bermellon w4 redondo" x1="544" y1="338" x2="656" y2="320"/>
+<line class="s-nacar w3" x1="544" y1="362" x2="656" y2="362"/>
+<text class="f-oro" x="600" y="418" font-size="46" text-anchor="middle">Sdo.</text>
+</g>
+<g data-from="1">
+<text class="it f-magenta" x="338" y="338" font-size="30" text-anchor="end">reloj de sol /</text>
+<text class="it f-magenta" x="338" y="372" font-size="30" text-anchor="end">horas de luna</text>
+<text class="it f-magenta" x="378" y="202" font-size="30" text-anchor="end">balanza que pesa gatos</text>
+<text class="it f-magenta" x="532" y="82" font-size="30" text-anchor="middle">telescopio por la luceta rota</text>
+<text class="it f-magenta" x="742" y="84" font-size="30">astrónomo en lo alto</text>
+<text class="it f-magenta" x="742" y="118" font-size="30">de un armario</text>
+<text class="neo f-cian" x="1190" y="566" font-size="28" text-anchor="end">Carpentier, <tspan class="it">El siglo de las luces</tspan> · §2 b</text>
+</g>
+<text class="neo f-azogue" x="10" y="606" font-size="28">Figura 2 según Sarduy 1972 · reconstrucción</text>
+</svg>

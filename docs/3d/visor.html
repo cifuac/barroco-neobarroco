@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Esquema 3D · El barroco y el neobarroco</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Syne:wght@600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="visor.css">
+<script type="importmap">
+{ "imports": {
+  "three": "../vendor/three/three.module.js",
+  "three/addons/": "../vendor/three/addons/"
+} }
+</script>
+</head>
+<body>
+<div id="visor" class="visor">
+  <img id="poster" class="poster" alt="">
+  <div id="lienzo" class="lienzo" aria-label="Esquema 3D interactivo"></div>
+  <header class="cabeza">
+    <a id="volver" class="volver" href="../index.html">← Volver a la clase</a>
+    <h1 id="titulo" class="titulo">Cargando…</h1>
+  </header>
+  <section class="panel" aria-live="polite">
+    <p id="pregunta" class="pregunta" hidden></p>
+    <p id="texto" class="texto"></p>
+    <p id="ref" class="ref"></p>
+    <label id="slider-caja" class="slider" hidden>
+      <span id="slider-etq" class="slider-etq"></span>
+      <span class="slider-fila"><span id="slider-min"></span><input id="slider" type="range" min="0" max="1000" value="0"><span id="slider-max"></span></span>
+    </label>
+  </section>
+  <nav id="estados" class="estados" aria-label="Estados del esquema"></nav>
+  <p class="ayuda">Arrastra para girar · rueda para acercar · ← → cambia de estado</p>
+  <p id="error" class="error" hidden></p>
+</div>
+<script type="module" src="visor.js"></script>
+</body>
+</html>

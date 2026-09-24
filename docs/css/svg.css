@@ -1,0 +1,23 @@
+/* Convenciones para SVG en línea (figuras y esquemas). Colores y fuentes vía variables de tokens.css */
+svg.fig { display: block; width: 100%; height: 100%; overflow: visible; }
+svg.fig text { font-family: var(--f-texto); fill: var(--perla); }
+svg.fig .serif { font-family: var(--f-barroco); font-weight: 600; }
+svg.fig .neo { font-family: var(--f-neo); font-weight: 600; }
+svg.fig .it { font-style: italic; }
+/* rellenos */
+svg.fig .f-perla { fill: var(--perla); } svg.fig .f-nacar { fill: var(--nacar); } svg.fig .f-oro { fill: var(--oro); }
+svg.fig .f-bermellon { fill: var(--bermellon-claro); } svg.fig .f-cian { fill: var(--cian); } svg.fig .f-magenta { fill: var(--magenta-claro); }
+svg.fig .f-azogue { fill: var(--azogue); } svg.fig .f-tierra { fill: var(--tierra); } svg.fig .f-barro { fill: var(--barro); } svg.fig .f-tinta { fill: var(--tinta); }
+svg.fig .f-none { fill: none; }
+/* trazos */
+svg.fig .s-perla { stroke: var(--perla); } svg.fig .s-nacar { stroke: var(--nacar); } svg.fig .s-oro { stroke: var(--oro); }
+svg.fig .s-bermellon { stroke: var(--bermellon-claro); } svg.fig .s-cian { stroke: var(--cian); } svg.fig .s-magenta { stroke: var(--magenta-claro); }
+svg.fig .s-azogue { stroke: var(--azogue); } svg.fig .s-tierra { stroke: var(--tierra); }
+svg.fig .w2 { stroke-width: 2; } svg.fig .w3 { stroke-width: 3; } svg.fig .w4 { stroke-width: 4; } svg.fig .w6 { stroke-width: 6; }
+svg.fig .dash { stroke-dasharray: 14 10; } svg.fig .dash-fino { stroke-dasharray: 6 8; }
+svg.fig .redondo { stroke-linecap: round; stroke-linejoin: round; }
+/* pasos: los elementos con data-from="n" aparecen cuando la diapositiva llega al paso n; data-until="n" desaparecen en el paso n */
+[data-from], [data-until] { transition: opacity .55s ease, transform .55s ease; }
+[data-from]:not(.on) { opacity: 0; }
+[data-until].off { opacity: 0; }
+svg.fig text.halo { paint-order: stroke fill; stroke: var(--tinta); stroke-width: 14px; stroke-linejoin: round; }

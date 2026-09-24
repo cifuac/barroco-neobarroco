@@ -1,0 +1,48 @@
+<svg class="fig" viewBox="0 0 1500 620" role="img" aria-labelledby="barrueco-titulo barrueco-desc">
+<title id="barrueco-titulo">Barrueco: los étimos de «barroco» sobre un arco abierto</title>
+<desc id="barrueco-desc">La palabra «barroco» en el centro. Alrededor, un arco punteado abierto que termina en punta de flecha y «etc.»; sobre él aparecen, uno por paso, seis étimos o definiciones que Sarduy acumula (§1): la perla irregular (barrueco, berrueco), la roca o nódulo, el pintor Barocci, alumno de los Carracci, el silogismo escolástico Baroco, la «bizarrería chocante» de Littré y «lo estrambótico… el mal gusto» de Martínez Amador. Aparte, fuera del arco: «barro», juego fónico (§1), no étimo.</desc>
+
+<g>
+<path class="f-none s-nacar w3" style="stroke-dasharray:14 10" d="M498.1 512.2 A262 262 0 1 1 1001.9 512.2"/>
+<path class="f-nacar" d="M994.7 537.2 L992.2 509.5 L1000.3 517.7 L1011.5 515 Z"/>
+<text class="f-nacar" x="1045.9" y="552.2" font-size="40">etc.</text>
+<text class="serif it f-perla" x="750" y="462" font-size="104" text-anchor="middle">barroco</text>
+</g>
+<g data-from="1">
+<circle class="f-nacar" cx="488" cy="440" r="9"/>
+<text class="f-perla" x="458" y="433.5" font-size="36" text-anchor="end">perla irregular</text>
+<text class="it f-nacar" x="458" y="475.9" font-size="30" text-anchor="end">barrueco, berrueco</text>
+</g>
+<g data-from="2">
+<circle class="f-nacar" cx="532.8" cy="293.5" r="9"/>
+<text class="f-perla" x="504.6" y="236.8" font-size="36" text-anchor="end">roca, nódulo</text>
+<text class="it f-nacar" x="504.6" y="279.3" font-size="30" text-anchor="end">lo nudoso, la piedra</text>
+</g>
+<g data-from="3">
+<circle class="f-nacar" cx="651.9" cy="197.1" r="9"/>
+<text class="f-perla" x="639.1" y="130.2" font-size="36" text-anchor="end">Barocci (1528-1612)</text>
+<text class="f-azogue" x="639.1" y="172.7" font-size="28" text-anchor="end">alumno de los Carracci</text>
+</g>
+<g data-from="4">
+<circle class="f-nacar" cx="848.1" cy="197.1" r="9"/>
+<text class="f-perla" x="860.9" y="130.2" font-size="36" text-anchor="start">Baroco</text>
+<text class="f-azogue" x="860.9" y="172.7" font-size="28" text-anchor="start">silogismo escolástico</text>
+</g>
+<g data-from="5">
+<circle class="f-nacar" cx="967.2" cy="293.5" r="9"/>
+<text class="it f-magenta" x="995.4" y="239.2" font-size="36" text-anchor="start">«bizarrería chocante»</text>
+<text class="neo f-azogue" x="995.4" y="281.6" font-size="28" text-anchor="start">Littré</text>
+</g>
+<g data-from="6">
+<circle class="f-nacar" cx="1012" cy="440" r="9"/>
+<text class="it f-magenta" x="1042" y="413.4" font-size="36" text-anchor="start">«lo estrambótico…</text>
+<text class="it f-magenta" x="1042" y="455.9" font-size="36" text-anchor="start">el mal gusto»</text>
+<text class="neo f-azogue" x="1042" y="498.4" font-size="28" text-anchor="start">Martínez Amador</text>
+</g>
+<g data-from="7">
+<circle class="f-tierra" cx="1379" cy="549" r="9"/>
+<text class="serif it f-nacar" x="1488" y="562" font-size="44" text-anchor="end">barro</text>
+<text class="f-azogue" x="1488" y="602" font-size="28" text-anchor="end">juego fónico (§1), no étimo</text>
+</g>
+<text class="neo f-azogue" x="12" y="604" font-size="28">Sarduy 1972 · §1</text>
+</svg>

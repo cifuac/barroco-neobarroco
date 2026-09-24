@@ -1,0 +1,114 @@
+{
+ "pd-retablo": {
+  "titulo": "Salamanca - Convento de San Esteban, retablo mayor de Churriguera.jpg",
+  "commons": "https://commons.wikimedia.org/wiki/File%3ASalamanca_-_Convento_de_San_Esteban%2C_retablo_mayor_de_Churriguera.jpg",
+  "licencia": "CC0",
+  "autor_archivo": "Zarateman",
+  "archivo": "pd-retablo.jpg"
+ },
+ "pd-loreto": {
+  "titulo": "Madonna di Loreto-Caravaggio (c.1604-6).jpg",
+  "commons": "https://commons.wikimedia.org/wiki/File%3AMadonna_di_Loreto-Caravaggio_%28c.1604-6%29.jpg",
+  "licencia": "Public domain",
+  "autor_archivo": "Caravaggio",
+  "archivo": "pd-loreto.jpg"
+ },
+ "pd-sfumato": {
+  "titulo": "Leonardo da Vinci - Virgin of the Rocks (detail) - WGA12696.jpg",
+  "commons": "https://commons.wikimedia.org/wiki/File%3ALeonardo_da_Vinci_-_Virgin_of_the_Rocks_%28detail%29_-_WGA12696.jpg",
+  "licencia": "Public domain",
+  "autor_archivo": "Leonardo da Vinci",
+  "archivo": "pd-sfumato.jpg"
+ },
+ "pd-kepler": {
+  "titulo": "Kepler Mars retrograde.jpg",
+  "commons": "https://commons.wikimedia.org/wiki/File%3AKepler_Mars_retrograde.jpg",
+  "licencia": "Public domain",
+  "autor_archivo": "",
+  "archivo": "pd-kepler.jpg"
+ },
+ "pd-harvey": {
+  "titulo": "William Harvey ( 1578-1657) Venenbild.jpg",
+  "commons": "https://commons.wikimedia.org/wiki/File%3AWilliam_Harvey_%28_1578-1657%29_Venenbild.jpg",
+  "licencia": "Public domain",
+  "autor_archivo": "Unknown authorUnknown author",
+  "archivo": "pd-harvey.jpg"
+ },
+ "pd-descartes": {
+  "titulo": "Frans Hals - Portret van René Descartes.jpg",
+  "commons": "https://commons.wikimedia.org/wiki/File%3AFrans_Hals_-_Portret_van_Ren%C3%A9_Descartes.jpg",
+  "licencia": "Public domain",
+  "autor_archivo": "After Frans Hals",
+  "archivo": "pd-descartes.jpg"
+ },
+ "pd-gongora": {
+  "titulo": "Luis de Góngora y Argote.jpg",
+  "commons": "https://commons.wikimedia.org/wiki/File%3ALuis_de_G%C3%B3ngora_y_Argote.jpg",
+  "licencia": "Public domain",
+  "autor_archivo": "Diego Velázquez",
+  "archivo": "pd-gongora.jpg"
+ },
+ "pd-sancarlo": {
+  "titulo": "San Carlo alle quattro fontane - cupola.jpg",
+  "commons": "https://commons.wikimedia.org/wiki/File%3ASan_Carlo_alle_quattro_fontane_-_cupola.jpg",
+  "licencia": "CC BY-SA 4.0",
+  "autor_archivo": "Fiat 500e",
+  "archivo": "pd-sancarlo.jpg"
+ },
+ "pd-borromini": {
+  "titulo": "Borromini, Francesco - San Carlo alle quattro fontane - Albertina.jpeg",
+  "commons": "https://commons.wikimedia.org/wiki/File%3ABorromini%2C_Francesco_-_San_Carlo_alle_quattro_fontane_-_Albertina.jpeg",
+  "licencia": "Public domain",
+  "autor_archivo": "Francesco Borromini",
+  "archivo": "pd-borromini.jpg"
+ },
+ "pd-magallanes": {
+  "titulo": "Willem Blaeu - Tabula Magellanica 1635.jpg",
+  "commons": "https://commons.wikimedia.org/wiki/File%3AWillem_Blaeu_-_Tabula_Magellanica_1635.jpg",
+  "licencia": "Public domain",
+  "autor_archivo": "Willem Blaeu",
+  "archivo": "pd-magallanes.jpg"
+ },
+ "pd-holbein": {
+  "titulo": "Hans Holbein the Younger - The Ambassadors - Google Art Project.jpg",
+  "commons": "https://commons.wikimedia.org/wiki/File%3AHans_Holbein_the_Younger_-_The_Ambassadors_-_Google_Art_Project.jpg",
+  "licencia": "Public domain",
+  "autor_archivo": "Hans Holbein the Younger",
+  "archivo": "pd-holbein.jpg"
+ },
+ "pd-bruegel": {
+  "titulo": "Bruegel, Pieter (I) - The Fight Between Carnival and Lent - Kunsthistorisches Museum GG 1016.jpg",
+  "commons": "https://commons.wikimedia.org/wiki/File%3ABruegel%2C_Pieter_%28I%29_-_The_Fight_Between_Carnival_and_Lent_-_Kunsthistorisches_Museum_GG_1016.jpg",
+  "licencia": "Public domain",
+  "autor_archivo": "Pieter Brueghel the Elder",
+  "archivo": "pd-bruegel.jpg"
+ },
+ "pd-arnolfini": {
+  "titulo": "Van Eyck - Arnolfini Portrait.jpg",
+  "commons": "https://commons.wikimedia.org/wiki/File%3AVan_Eyck_-_Arnolfini_Portrait.jpg",
+  "licencia": "Public domain",
+  "autor_archivo": "Jan van Eyck",
+  "archivo": "pd-arnolfini.jpg"
+ },
+ "pd-meninas": {
+  "titulo": "Las Meninas, by Diego Velázquez, from Prado in Google Earth.jpg",
+  "commons": "https://commons.wikimedia.org/wiki/File%3ALas_Meninas%2C_by_Diego_Vel%C3%A1zquez%2C_from_Prado_in_Google_Earth.jpg",
+  "licencia": "Public domain",
+  "autor_archivo": "Diego Velázquez",
+  "archivo": "pd-meninas.jpg"
+ },
+ "pd-alice": {
+  "titulo": "Aliceroom3.jpg",
+  "commons": "https://commons.wikimedia.org/wiki/File%3AAliceroom3.jpg",
+  "licencia": "Public domain",
+  "autor_archivo": "John Tenniel",
+  "archivo": "pd-alice.jpg"
+ },
+ "pd-rueda": {
+  "titulo": "Bookwheel (Roue à livres).jpg",
+  "commons": "https://commons.wikimedia.org/wiki/File%3ABookwheel_%28Roue_%C3%A0_livres%29.jpg",
+  "licencia": "CC0",
+  "autor_archivo": "Mafarkafut",
+  "archivo": "pd-rueda.jpg"
+ }
+}

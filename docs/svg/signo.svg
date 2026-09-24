@@ -1,0 +1,28 @@
+<svg class="fig" viewBox="0 0 1400 600" role="img" aria-labelledby="signo-titulo signo-desc">
+<title id="signo-titulo">El signo y su distancia</title>
+<desc id="signo-desc">A la izquierda, el signo clásico: significante (Snte.) y significado (Sdo.) adheridos por una barra corta. A la derecha, el signo barroco: Snte. y Sdo. separados por una grieta dorada, la «abertura, falla» entre lo nombrante y lo nombrado (Sarduy 1972, §2 a); la distancia exagerada es una hipérbole.</desc>
+
+<g>
+<text class="neo f-azogue" x="340" y="70" font-size="32" text-anchor="middle">clásico</text>
+<text class="f-nacar" x="340" y="282" font-size="64" text-anchor="middle">Snte.</text>
+<line class="s-nacar w4" x1="260" y1="302" x2="420" y2="302"/>
+<text class="f-oro" x="340" y="370" font-size="64" text-anchor="middle">Sdo.</text>
+<text class="it f-nacar" x="340" y="470" font-size="32" text-anchor="middle">adherencia</text>
+<text class="neo f-cian" x="340" y="512" font-size="28" text-anchor="middle">§2 a</text>
+</g>
+<line class="s-azogue w3" opacity=".35" x1="700" y1="40" x2="700" y2="560"/>
+<g data-from="1">
+<text class="neo f-azogue" x="1030" y="70" font-size="32" text-anchor="middle">barroco</text>
+<text class="f-nacar" x="1030" y="182" font-size="64" text-anchor="middle">Snte.</text>
+<path class="f-oro" opacity=".9" d="M880 300 L917 288.3 L918 303.1 L943 285.5 L975.7 287.1 L1016.9 279.9 L1020.5 280.6 L1032.2 293.1 L1033.3 282.4 L1046.5 293.6 L1054.1 283.1 L1065.8 293.5 L1110.9 284.4 L1147.1 302.3 L1180 300 L1180 300 L1147.1 312.3 L1110.9 301.7 L1065.8 316.2 L1054.1 306.5 L1046.5 317.4 L1033.3 306.4 L1032.2 317.1 L1020.5 304.5 L1016.9 303.8 L975.7 308 L943 301.7 L918 314.4 L917 299.3 L880 300 Z"/>
+<path class="f-none s-nacar w3" style="stroke-linejoin:miter" d="M850 300 L880 300 L917 288.3 L918 303.1 L943 285.5 L975.7 287.1 L1016.9 279.9 L1020.5 280.6 L1032.2 293.1 L1033.3 282.4 L1046.5 293.6 L1054.1 283.1 L1065.8 293.5 L1110.9 284.4 L1147.1 302.3 L1180 300 L1210 300"/>
+<path class="f-none s-nacar w3" style="stroke-linejoin:miter" d="M850 300 L880 300 L917 299.3 L918 314.4 L943 301.7 L975.7 308 L1016.9 303.8 L1020.5 304.5 L1032.2 317.1 L1033.3 306.4 L1046.5 317.4 L1054.1 306.5 L1065.8 316.2 L1110.9 301.7 L1147.1 312.3 L1180 300 L1210 300"/>
+<text class="f-oro" x="1030" y="426" font-size="64" text-anchor="middle">Sdo.</text>
+<line class="s-azogue w3" x1="1244" y1="150" x2="1244" y2="420"/>
+<line class="s-azogue w3" x1="1230" y1="150" x2="1258" y2="150"/>
+<line class="s-azogue w3" x1="1230" y1="420" x2="1258" y2="420"/>
+<text class="it f-azogue" x="1268" y="296" font-size="28">distancia</text>
+<text class="serif it f-perla" x="1030" y="506" font-size="52" text-anchor="middle">«Abertura, falla»</text>
+<text class="neo f-cian" x="1030" y="548" font-size="28" text-anchor="middle">§2 a · hipérbole, §2 a</text>
+</g>
+</svg>

@@ -1,0 +1,211 @@
+{
+ "id": "condensacion",
+ "titulo": "Permutación y condensación: la figura 3 con el lector dentro",
+ "fondo": "#14100D",
+ "fps": 30,
+ "duracion": 12.3,
+ "estados": [
+  {
+   "nombre": "Figura 3",
+   "texto": "La figura tal como la dibuja Sarduy: a la izquierda, la <b>permutación</b> (dos cadenas, un solo Significado); a la derecha, la <b>condensación</b> (surge un tercer término).",
+   "ref": "Figura 3 según Sarduy 1972, reconstrucción · §2 c",
+   "cam": "cam_0",
+   "look": "look_0",
+   "fov": 6.5,
+   "t1": 0,
+   "etiquetas": [
+    "lbl_p_perm",
+    "lbl_p_cond",
+    "lbl_p_fon",
+    "lbl_p_f",
+    "lbl_p_snte1",
+    "lbl_p_snte2",
+    "lbl_p_sdo",
+    "lbl_c_snte1",
+    "lbl_c_snte3",
+    "lbl_c_sdo",
+    "lbl_c_snte2"
+   ],
+   "orbita": false,
+   "slider": null,
+   "pregunta": null
+  },
+  {
+   "nombre": "Permutación",
+   "texto": "La y de «vaya» y la ll de «gallo» cambian de lugar: «valla un gayo». Dos significantes, un solo <b>Significado</b>, que no se mueve. (La lectura y/ll es interpretación docente.)",
+   "ref": "Cabrera Infante, «O se me valla un gayo» · §2 c",
+   "cam": "cam_1",
+   "look": "look_1",
+   "fov": 30,
+   "t1": 3.4,
+   "etiquetas": [
+    "lbl_e1_snte1",
+    "lbl_e1_snte2",
+    "lbl_e1_sdo",
+    "lbl_e1_yll"
+   ],
+   "orbita": true,
+   "slider": {
+    "tipo": "tiempo",
+    "t0": 1.45,
+    "t1": 3.35,
+    "etiqueta": "permutación y ⇄ ll",
+    "min_txt": "vaya un gallo",
+    "max_txt": "valla un gayo"
+   },
+   "pregunta": null
+  },
+  {
+   "nombre": "Condensación",
+   "texto": "Letras de AMO y de ESCLAVO viajan y se funden en AMOSCLAVO, sobre el Sdo. Los dos significantes <b>permanecen</b> a los lados: «puesta en escena».",
+   "ref": "«puesta en escena»: §2 c · amosclavo: §2 c",
+   "cam": "cam_2",
+   "look": "look_2",
+   "fov": 30,
+   "t1": 7.9,
+   "etiquetas": [
+    "lbl_e2_snte1",
+    "lbl_e2_snte2",
+    "lbl_e2_snte3",
+    "lbl_e2_sdo"
+   ],
+   "orbita": true,
+   "slider": null,
+   "pregunta": "¿Desaparecen AMO y ESCLAVO cuando surge el tercer término?"
+  },
+  {
+   "nombre": "El lector dentro",
+   "texto": "Desde la izquierda se lee AMO; desde la derecha, ESCLAVO; de frente, el tercer término, AMOSCLAVO. El desplazamiento del espectador es «comparable a la lectura».",
+   "ref": "tercer término: §2 c · el espectador que se desplaza: §2 c",
+   "cam": "cam_3",
+   "look": "look_3",
+   "fov": 5.465802333713535,
+   "t1": 10.3,
+   "etiquetas": [
+    "lbl_e3_snte3",
+    "lbl_e2_sdo",
+    "lbl_e3_nota"
+   ],
+   "orbita": false,
+   "slider": {
+    "tipo": "azimut",
+    "min": -40.0,
+    "max": 40.0,
+    "etiqueta": "posición del lector",
+    "min_txt": "izquierda",
+    "max_txt": "derecha"
+   },
+   "pregunta": null
+  },
+  {
+   "nombre": "Maquinoscrito",
+   "texto": "El mismo mecanismo: MÁQUINA desde la izquierda, MANUSCRITO desde la derecha y, de frente, el tercer término, MAQUINOSCRITO.",
+   "ref": "Cabrera Infante, «maquinoscrito» · §2 c",
+   "cam": "cam_4",
+   "look": "look_4",
+   "fov": 5.465802333713535,
+   "t1": 12.1,
+   "etiquetas": [
+    "lbl_e3_snte3",
+    "lbl_e2_sdo",
+    "lbl_e3_nota"
+   ],
+   "orbita": false,
+   "slider": {
+    "tipo": "azimut",
+    "min": -40.0,
+    "max": 40.0,
+    "etiqueta": "posición del lector",
+    "min_txt": "izquierda",
+    "max_txt": "derecha"
+   },
+   "pregunta": null
+  }
+ ],
+ "etiquetas": {
+  "lbl_p_perm": {
+   "html": "<em>Permutación</em>",
+   "clase": "serif"
+  },
+  "lbl_p_cond": {
+   "html": "<em>Condensación</em>",
+   "clase": "serif"
+  },
+  "lbl_p_fon": {
+   "html": "Fonema<sup>1</sup>… Fonema<sup>2</sup>… etc.",
+   "clase": "grande snte"
+  },
+  "lbl_p_f": {
+   "html": "F<sup>1</sup>… F<sup>2</sup>… etc.",
+   "clase": "grande snte"
+  },
+  "lbl_p_snte1": {
+   "html": "Significante<sup>1</sup>",
+   "clase": "grande snte"
+  },
+  "lbl_p_snte2": {
+   "html": "Snte.<sup>2</sup>",
+   "clase": "grande snte"
+  },
+  "lbl_p_sdo": {
+   "html": "Significado",
+   "clase": "grande sdo"
+  },
+  "lbl_c_snte1": {
+   "html": "Snte.<sup>1</sup>",
+   "clase": "grande snte"
+  },
+  "lbl_c_snte3": {
+   "html": "Snte.<sup>3</sup>",
+   "clase": "grande snte"
+  },
+  "lbl_c_sdo": {
+   "html": "Sdo.",
+   "clase": "grande sdo"
+  },
+  "lbl_c_snte2": {
+   "html": "Snte.<sup>2</sup>",
+   "clase": "grande snte"
+  },
+  "lbl_e1_snte1": {
+   "html": "Significante<sup>1</sup>",
+   "clase": "snte"
+  },
+  "lbl_e1_snte2": {
+   "html": "Snte.<sup>2</sup>",
+   "clase": "snte"
+  },
+  "lbl_e1_sdo": {
+   "html": "Significado",
+   "clase": "sdo"
+  },
+  "lbl_e1_yll": {
+   "html": "y ⇄ ll",
+   "clase": "trayecto"
+  },
+  "lbl_e2_snte1": {
+   "html": "Snte.<sup>1</sup>",
+   "clase": "snte"
+  },
+  "lbl_e2_snte2": {
+   "html": "Snte.<sup>2</sup>",
+   "clase": "snte"
+  },
+  "lbl_e2_snte3": {
+   "html": "Snte.<sup>3</sup>",
+   "clase": "snte"
+  },
+  "lbl_e2_sdo": {
+   "html": "Sdo.",
+   "clase": "sdo"
+  },
+  "lbl_e3_snte3": {
+   "html": "Snte.<sup>3</sup>",
+   "clase": "snte"
+  },
+  "lbl_e3_nota": {
+   "html": "dispositivo didáctico genérico; no reproduce obras de Cruz-Diez ni de Le Parc",
+   "clase": "nota"
+  }
+ }
+}

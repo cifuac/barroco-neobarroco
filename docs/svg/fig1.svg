@@ -1,0 +1,29 @@
+<svg class="fig" viewBox="0 0 1200 400" role="img" aria-labelledby="fig1-titulo fig1-desc">
+<title id="fig1-titulo">Figura 1 de Sarduy (1972): la sustitución</title>
+<desc id="fig1-desc">A la izquierda, una fracción: el significante (Snte.) tachado sobre la barra y el significado (Sdo.) debajo. Desde la barra sale hacia la derecha una flecha punteada larga que termina en «Snte. 1», solo y lejos, sin barra y sin significado debajo. Paso 1: bajo Sdo., «virilidad»; bajo Snte. 1, «el aguijón del leptosomático macrogenitoma» (Lezama, Paradiso, §2 a). Paso 2, añadido didáctico: un halo del contexto (§2 a) envuelve a distancia los dos términos.</desc>
+
+<defs><radialGradient id="fig1-halo" cx="50%" cy="50%" r="50%"><stop offset="0" style="stop-color:var(--azogue);stop-opacity:.20"/><stop offset=".62" style="stop-color:var(--azogue);stop-opacity:.09"/><stop offset="1" style="stop-color:var(--azogue);stop-opacity:0"/></radialGradient></defs>
+<g data-from="2">
+<ellipse cx="592" cy="214" rx="612" ry="178" fill="url(#fig1-halo)"/>
+<path class="f-none s-azogue w3 redondo" opacity=".75" d="M64 84 Q14 214 64 344"/>
+<path class="f-none s-azogue w3 redondo" opacity=".75" d="M1150 84 Q1198 214 1150 344"/>
+<text class="neo f-azogue" x="600" y="44" font-size="32" text-anchor="middle">contexto <tspan class="f-cian" font-size="28">· §2 a</tspan></text>
+<text class="neo f-azogue" x="1190" y="386" font-size="28" text-anchor="end">añadido didáctico</text>
+</g>
+<g>
+<text class="f-nacar" x="175" y="150" font-size="56" text-anchor="middle" opacity=".62">Snte.</text>
+<line class="s-bermellon w4 redondo" x1="107" y1="144" x2="243" y2="123"/>
+<line class="s-nacar w3" x1="103" y1="170" x2="247" y2="170"/>
+<text class="f-oro" x="175" y="226" font-size="56" text-anchor="middle">Sdo.</text>
+<line class="s-nacar w3" style="stroke-dasharray:24 16" x1="290" y1="170" x2="826" y2="170"/>
+<path class="f-nacar" d="M852 170 L822 181 L828.6 170 L822 159 Z"/>
+<text class="f-nacar" x="874" y="190" font-size="56">Snte.<tspan baseline-shift="super" font-size="60%">1</tspan></text>
+</g>
+<g data-from="1">
+<text class="it f-oro" x="175" y="288" font-size="36" text-anchor="middle">«virilidad»</text>
+<text class="it f-magenta" x="926" y="256" font-size="32" text-anchor="middle">«el aguijón del</text>
+<text class="it f-magenta" x="926" y="294" font-size="32" text-anchor="middle">leptosomático macrogenitoma»</text>
+<text class="neo f-cian" x="926" y="336" font-size="28" text-anchor="middle">Lezama, <tspan class="it">Paradiso</tspan> · §2 a</text>
+</g>
+<text class="neo f-azogue" x="20" y="386" font-size="28">Figura 1 según Sarduy 1972 · reconstrucción</text>
+</svg>
