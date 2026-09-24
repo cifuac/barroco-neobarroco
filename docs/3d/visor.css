@@ -28,8 +28,7 @@ body { font-family: var(--f-texto); -webkit-font-smoothing: antialiased; }
 /* cabeza */
 .cabeza { position: absolute; left: 3vw; top: 2.4vh; right: 3vw; display: flex; align-items: baseline; gap: 2vw; pointer-events: none; }
 .titulo { margin: 0; font-family: var(--f-titulo); font-weight: 400; font-size: clamp(18px, 2.4vw, 50px); letter-spacing: .005em; color: var(--perla); }
-.volver { pointer-events: auto; font-family: var(--f-neo); font-weight: 600; font-size: clamp(11px, 1vw, 20px); color: var(--cian); text-decoration: none; border: 1px solid rgba(var(--acento-rgb),.45); padding: .35em .7em; border-radius: 99px; white-space: nowrap; }
-.volver:hover { background: rgba(var(--acento-rgb),.12); }
+.volver { pointer-events: auto; --t: clamp(40px, 3vw, 60px); flex: none; }
 
 /* panel de texto */
 .panel { position: absolute; right: 3vw; bottom: 11vh; width: min(34vw, 680px); padding: 1.1vw 1.3vw; border-left: 3px solid var(--oro);
@@ -51,12 +50,16 @@ body { font-family: var(--f-texto); -webkit-font-smoothing: antialiased; }
 .estados button .n { color: var(--oro); margin-right: .45em; }
 .estados button[aria-current="step"] { color: var(--tinta); background: var(--perla); border-color: var(--perla); }
 .estados button[aria-current="step"] .n { color: var(--oro-viejo); }
-.estados button:focus-visible, .volver:focus-visible { outline: 3px solid var(--cian); outline-offset: 2px; }
-.ayuda { position: absolute; right: 3vw; top: 2.8vh; margin: 0; font-size: clamp(10px, .85vw, 17px); color: rgba(var(--linea-rgb),.55); }
+.estados button:focus-visible { outline: 3px solid var(--cian); outline-offset: 2px; }
+.pantalla-v { position: absolute; right: 3vw; top: 2.4vh; --t: clamp(40px, 3vw, 60px); }
+.ayuda { position: absolute; right: calc(3vw + clamp(40px, 3vw, 60px) + 18px); top: 3.6vh; margin: 0; font-size: clamp(10px, .85vw, 17px); color: rgba(var(--linea-rgb),.55); }
 .error { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); background: var(--barro); padding: 1em 1.4em; border-left: 3px solid var(--bermellon); }
 
 /* modo incrustado en la diapositiva: la diapositiva pone su propio título */
 .embed .cabeza, .embed .ayuda { display: none; }
+.embed .pantalla-v { display: none; }
+.embed.ampliado .pantalla-v { display: inline-grid; }
+.embed.ampliado .ayuda { display: block; }
 .embed .panel { bottom: 12%; right: 2.5%; width: 40%; }
 .embed .estados { left: 2.5%; bottom: 3.5%; }
 .embed.sin-panel .panel { display: none; }

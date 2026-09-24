@@ -8,9 +8,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/tokens.css?v=4">
-<link rel="stylesheet" href="css/svg.css?v=4">
-<link rel="stylesheet" href="css/deck.css?v=4">
+<link rel="stylesheet" href="css/tokens.css?v=5">
+<link rel="stylesheet" href="css/svg.css?v=5">
+<link rel="stylesheet" href="css/deck.css?v=5">
+<link rel="stylesheet" href="css/botones.css?v=5">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' fill='%2314100D'/><ellipse cx='32' cy='32' rx='24' ry='15' fill='none' stroke='%23D4A62A' stroke-width='4' stroke-dasharray='8 6'/><circle cx='22' cy='32' r='5' fill='%23D4A62A'/></svg>">
 </head>
 <body>
@@ -219,7 +220,7 @@
 
 <!-- =============================================================== 12 MINI-TALLER -->
 <section class="slide claro" data-titulo="Mini-taller: perífrasis al cuadrado" data-modulo="artificio">
-  <div class="temporizador" data-seg="180"><div class="tiempo">3:00</div><div class="rotulo">clic o T para iniciar</div></div>
+  <div class="temporizador" data-seg="180"><div class="tiempo">3:00</div><button type="button" class="btn-icono chico" data-icono="play" data-tip="Iniciar o pausar (T)" aria-label="Iniciar o pausar el temporizador"></button></div>
   <p class="kicker">Mini-taller · 3 minutos</p>
   <h2>Perífrasis <em style="color:var(--oro-viejo)">al cuadrado</em></h2>
   <ol class="pasos-taller mt-m" style="font-size:44px;max-width:1450px">
@@ -251,14 +252,14 @@
     <div class="tarjeta s" data-from="3"><h3>Portocarrero</h3><p>En <i>Flora</i>, en lugar del «sombrero», una abigarrada cornucopia, un andamiaje floral.</p></div>
     <div class="tarjeta s" data-from="4"><h3>Ricardo Porro</h3><p>El desagüe no es gárgola, sino flauta, fémur o falo; una fuente con forma de <b class="marca-oro">papaya</b>.</p></div>
   </div>
-  <a class="abrir3d" href="3d/visor.html?e=sustitucion&amp;volver=%23%2F15">Ver en 3D ↗</a>
+  <a class="btn-icono con-texto abrir3d" href="#/15" data-icono="cubo" data-tip="Ver la figura 1 en 3D" aria-label="Ver la figura 1 en 3D"><span>3D</span></a>
 </section>
 
 <!-- =============================================================== 15 SUSTITUCIÓN 3D -->
 <section class="slide con3d sin-pie oscura" data-titulo="Sustitución en 3D" data-modulo="artificio">
   <div class="embed3d" data-escena="sustitucion" data-estados="0,1,2,3,5,6,7" data-titulo="Esquema 3D de la sustitución" style="background-image:url(3d/posters/sustitucion.webp)"></div>
   <div class="cabecera3d"><p class="kicker cian">Esquema 3D · Blender</p><h2>La figura 1 <em>en profundidad</em></h2></div>
-  <a class="abrir3d" href="3d/visor.html?e=sustitucion&amp;volver=%23%2F15">Pantalla completa ↗</a>
+  <button type="button" class="btn-icono abrir3d" data-accion="pantalla-3d" data-href="3d/visor.html?e=sustitucion&amp;volver=%23%2F15" data-icono="expandir" data-tip="Esquema 3D a pantalla completa (E)" aria-label="Ver el esquema 3D a pantalla completa"></button>
 </section>
 
 <!-- =============================================================== 16 PROLIFERACIÓN -->
@@ -285,7 +286,7 @@
 <section class="slide con3d sin-pie oscura" data-titulo="Proliferación en 3D" data-modulo="artificio">
   <div class="embed3d" data-escena="proliferacion" data-estados="0,1,2,3,4,5" data-titulo="Esquema 3D de la proliferación" style="background-image:url(3d/posters/proliferacion.webp)"></div>
   <div class="cabecera3d"><p class="kicker cian">Esquema 3D · Blender</p><h2>Del arco abierto <em>a la elipse</em></h2></div>
-  <a class="abrir3d" href="3d/visor.html?e=proliferacion&amp;volver=%23%2F17">Pantalla completa ↗</a>
+  <button type="button" class="btn-icono abrir3d" data-accion="pantalla-3d" data-href="3d/visor.html?e=proliferacion&amp;volver=%23%2F17" data-icono="expandir" data-tip="Esquema 3D a pantalla completa (E)" aria-label="Ver el esquema 3D a pantalla completa"></button>
 </section>
 
 <!-- =============================================================== 18 CONDENSACIÓN -->
@@ -303,7 +304,7 @@
 <section class="slide con3d sin-pie oscura" data-titulo="Condensación en 3D: el lector dentro" data-modulo="artificio">
   <div class="embed3d" data-escena="condensacion" data-estados="0,1,2,3,4" data-titulo="Esquema 3D de la condensación" style="background-image:url(3d/posters/condensacion.webp)"></div>
   <div class="cabecera3d"><p class="kicker cian">Esquema 3D · Blender</p><h2>La figura 3 <em>con el lector dentro</em></h2></div>
-  <a class="abrir3d" href="3d/visor.html?e=condensacion&amp;volver=%23%2F19">Pantalla completa ↗</a>
+  <button type="button" class="btn-icono abrir3d" data-accion="pantalla-3d" data-href="3d/visor.html?e=condensacion&amp;volver=%23%2F19" data-icono="expandir" data-tip="Esquema 3D a pantalla completa (E)" aria-label="Ver el esquema 3D a pantalla completa"></button>
 </section>
 
 <!-- =============================================================== 20 ANAMORFOSIS -->
@@ -340,7 +341,7 @@
 
 <!-- =============================================================== 22 BANCO DE PRUEBAS -->
 <section class="slide claro" data-titulo="Taller: banco de pruebas" data-modulo="artificio">
-  <div class="temporizador" data-seg="480"><div class="tiempo">8:00</div><div class="rotulo">clic o T para iniciar</div></div>
+  <div class="temporizador" data-seg="480"><div class="tiempo">8:00</div><button type="button" class="btn-icono chico" data-icono="play" data-tip="Iniciar o pausar (T)" aria-label="Iniciar o pausar el temporizador"></button></div>
   <p class="kicker">Taller · en grupos de 4</p>
   <h2>Banco de pruebas</h2>
   <ol class="pasos-taller" style="font-size:46px;max-width:1500px">
@@ -388,7 +389,7 @@
 
 <!-- =============================================================== 25 LOPE / GÓNGORA -->
 <section class="slide claro" data-titulo="Ensíllenme el asno rucio" data-modulo="parodia">
-  <div class="temporizador" data-seg="240"><div class="tiempo">4:00</div><div class="rotulo">clic o T para iniciar</div></div>
+  <div class="temporizador" data-seg="240"><div class="tiempo">4:00</div><button type="button" class="btn-icono chico" data-icono="play" data-tip="Iniciar o pausar (T)" aria-label="Iniciar o pausar el temporizador"></button></div>
   <p class="kicker">Actividad · leer en filigrana</p>
   <h2>¿Qué conserva? ¿Qué degrada?</h2>
   <div class="dos mt-m" style="height:auto">
@@ -425,7 +426,7 @@
 <section class="slide con3d sin-pie oscura" data-titulo="Leer en filigrana en 3D" data-modulo="parodia">
   <div class="embed3d" data-escena="estratos" data-estados="0,1,2,3,4,5" data-titulo="Esquema 3D de los estratos del texto" style="background-image:url(3d/posters/estratos.webp)"></div>
   <div class="cabecera3d"><p class="kicker magenta">Esquema 3D · Blender</p><h2>Cita, reminiscencia <em>y gramas</em></h2></div>
-  <a class="abrir3d" href="3d/visor.html?e=estratos&amp;volver=%23%2F27">Pantalla completa ↗</a>
+  <button type="button" class="btn-icono abrir3d" data-accion="pantalla-3d" data-href="3d/visor.html?e=estratos&amp;volver=%23%2F27" data-icono="expandir" data-tip="Esquema 3D a pantalla completa (E)" aria-label="Ver el esquema 3D a pantalla completa"></button>
 </section>
 
 <!-- =============================================================== 28 GRAMAS -->
@@ -467,7 +468,7 @@
         <img data-src="img/pd-retablo.webp" alt="Retablo mayor de San Esteban en Salamanca">
         <div class="campo"></div>
       </figure>
-      <p class="mt-s"><button class="boton-angel" type="button">¡Otro ángel más!</button><span class="contador">suplementos: <span class="cuenta">0</span></span></p>
+      <p class="mt-s"><button class="boton-angel" type="button" data-icono="mas">¡Otro ángel más!</button><span class="contador">suplementos: <span class="cuenta">0</span></span></p>
     </div>
   </div>
 </section>
@@ -496,7 +497,7 @@
 <section class="slide con3d sin-pie oscura" data-titulo="Espejo en 3D: tres reflejos" data-modulo="salida">
   <div class="embed3d" data-escena="espejo" data-estados="0,1,2,3,4" data-titulo="Esquema 3D del espejo" style="background-image:url(3d/posters/espejo.webp)"></div>
   <div class="cabecera3d"><p class="kicker azogue">Esquema 3D · Blender</p><h2>Del reflejo armónico <em>al pulverizado</em></h2></div>
-  <a class="abrir3d" href="3d/visor.html?e=espejo&amp;volver=%23%2F31">Pantalla completa ↗</a>
+  <button type="button" class="btn-icono abrir3d" data-accion="pantalla-3d" data-href="3d/visor.html?e=espejo&amp;volver=%23%2F31" data-icono="expandir" data-tip="Esquema 3D a pantalla completa (E)" aria-label="Ver el esquema 3D a pantalla completa"></button>
 </section>
 
 <!-- =============================================================== 32 NEOBARROCO -->
@@ -556,7 +557,7 @@
 
 <!-- =============================================================== 36 TICKET -->
 <section class="slide claro" data-titulo="Ticket de salida" data-modulo="salida">
-  <div class="temporizador" data-seg="300"><div class="tiempo">5:00</div><div class="rotulo">clic o T para iniciar</div></div>
+  <div class="temporizador" data-seg="300"><div class="tiempo">5:00</div><button type="button" class="btn-icono chico" data-icono="play" data-tip="Iniciar o pausar (T)" aria-label="Iniciar o pausar el temporizador"></button></div>
   <p class="kicker">Ticket de salida · individual</p>
   <h2>Antes de salir</h2>
   <ol class="pasos-taller" style="font-size:42px;max-width:1500px">
@@ -613,18 +614,19 @@
 </div>
 <div id="progreso"></div>
 <div class="controles">
-  <button type="button" id="btn-indice" title="Índice (O)">Índice</button>
-  <button type="button" id="btn-pantalla" title="Pantalla completa (F)">Pantalla completa</button>
+  <button type="button" id="btn-indice" class="btn-icono" data-icono="indice" data-tip="Índice (O)" aria-label="Índice"></button>
+  <button type="button" id="btn-pantalla" class="btn-icono" data-icono="expandir" data-tip="Pantalla completa (F)" aria-label="Pantalla completa"></button>
 </div>
 <div id="indice" hidden>
   <h2>Índice</h2>
   <ol></ol>
-  <button type="button" class="cerrar">Cerrar (Esc)</button>
-  <p class="ayuda-teclas">→ / espacio: avanzar · ← : retroceder · número + Intro: ir a · F: pantalla completa · B: negro · T: temporizador · E: 3D a pantalla completa</p>
-  <button type="button" id="btn-preparar">Preparar clase sin conexión</button>
+  <button type="button" class="cerrar btn-icono" data-icono="cerrar" data-tip="Cerrar (Esc)" aria-label="Cerrar el índice"></button>
+  <p class="ayuda-teclas"><kbd>→</kbd> avanzar <kbd>←</kbd> retroceder <kbd>F</kbd> pantalla completa <kbd>E</kbd> 3D ampliado <kbd>T</kbd> temporizador <kbd>B</kbd> pantalla negra <kbd>N°</kbd>+<kbd>Intro</kbd> ir a</p>
+  <button type="button" id="btn-preparar" data-icono="descargar"><span class="txt">Preparar clase sin conexión</span></button>
 </div>
 <p id="vivo" aria-live="polite"></p>
 </div>
-<script src="js/deck.js?v=4"></script>
+<script src="js/iconos.js?v=5"></script>
+<script src="js/deck.js?v=5"></script>
 </body>
 </html>

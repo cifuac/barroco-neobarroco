@@ -1,0 +1,48 @@
+/* Botones con ícono (presentación y visor 3D). Se adaptan al tema por variables:
+   en papel, tinta oscura; en vitrinas oscuras (.oscura), perla. */
+.btn-icono {
+  --t: 60px;
+  position: relative;
+  width: var(--t); height: var(--t);
+  display: inline-grid; place-items: center; grid-auto-flow: column; gap: 10px;
+  padding: 0; margin: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(var(--linea-rgb), .34);
+  background: rgba(var(--fondo-rgb), .66);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  color: var(--perla);
+  cursor: pointer; text-decoration: none;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
+  transition: background .2s ease, color .2s ease, border-color .2s ease, transform .15s ease, box-shadow .2s ease;
+}
+.btn-icono svg { width: 46%; height: 46%; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.btn-icono:hover { background: var(--cian); border-color: var(--cian); color: var(--tinta); box-shadow: 0 6px 18px rgba(var(--acento-rgb), .35); }
+.btn-icono:active { transform: scale(.94); }
+.btn-icono:focus-visible { outline: 3px solid var(--cian); outline-offset: 3px; }
+.btn-icono.chico { --t: 46px; }
+.btn-icono.grande { --t: 72px; }
+/* variante con texto breve (p. ej. «3D») */
+.btn-icono.con-texto { width: auto; border-radius: 99px; padding: 0 24px 0 18px; font-family: var(--f-neo); font-weight: 700; font-size: 23px; letter-spacing: .1em; }
+.btn-icono.con-texto svg { width: 30px; height: 30px; }
+
+/* descripción al pasar el mouse (y con el foco del teclado) */
+[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute; top: calc(100% + 12px); right: 0;
+  white-space: nowrap;
+  font-family: var(--f-neo); font-weight: 700; font-size: 18px; line-height: 1; letter-spacing: .03em;
+  color: var(--tinta); background: var(--perla);
+  padding: 9px 13px; border-radius: 6px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .18);
+  opacity: 0; transform: translateY(-4px); pointer-events: none;
+  transition: opacity .18s ease, transform .18s ease;
+  z-index: 20;
+}
+[data-tip]:hover::after, [data-tip]:focus-visible::after { opacity: 1; transform: none; }
+.tip-izq::after { right: auto; left: 0; }
+.tip-arriba::after { top: auto; bottom: calc(100% + 12px); }
+
+/* posiciones en la presentación */
+.btn-icono.abrir3d { position: absolute; right: 120px; top: 96px; z-index: 6; }
+.temporizador .btn-icono { margin-top: 10px; }
+.temporizador.corriendo .btn-icono { background: var(--cian); border-color: var(--cian); color: var(--tinta); }

@@ -237,6 +237,26 @@ addEventListener('message', (ev) => {
   if (d.type === 'estado' && typeof d.n === 'number') ir(d.n);
   if (d.type === 'liberar' && renderer) { renderer.setAnimationLoop(null); renderer.dispose(); try { renderer.forceContextLoss(); } catch (e) {} }
 });
+// pantalla completa: en la página del visor alterna la página; incrustado, alterna la ampliación del iframe
+const btnPV = $('btn-pantalla-v');
+function docPadre() { try { return window.parent !== window ? window.parent.document : null; } catch (e) { return null; } }
+function ampliadoEnPadre() { const d = docPadre(); return !!(d && d.fullscreenElement && d.fullscreenElement === window.frameElement); }
+function actualizarBtnPV() {
+  const en = EMBED ? ampliadoEnPadre() : !!document.fullscreenElement;
+  root.classList.toggle('ampliado', EMBED && en);
+  if (window.cambiarIcono) cambiarIcono(btnPV, en ? 'contraer' : 'expandir');
+  btnPV.dataset.tip = en ? 'Salir de pantalla completa (Esc)' : 'Pantalla completa (F)';
+  btnPV.setAttribute('aria-label', en ? 'Salir de pantalla completa' : 'Pantalla completa');
+}
+btnPV.addEventListener('click', () => {
+  if (EMBED) { const d = docPadre(); if (d && ampliadoEnPadre()) d.exitFullscreen(); else if (window.frameElement && window.frameElement.requestFullscreen) window.frameElement.requestFullscreen(); }
+  else if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+  else document.exitFullscreen();
+});
+document.addEventListener('fullscreenchange', actualizarBtnPV);
+{ const d = docPadre(); if (d) d.addEventListener('fullscreenchange', actualizarBtnPV); }
+if (!EMBED) addEventListener('keydown', (ev) => { if ((ev.key === 'f' || ev.key === 'F') && ev.target.tagName !== 'INPUT') btnPV.click(); });
+
 document.addEventListener('visibilitychange', () => { if (!renderer) return; renderer.setAnimationLoop(document.hidden ? null : bucle); });
 
 init().catch((err) => {

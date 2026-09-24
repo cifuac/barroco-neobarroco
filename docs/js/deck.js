@@ -103,9 +103,18 @@
   function abrir3D() {
     const e3 = slides[idx].querySelector('.embed3d');
     if (!e3) return;
+    const f = e3._iframe;
+    if (document.fullscreenElement && document.fullscreenElement === f) { document.exitFullscreen(); return; }
+    if (f && f.requestFullscreen) {
+      f.requestFullscreen().then(() => { try { f.contentWindow.focus(); } catch (e) {} })
+        .catch(() => irAlVisor(e3));
+    } else irAlVisor(e3);
+  }
+  function irAlVisor(e3) {
     const n = e3._estado || 0;
     location.href = `3d/visor.html?e=${e3.dataset.escena}&s=${n}&volver=${encodeURIComponent('#/' + (idx + 1))}`;
   }
+  document.querySelectorAll('[data-accion="pantalla-3d"]').forEach((b) => b.addEventListener('click', (ev) => { ev.stopPropagation(); abrir3D(); }));
 
   // ---------- navegación
   function ir(i, p = 0, desdeHash = false) {
@@ -149,7 +158,8 @@
   }
 
   // ---------- temporizadores de actividad
-  function pararTemporizadores(sl) { sl.querySelectorAll('.temporizador').forEach((t) => { clearInterval(t._int); t._int = null; t.classList.remove('corriendo'); }); }
+  function iconoTemp(t) { const b = t.querySelector('.btn-icono'); if (b && window.cambiarIcono) cambiarIcono(b, t._int ? 'pausa' : 'play'); }
+  function pararTemporizadores(sl) { sl.querySelectorAll('.temporizador').forEach((t) => { clearInterval(t._int); t._int = null; t.classList.remove('corriendo'); iconoTemp(t); }); }
   function fmt(s) { const m = Math.floor(s / 60), r = s % 60; return `${m}:${String(r).padStart(2, '0')}`; }
   document.querySelectorAll('.temporizador').forEach((t) => {
     t._rest = parseInt(t.dataset.seg, 10);
@@ -158,13 +168,14 @@
   });
   function alternarTemporizador(t) {
     if (!t) return;
-    if (t._int) { clearInterval(t._int); t._int = null; t.classList.remove('corriendo'); return; }
+    if (t._int) { clearInterval(t._int); t._int = null; t.classList.remove('corriendo'); iconoTemp(t); return; }
     if (t._rest <= 0) { t._rest = parseInt(t.dataset.seg, 10); t.classList.remove('fin'); }
     t.classList.add('corriendo');
     t._int = setInterval(() => {
       t._rest--; t.querySelector('.tiempo').textContent = fmt(Math.max(0, t._rest));
-      if (t._rest <= 0) { clearInterval(t._int); t._int = null; t.classList.remove('corriendo'); t.classList.add('fin'); }
+      if (t._rest <= 0) { clearInterval(t._int); t._int = null; t.classList.remove('corriendo'); t.classList.add('fin'); iconoTemp(t); }
     }, 1000);
+    iconoTemp(t);
   }
 
   // ---------- índice (O)
@@ -214,6 +225,14 @@
     if (!document.fullscreenElement) document.documentElement.requestFullscreen && document.documentElement.requestFullscreen().catch(() => {});
     else document.exitFullscreen && document.exitFullscreen();
   }
+  document.addEventListener('fullscreenchange', () => {
+    const b = document.getElementById('btn-pantalla');
+    const en = document.fullscreenElement === document.documentElement;
+    window.cambiarIcono && cambiarIcono(b, en ? 'contraer' : 'expandir');
+    b.dataset.tip = en ? 'Salir de pantalla completa (F)' : 'Pantalla completa (F)';
+    b.setAttribute('aria-label', en ? 'Salir de pantalla completa' : 'Pantalla completa');
+    if (!document.fullscreenElement) { try { window.focus(); } catch (e) {} }
+  });
   document.getElementById('btn-pantalla').addEventListener('click', pantallaCompleta);
 
   // ---------- clic y gestos: clic en el tercio derecho avanza, izquierdo retrocede (fuera de controles)
@@ -249,18 +268,19 @@
   const btnPrep = document.getElementById('btn-preparar');
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
     navigator.serviceWorker.register('sw.js').catch(() => {});
+    const txtPrep = btnPrep.querySelector('.txt');
     btnPrep.addEventListener('click', async () => {
-      btnPrep.textContent = 'Guardando…'; btnPrep.disabled = true;
+      txtPrep.textContent = 'Guardando…'; btnPrep.disabled = true;
       try {
         const reg = await navigator.serviceWorker.ready;
         const canal = new MessageChannel();
         canal.port1.onmessage = (ev) => {
           const d = ev.data || {};
-          if (d.progreso) btnPrep.textContent = `Guardando… ${d.progreso}`;
-          if (d.listo) { btnPrep.textContent = d.errores ? `Listo (con ${d.errores} fallos)` : 'Listo para clase sin conexión ✓'; btnPrep.disabled = false; }
+          if (d.progreso) txtPrep.textContent = `Guardando… ${d.progreso}`;
+          if (d.listo) { txtPrep.textContent = d.errores ? `Listo (con ${d.errores} fallos)` : 'Listo para clase sin conexión'; btnPrep.disabled = false; if (!d.errores && window.cambiarIcono) cambiarIcono(btnPrep, 'listo'); }
         };
         reg.active.postMessage({ type: 'precargar' }, [canal.port2]);
-      } catch (e) { btnPrep.textContent = 'No se pudo preparar'; btnPrep.disabled = false; }
+      } catch (e) { txtPrep.textContent = 'No se pudo preparar'; btnPrep.disabled = false; }
     });
   } else { btnPrep.hidden = true; }
 

@@ -69,25 +69,26 @@ body.sin-pie #progreso { opacity: .5; }
 body.pie-claro .pie { color: #7a6a5c; } body.pie-claro .pie .num, body.pie-claro .pie .num b { color: var(--tinta-2); } body.pie-claro .pie .modulos li.actual { color: var(--oro-viejo); } body.pie-claro .pie .modulos li.actual::after { background: var(--oro-viejo); }
 
 /* controles discretos (arriba a la derecha) */
-.controles { position: absolute; right: 30px; top: 26px; z-index: 70; display: flex; gap: 10px; opacity: .0; transition: opacity .3s; }
+.controles { position: absolute; right: 30px; top: 22px; z-index: 70; display: flex; gap: 12px; opacity: 0; transition: opacity .3s; }
 #stage:hover .controles { opacity: .85; }
-.controles button { font-family: var(--f-neo); font-weight: 600; font-size: 18px; color: var(--nacar); background: rgba(var(--fondo-rgb),.7); border: 1px solid rgba(var(--linea-rgb),.25); border-radius: 99px; padding: 8px 16px; cursor: pointer; }
-.controles button:hover { color: var(--perla); border-color: var(--cian); }
+.controles .btn-icono { --t: 54px; }
 #vivo { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 
 /* índice */
-#indice { position: absolute; inset: 0; z-index: 150; background: rgba(var(--fondo-rgb),.96); padding: 70px 120px; }
+#indice { position: absolute; inset: 0; z-index: 150; background: var(--tinta); padding: 70px 120px; }
 #indice[hidden] { display: none; }
 #indice h2 { font-size: 56px; margin-bottom: 26px; }
 #indice { color: var(--perla); }
 #indice ol { list-style: none; margin: 0; padding: 0; columns: 3; column-gap: 50px; }
 #indice li { break-inside: avoid; }
-#indice button { display: block; width: 100%; text-align: left; font-family: var(--f-texto); font-size: 23px; color: var(--nacar); background: none; border: 0; padding: 7px 0; cursor: pointer; border-bottom: 1px solid rgba(var(--linea-rgb),.1); }
-#indice button:hover, #indice button:focus-visible { color: var(--perla); outline: none; }
-#indice button .n { font-family: var(--f-neo); font-weight: 700; color: var(--oro); margin-right: 14px; }
-#indice .cerrar { position: absolute; right: 120px; top: 74px; font-family: var(--f-neo); font-size: 22px; color: var(--cian); background: none; border: 1px solid rgba(var(--acento-rgb),.5); border-radius: 99px; padding: 8px 18px; cursor: pointer; }
+#indice ol button { display: block; width: 100%; text-align: left; font-family: var(--f-texto); font-size: 23px; color: var(--nacar); background: none; border: 0; padding: 7px 0; cursor: pointer; border-bottom: 1px solid rgba(var(--linea-rgb),.1); }
+#indice ol button:hover, #indice ol button:focus-visible { color: var(--perla); outline: none; }
+#indice ol button .n { font-family: var(--f-neo); font-weight: 700; color: var(--oro); margin-right: 14px; }
+#indice .cerrar { position: absolute; right: 120px; top: 70px; }
 #indice .ayuda-teclas { position: absolute; left: 120px; bottom: 56px; font-family: var(--f-neo); font-size: 20px; color: var(--azogue); letter-spacing: .04em; }
-#btn-preparar { position: absolute; right: 120px; bottom: 50px; font-family: var(--f-neo); font-weight: 600; font-size: 22px; color: var(--tinta); background: var(--oro); border: 0; border-radius: 99px; padding: 12px 24px; cursor: pointer; }
+#btn-preparar { position: absolute; right: 120px; bottom: 50px; display: inline-flex; align-items: center; gap: 12px; font-family: var(--f-neo); font-weight: 700; font-size: 22px; color: var(--tinta); background: var(--oro); border: 0; border-radius: 99px; padding: 14px 26px 14px 20px; cursor: pointer; }
+#btn-preparar svg, .boton-angel svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+#btn-preparar:hover { filter: brightness(1.08); }
 
 /* ============================================================ plantillas */
 /* retícula en dos columnas */
@@ -143,8 +144,6 @@ body.pie-claro .pie { color: #7a6a5c; } body.pie-claro .pie .num, body.pie-claro
 .con3d::after { content: ""; position: absolute; left: 120px; right: 120px; top: 175px; height: 1px; background: linear-gradient(90deg, rgba(212,166,42,.5), rgba(212,166,42,0) 70%); z-index: 4; }
 .embed3d { position: absolute; left: 0; right: 0; top: 176px; bottom: 0; background: var(--tinta) center/cover no-repeat; }
 .embed3d iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-.abrir3d { position: absolute; right: 120px; top: 80px; z-index: 6; font-family: var(--f-neo); font-weight: 600; font-size: 22px; color: var(--cian); border: 1px solid rgba(var(--acento-rgb),.55); background: rgba(var(--fondo-rgb),.7); border-radius: 99px; padding: 10px 20px; text-decoration: none; }
-.abrir3d:hover { background: rgba(var(--acento-rgb),.14); }
 
 /* díptico */
 .diptico { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1fr; }
@@ -187,12 +186,12 @@ body.sin-pie .pie { opacity: 0; }
 /* temporizador */
 .temporizador { position: absolute; right: 120px; top: 84px; z-index: 5; cursor: pointer; text-align: right; user-select: none; }
 .temporizador .tiempo { font-family: var(--f-neo); font-weight: 700; font-size: 104px; line-height: 1; color: var(--oro-viejo); font-variant-numeric: tabular-nums; }
-.temporizador .rotulo { font-family: var(--f-neo); font-weight: 600; font-size: 20px; letter-spacing: .1em; text-transform: uppercase; color: #6b5d50; margin-top: 6px; }
+.temporizador .rotulo-viejo { font-family: var(--f-neo); font-weight: 600; font-size: 20px; letter-spacing: .1em; text-transform: uppercase; color: #6b5d50; margin-top: 6px; }
 .temporizador.corriendo .tiempo { color: var(--cian-prof); }
 .temporizador.fin .tiempo { color: var(--bermellon); animation: latido 1s ease-in-out 3; }
 @keyframes latido { 50% { opacity: .35; } }
 .slide:not(.claro) .temporizador .tiempo { color: var(--oro); }
-.slide:not(.claro) .temporizador .rotulo { color: var(--nacar); }
+.slide:not(.claro) .temporizador .rotulo-viejo { color: var(--nacar); }
 
 /* tabla de mecanismos / reflejos */
 .tabla { width: 100%; border-collapse: collapse; font-size: 32px; }
@@ -211,7 +210,8 @@ body.sin-pie .pie { opacity: 0; }
 .angeles .campo { position: absolute; inset: 0; pointer-events: none; }
 .angel { position: absolute; color: var(--oro); text-shadow: 0 0 18px rgba(212,166,42,.6); animation: aparecer .4s ease both; }
 @keyframes aparecer { from { opacity: 0; transform: scale(.2); } }
-.boton-angel { font-family: var(--f-neo); font-weight: 700; font-size: 30px; color: var(--tinta); background: var(--oro); border: 0; border-radius: 99px; padding: 16px 32px; cursor: pointer; }
+.boton-angel { display: inline-flex; align-items: center; gap: 10px; font-family: var(--f-neo); font-weight: 700; font-size: 30px; color: var(--tinta); background: var(--oro); border: 0; border-radius: 99px; padding: 14px 30px 14px 22px; cursor: pointer; transition: transform .15s; }
+.boton-angel:active { transform: scale(.96); }
 .contador { font-family: var(--f-neo); font-weight: 600; font-size: 26px; color: var(--nacar); margin-left: 24px; }
 .contador .cuenta { color: var(--bermellon-claro); font-weight: 700; font-size: 34px; }
 
@@ -244,3 +244,7 @@ body.sin-pie .pie { opacity: 0; }
 .diptico > div > .img::after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 34%; background: linear-gradient(180deg, rgba(var(--fondo-rgb),.88) 0%, rgba(var(--fondo-rgb),0) 100%); }
 .creditos-lista { font-size: 25px; line-height: 1.45; }
 .contador { font-size: 28px; }
+
+#indice .ayuda-teclas { max-width: 1180px; line-height: 2.1; font-size: 20px; }
+kbd { display: inline-block; min-width: 1.7em; padding: 2px 8px; margin: 0 4px 0 14px; border: 1px solid rgba(var(--linea-rgb), .4); border-bottom-width: 3px; border-radius: 6px; font-family: var(--f-neo); font-weight: 700; font-size: .95em; line-height: 1.3; text-align: center; color: var(--perla); background: rgba(var(--panel-rgb), .9); }
+kbd:first-child { margin-left: 0; }
