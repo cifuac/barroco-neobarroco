@@ -9,6 +9,6 @@ for raiz, dirs, archivos in os.walk(DOCS):
         rel = os.path.relpath(os.path.join(raiz, a), DOCS).replace(os.sep, '/')
         if rel != 'index.html':
             out.append(rel)
-out.append('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Syne:wght@600;800&display=swap')
+out.append('https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap')
 json.dump(out, open(os.path.join(DOCS, 'cache-lista.json'), 'w'), indent=0)
 print(len(out), 'archivos')

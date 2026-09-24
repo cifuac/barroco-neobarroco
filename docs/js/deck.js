@@ -5,6 +5,8 @@
 (function () {
   'use strict';
   const W = 1920, H = 1080;
+  const qs = new URLSearchParams(location.search);
+  const temaQS = (qs.get('tema') ? '&tema=' + qs.get('tema') : '') + (qs.get('acento') ? '&acento=' + qs.get('acento') : '');
   const stage = document.getElementById('stage');
   const slides = Array.from(stage.querySelectorAll('.slide'));
   const N = slides.length;
@@ -69,7 +71,7 @@
       const est = (e3.dataset.estados || '0').split(',').map(Number);
       const n = est[Math.min(paso, est.length - 1)];
       const f = document.createElement('iframe');
-      f.src = `3d/visor.html?e=${e3.dataset.escena}&s=${n}&embed=1${e3.dataset.panel === '0' ? '&panel=0' : ''}`;
+      f.src = `3d/visor.html?e=${e3.dataset.escena}&s=${n}&embed=1${e3.dataset.panel === '0' ? '&panel=0' : ''}${temaQS}`;
       f.title = e3.dataset.titulo || 'Esquema 3D';
       f.setAttribute('allow', 'fullscreen');
       e3.appendChild(f);

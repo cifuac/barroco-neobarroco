@@ -36,7 +36,7 @@ FPS = 30
 TOK = {
     'tinta': '#14100D', 'barro': '#241A14', 'tierra': '#5A4030', 'perla': '#F3EDE2',
     'nacar': '#CFC6B8', 'oro': '#D4A62A', 'oro_viejo': '#7A5A10', 'bermellon': '#C8372D',
-    'cian': '#3BB8D6', 'magenta': '#E23C8E', 'azogue': '#9AA4A8', 'grafito': '#4A443E',
+    'cian': '#3DC996', 'magenta': '#E23C8E', 'azogue': '#9AA4A8', 'grafito': '#4A443E',
     'marfil': '#E9E1D2',
 }
 

@@ -1,31 +1,77 @@
-/* Tokens de diseño — «La perla y el foco tachado»
-   Registro histórico: barro, nácar, oro como resto. Registro neobarroco: offset cian/magenta. */
+/* Tokens de diseño — tema «papel» (fondo claro, tinta oscura) con vitrinas oscuras (.oscura).
+   Los nombres de rol se conservan: --perla = texto principal, --nacar = texto secundario,
+   --tinta = fondo, --oro = significado, --cian = trayecto/lectura (acento esmeralda),
+   --magenta = cita/ajeno, --bermellon = tachadura/ausencia, --azogue = espejo/voz de Díaz. */
 :root {
-  --tinta: #14100D;        /* fondo principal */
-  --tinta-2: #1B1411;
-  --barro: #241A14;        /* paneles */
-  --barro-2: #2E2119;
-  --tierra: #5A4030;       /* decorativo */
-  --perla: #F3EDE2;        /* texto principal / fondo claro */
-  --nacar: #CFC6B8;        /* significante presente, texto secundario */
-  --oro: #D4A62A;          /* significado, foco lleno (solo en fragmentos) */
-  --oro-viejo: #7A5A10;
-  --bermellon: #C8372D;    /* tachadura, ausencia (formas) */
-  --bermellon-claro: #E0584C; /* bermellón legible como texto */
-  --cian: #3BB8D6;         /* trayecto, lectura radial, lector */
-  --cian-prof: #006B82;
-  --magenta: #E23C8E;      /* cita, lo ajeno, parodia */
-  --magenta-claro: #EC5FA2;
-  --azogue: #9AA4A8;       /* espejo, voz de Díaz */
+  /* papel */
+  --tinta: #F4EEE3;          /* fondo */
+  --tinta-2: #1B1411;        /* tinta fija para superficies blancas */
+  --barro: #EAE1D2;          /* paneles */
+  --barro-2: #E3D8C6;
+  --tierra: #B9A58C;
+  --perla: #1E1915;          /* texto principal */
+  --nacar: #4E4238;          /* texto secundario */
+  --oro: #8A650C;            /* significado (texto) */
+  --oro-forma: #B8891A;      /* significado (formas grandes) */
+  --oro-viejo: #6E500A;
+  --bermellon: #B2332A;
+  --bermellon-claro: #B2332A;
+  --cian: #16795A;           /* esmeralda profundo: trayecto, lectura radial, preguntas */
+  --cian-prof: #0F5C43;
+  --magenta: #A3245F;
+  --magenta-claro: #A3245F;
+  --azogue: #56626A;
   --grafito: #4A443E;
 
-  --f-barroco: "Cormorant Garamond", "Cormorant", Georgia, "Times New Roman", serif;
-  --f-neo: "Syne", "Helvetica Neue", Arial, sans-serif;
-  --f-texto: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", "Helvetica Neue", Arial, sans-serif;
+  --fondo-rgb: 244,238,227;
+  --panel-rgb: 234,225,210;
+  --panel2-rgb: 239,232,220;
+  --acento-rgb: 22,121,90;
+  --linea-rgb: 78,66,56;       /* líneas, bordes y textos tenues */
+  --sombra: 0 18px 50px rgba(60,40,20,.18), 0 2px 8px rgba(60,40,20,.10);
+  --fx-fondo:
+    radial-gradient(70% 60% at 18% 10%, rgba(255,255,255,.75) 0%, rgba(255,255,255,0) 60%),
+    radial-gradient(60% 55% at 92% 96%, rgba(184,137,26,.10) 0%, rgba(184,137,26,0) 70%),
+    radial-gradient(50% 45% at 100% 0%, rgba(163,36,95,.05) 0%, rgba(163,36,95,0) 70%);
+
+  /* Tipografía: Libre Caslon (Display para títulos, Text para todo lo demás) */
+  --f-titulo: "Libre Caslon Display", "Libre Caslon Text", Georgia, "Times New Roman", serif;
+  --f-barroco: "Libre Caslon Text", Georgia, "Times New Roman", serif;
+  --f-neo: "Libre Caslon Text", Georgia, "Times New Roman", serif;
+  --f-texto: "Libre Caslon Text", Georgia, "Times New Roman", serif;
 
   /* lienzo fijo */
   --W: 1920px;
   --H: 1080px;
   --safe-x: 96px;
   --safe-y: 54px;
+}
+
+/* Vitrinas oscuras: diapositivas de imagen a sangre y escenas 3D (y el visor 3D completo) */
+.oscura {
+  --tinta: #0D0A0E;
+  --barro: #1C1219;
+  --barro-2: #26171F;
+  --perla: #F3EDE2;
+  --nacar: #CFC6B8;
+  --oro: #D4A62A;
+  --oro-forma: #D4A62A;
+  --oro-viejo: #7A5A10;
+  --bermellon: #C8372D;
+  --bermellon-claro: #E0584C;
+  --cian: #3DC996;
+  --cian-prof: #17754F;
+  --magenta: #E23C8E;
+  --magenta-claro: #EC5FA2;
+  --azogue: #9AA4A8;
+  --fondo-rgb: 13,10,14;
+  --panel-rgb: 28,18,25;
+  --panel2-rgb: 38,22,31;
+  --acento-rgb: 61,201,150;
+  --linea-rgb: 207,198,184;
+  --sombra: 0 30px 80px rgba(0,0,0,.45);
+  --fx-fondo:
+    radial-gradient(75% 70% at 82% 22%, rgba(128,22,52,.36) 0%, rgba(13,10,14,0) 62%),
+    radial-gradient(55% 55% at 4% 104%, rgba(212,166,42,.11) 0%, rgba(13,10,14,0) 70%);
+  color: var(--perla);
 }

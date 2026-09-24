@@ -6,6 +6,8 @@ import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const qs = new URLSearchParams(location.search);
+if (qs.get('tema')) document.documentElement.dataset.tema = qs.get('tema');
+if (qs.get('acento')) document.documentElement.dataset.acento = qs.get('acento');
 const ID = qs.get('e') || 'sustitucion';
 const EMBED = qs.get('embed') === '1';
 const SIN_PANEL = qs.get('panel') === '0';
