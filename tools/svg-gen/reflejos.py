@@ -47,8 +47,22 @@ def mancha(x, y, r, semilla):
     return d + 'Z'
 
 
+# Imágenes generadas con Nano Banana y recortadas (docs/img/reflejo-*.webp): si existen, reemplazan a los íconos dibujados
+IMGS = ['reflejo-reductor', 'reflejo-significante', 'reflejo-estructural']
+DOCS_IMG = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'docs', 'img')
+
+
+def imagen(i):
+    if not os.path.exists(os.path.join(DOCS_IMG, IMGS[i] + '.webp')):
+        return None
+    x = XS[i]
+    return (f'<image href="img/{IMGS[i]}.webp" x="{x - 200}" y="4" width="400" height="404" '
+            f'preserveAspectRatio="xMidYMid meet"/>')
+
+
 def columna(i, pict, titulo, sub, lineas, ref):
     x = XS[i]
+    pict = imagen(i) or pict
     g = [f'<g data-from="{i + 1}">', pict,
          txt(x, 444, titulo, 'neo f-perla', 40, 'middle'),
          txt(x, 484, sub, 'it f-azogue', 30, 'middle')]
