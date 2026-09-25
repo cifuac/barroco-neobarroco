@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { prepararRender, montarEstudio } from './estudio.js?v=7';
 
 const qs = new URLSearchParams(location.search);
 if (qs.get('tema')) document.documentElement.dataset.tema = qs.get('tema');
@@ -38,10 +38,8 @@ async function init() {
 
   const cont = $('lienzo');
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.NeutralToneMapping;
-  renderer.toneMappingExposure = 1.0;
+  prepararRender(renderer);
   cont.appendChild(renderer.domElement);
   labelRenderer = new CSS2DRenderer();
   labelRenderer.domElement.style.position = 'absolute';
@@ -50,13 +48,6 @@ async function init() {
   cont.appendChild(labelRenderer.domElement);
 
   scene = new THREE.Scene();
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-  scene.environmentIntensity = 0.55;
-  const key = new THREE.DirectionalLight(0xffeedd, 2.2); key.position.set(-5, 7, 6); scene.add(key);
-  const fill = new THREE.DirectionalLight(0xbfdfff, 0.6); fill.position.set(6, 2, 5); scene.add(fill);
-  const rim = new THREE.DirectionalLight(0xfff4e6, 1.1); rim.position.set(0, 5, -7); scene.add(rim);
-  scene.add(new THREE.HemisphereLight(0x3a2c22, 0x0d0a08, 0.5));
 
   camera = new THREE.PerspectiveCamera(35, 16 / 9, 0.05, 200);
   controls = new OrbitControls(camera, renderer.domElement);
@@ -81,6 +72,8 @@ async function init() {
     action.setLoop(THREE.LoopOnce); action.clampWhenFinished = true; action.play(); action.paused = true;
     clipDur = clip.duration;
   }
+  await montarEstudio({ renderer, scene, raiz: gltf.scene,
+    fijarTiempoFinal: (fin) => { if (action) { action.time = fin ? clipDur : 0; mixer.update(0); } } });
 
   // etiquetas
   for (const [nombre, def] of Object.entries(man.etiquetas || {})) {
