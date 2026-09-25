@@ -25,15 +25,6 @@
   "pie": "Un solo punto de vista: el logos"
  },
  {
-  "src": "imagenes/fragmentos.webp",
-  "estado": 3,
-  "izq": -0.8,
-  "y": 0.68,
-  "dist": 0.9,
-  "alto": 0.22,
-  "marco": "fino"
- },
- {
   "src": "imagenes/telon.webp",
   "estado": 4,
   "izq": -0.8,

@@ -43,22 +43,6 @@
    ]
   },
   {
-   "src": "imagenes/recortes/fragmentos.webp",
-   "tipo": "figura",
-   "elevar": 0.134,
-   "apoyo": "suelo",
-   "ancho": 0.613,
-   "pos": [
-    -1.177,
-    -0.134,
-    0.787
-   ],
-   "mira": "cam_3",
-   "estados": [
-    3
-   ]
-  },
-  {
    "src": "imagenes/recortes/telon.webp",
    "tipo": "figura",
    "elevar": 0.134,
