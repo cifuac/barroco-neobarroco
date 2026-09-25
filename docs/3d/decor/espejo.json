@@ -1,14 +1,15 @@
 {
  "imagenes": [
   {
-   "src": "imagenes/espejo-convexo.webp",
-   "pie": "Espejo convexo: la sala, reducida",
-   "tipo": "cuadro",
-   "ancho": 2.159,
+   "src": "imagenes/recortes/espejo-convexo.webp",
+   "tipo": "figura",
+   "pie": "Espejo convexo",
+   "apoyo": "suelo",
+   "ancho": 1.0,
    "pos": [
-    3.588,
-    2.227,
-    -0.417
+    -2.664,
+    -0.134,
+    -0.152
    ],
    "mira": "cam_0",
    "estados": [
@@ -18,33 +19,39 @@
   {
    "src": "imagenes/boveda.webp",
    "tipo": "disco",
+   "marco": "ninguno",
    "recorte": [
     0.08,
     0.08,
     0.92,
     0.92
    ],
-   "pie": "Un solo punto de vista: el logos",
-   "ancho": 2.407,
-   "pos": [
-    4.346,
-    2.131,
-    -0.954
+   "rot": [
+    115.7,
+    -4.4,
+    0
    ],
-   "mira": "cam_2",
+   "mira": "",
+   "ancho": 1.37,
+   "pos": [
+    1.372,
+    2.688,
+    -0.588
+   ],
    "estados": [
     2
    ]
   },
   {
-   "src": "imagenes/fragmentos.webp",
-   "marco": "fino",
-   "tipo": "cuadro",
-   "ancho": 0.678,
+   "src": "imagenes/recortes/fragmentos.webp",
+   "tipo": "figura",
+   "elevar": 0.134,
+   "apoyo": "suelo",
+   "ancho": 0.613,
    "pos": [
-    -1.206,
-    2.009,
-    -0.072
+    -1.177,
+    -0.134,
+    0.787
    ],
    "mira": "cam_3",
    "estados": [
@@ -52,14 +59,15 @@
    ]
   },
   {
-   "src": "imagenes/telon.webp",
-   "pie": "La pantalla y la carencia",
-   "tipo": "cuadro",
-   "ancho": 0.74,
+   "src": "imagenes/recortes/telon.webp",
+   "tipo": "figura",
+   "elevar": 0.134,
+   "apoyo": "suelo",
+   "ancho": 0.611,
    "pos": [
-    -0.974,
-    0.913,
-    0.301
+    1.372,
+    -0.134,
+    0.133
    ],
    "mira": "cam_4",
    "estados": [

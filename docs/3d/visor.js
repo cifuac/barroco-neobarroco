@@ -3,8 +3,8 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-import { prepararRender, montarEstudio } from './estudio.js?v=9';
-import { montarDecor, estadoDecor, inmediatoDecor, animarDecor } from './decor.js?v=9';
+import { prepararRender, montarEstudio, precargarTexturas } from './estudio.js?v=10';
+import { montarDecor, estadoDecor, inmediatoDecor, animarDecor } from './decor.js?v=10';
 
 const qs = new URLSearchParams(location.search);
 if (qs.get('tema')) document.documentElement.dataset.tema = qs.get('tema');
@@ -43,6 +43,7 @@ async function init() {
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   prepararRender(renderer);
+  precargarTexturas(renderer);   // en paralelo con la descarga del GLB
   cont.appendChild(renderer.domElement);
   labelRenderer = new CSS2DRenderer();
   labelRenderer.domElement.style.position = 'absolute';
@@ -75,11 +76,13 @@ async function init() {
     action.setLoop(THREE.LoopOnce); action.clampWhenFinished = true; action.play(); action.paused = true;
     clipDur = clip.duration;
   }
-  await montarEstudio({ renderer, scene, raiz: gltf.scene, ajustes: man.estudio || {},
+  const estudio = await montarEstudio({ renderer, scene, raiz: gltf.scene, ajustes: man.estudio || {},
     fijarTiempoFinal: (fin) => { if (action) { action.time = fin ? clipDur : 0; mixer.update(0); } } });
 
   // imágenes en la escena (decor/<id>.json, opcional)
-  await montarDecor({ id: ID, scene, nodos, archivo: qs.get('decor') });
+  document.documentElement.dataset.piso = estudio.piso.toFixed(3);
+  const decorListo = montarDecor({ id: ID, scene, nodos, archivo: qs.get('decor'), piso: estudio.piso, estado: () => actual });
+  if (POSTER) await decorListo;   // en clase no bloquea: las láminas aparecen cuando llegan
 
   // etiquetas
   for (const [nombre, def] of Object.entries(man.etiquetas || {})) {
@@ -117,6 +120,7 @@ async function init() {
   redimensionar();
   listo = true;
   ir(Math.min(estadoInicial, man.estados.length - 1), true);
+  try { await renderer.compileAsync(scene, camera); } catch (e) { /* navegadores sin compilación asíncrona */ }
   renderer.setAnimationLoop(bucle);
   requestAnimationFrame(() => $('poster').classList.add('fuera'));
   document.documentElement.dataset.listo = '1';

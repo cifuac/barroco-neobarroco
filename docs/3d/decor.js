@@ -2,7 +2,9 @@
 // Se describen por escena en decor/<id>.json, sin tocar Blender:
 // { "imagenes": [ {
 //     "src": "../img/pd-arnolfini.webp",     // ruta relativa a docs/3d/
-//     "tipo": "cuadro" | "disco" | "fondo" | "suelo",
+//     "tipo": "figura" | "calco" | "cuadro" | "disco" | "fondo" | "suelo",
+//        figura: recorte con transparencia, de pie y con sombra ("apoyo": "suelo" lo posa en el piso; gira sólo en vertical hacia "mira")
+//        calco: dibujo a tinta tendido sobre el piso ("giro": grados en el plano del suelo)
 //     "recorte": [x0, y0, x1, y1],           // opcional, fracciones 0..1 de la imagen (p. ej. un detalle)
 //     "ancho": 2.2,                          // metros (el alto sale de la proporción; en «disco», el diámetro)
 //     "pos": [x, y, z],                      // coordenadas three.js (Y arriba) = Blender (x, z, -y)
@@ -33,7 +35,7 @@ function lienzo(img, d) {
   const g = cv.getContext('2d');
   g.drawImage(img, ox, oy, sw, sh, 0, 0, w, h);
   const lavado = d.lavado ?? (d.tipo === 'fondo' ? 0.35 : 0);   // velo de papel sobre la imagen (0..1)
-  if (lavado > 0) { g.fillStyle = `rgba(244,238,227,${lavado})`; g.fillRect(0, 0, w, h); }
+  if (lavado > 0) { g.globalCompositeOperation = 'source-atop'; g.fillStyle = `rgba(244,238,227,${lavado})`; g.fillRect(0, 0, w, h); g.globalCompositeOperation = 'source-over'; }
   if (d.tipo === 'disco' || d.tipo === 'fondo') {
     g.globalCompositeOperation = 'destination-in';
     if (d.tipo === 'disco') { g.beginPath(); g.arc(w / 2, h / 2, w / 2 - 1, 0, Math.PI * 2); g.fill(); }
@@ -72,73 +74,100 @@ function marcoRect(ancho, alto, tipo) {
   return g;
 }
 
-export async function montarDecor({ id, scene, nodos, archivo }) {
+export async function montarDecor({ id, scene, nodos, archivo, piso = 0, estado = () => 0 }) {
   let dec;
-  try { const r = await fetch(`decor/${archivo || id}.json`, { cache: 'no-cache' }); if (!r.ok) return; dec = await r.json(); }
-  catch (e) { return; }
+  try { const r = await fetch(`decor/${archivo || id}.json`, { cache: 'no-cache' }); if (!r.ok) return 0; dec = await r.json(); }
+  catch (e) { return 0; }
+  items.nodos = nodos;
   const ld = new THREE.ImageLoader();
-  for (const d0 of dec.imagenes || []) {
+  // se descargan en paralelo; cada una aparece (con fundido) cuando llega
+  await Promise.all((dec.imagenes || []).map(async (d0) => {
     const d = { tipo: 'cuadro', ...d0 };
     try {
       const img = await ld.loadAsync(d.src);
-      const { cv, asp } = lienzo(img, d);
-      const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8;
-      const ancho = d.ancho || 2, alto = d.tipo === 'disco' ? ancho : ancho * asp;
-      const grupo = new THREE.Group(); grupo.name = 'decor_' + (d.src.split('/').pop() || '');
-      const opMax = d.opacidad ?? (d.tipo === 'fondo' ? 0.85 : 1);
-      let lamina;
-      if (d.tipo === 'fondo') {
-        lamina = new THREE.Mesh(new THREE.PlaneGeometry(ancho, alto),
-          new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, toneMapped: false }));
-        lamina.renderOrder = -2;
-      } else if (d.tipo === 'disco') {
-        lamina = new THREE.Mesh(new THREE.CircleGeometry(ancho / 2, 96),
-          new THREE.MeshPhysicalMaterial({ map: tex, roughness: 0.4, clearcoat: 0.6, clearcoatRoughness: 0.12, transparent: true, alphaTest: 0.02 }));
-        lamina.position.z = 0.012;
-        const marco = d.marco ?? 'oro';
-        if (marco !== 'ninguno') {
-          const aro = new THREE.Mesh(new THREE.TorusGeometry(ancho / 2 + ancho * 0.03, ancho * 0.035, 20, 128), marco === 'fino' ? matFino() : matOro());
-          aro.castShadow = true; grupo.add(aro);
-          const dorso = new THREE.Mesh(new THREE.CircleGeometry(ancho / 2 + ancho * 0.05, 96), matFino()); dorso.position.z = -0.01; dorso.rotation.y = Math.PI; grupo.add(dorso);
-        }
-      } else {
-        lamina = new THREE.Mesh(new THREE.PlaneGeometry(ancho, alto),
-          new THREE.MeshPhysicalMaterial({ map: tex, roughness: d.tipo === 'suelo' ? 0.75 : 0.5, clearcoat: d.tipo === 'suelo' ? 0.1 : 0.35, clearcoatRoughness: 0.3, transparent: true }));
-        lamina.receiveShadow = true;
-        const marco = d.marco ?? (d.tipo === 'suelo' ? 'ninguno' : 'oro');
-        if (marco !== 'ninguno') grupo.add(marcoRect(ancho, alto, marco));
-        if (d.tipo === 'cuadro') { // dorso para que no se vea hueco desde atrás
-          const dorso = new THREE.Mesh(new THREE.BoxGeometry(ancho, alto, 0.02), matFino()); dorso.position.z = -0.012; dorso.castShadow = true; grupo.add(dorso);
-        }
-      }
-      grupo.add(lamina);
-      if (d.pos) grupo.position.fromArray(d.pos);
-      const base = grupo.position.clone();
-      if (d.tipo === 'suelo' && !d.rot) grupo.rotation.x = -Math.PI / 2;
-      if (d.rot) grupo.rotation.set(d.rot[0] * DEG, d.rot[1] * DEG, d.rot[2] * DEG);
-      scene.add(grupo);
-      let pie = null;
-      if (d.pie) {
-        const div = document.createElement('div'); div.className = 'etq pie'; div.innerHTML = d.pie;
-        pie = new CSS2DObject(div); pie.center.set(0.5, 0);
-        pie.position.set(0, -alto / 2 - (d.marco === 'ninguno' || d.tipo === 'fondo' ? 0.06 : Math.max(0.12, alto * 0.09)), 0.02);
-        grupo.add(pie);
-      }
-      const mats = []; grupo.traverse((o) => { if (o.isMesh) { const ms = Array.isArray(o.material) ? o.material : [o.material]; ms.forEach((m) => { m.transparent = true; mats.push(m); }); } });
-      const it = { d, grupo, base, mats, pie, op: 0, meta: 0, opMax };
-      if (d.mira && d.mira !== 'camara' && nodos[d.mira]) {
-        const nLook = d.mira.startsWith('cam_') ? nodos['look_' + d.mira.slice(4)] : null;
-        if (nLook) { // alineada con el encuadre de ese estado: de frente a la cámara y derecha en pantalla
-          const cam = new THREE.PerspectiveCamera(); nodos[d.mira].getWorldPosition(cam.position);
-          nLook.getWorldPosition(v); cam.lookAt(v); grupo.quaternion.copy(cam.quaternion);
-        } else { grupo.updateMatrixWorld(true); nodos[d.mira].getWorldPosition(v); grupo.lookAt(v); }
-      }
-      aplicarOpacidad(it, 0);
+      const it = crear(d, img, scene, nodos, piso);
+      const n = estado();
+      if (!d.estados || d.estados.includes(n)) { it.meta = 1; if (it.pie) it.pie.element.classList.add('on'); }
       items.push(it);
     } catch (e) { console.warn('imagen no disponible', d.src, e); }
-  }
-  items.nodos = nodos;
+  }));
   return items.length;
+}
+
+function crear(d, img, scene, nodos, piso) {
+  const { cv, asp } = lienzo(img, d);
+  const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8;
+  const ancho = d.ancho || 2, alto = d.tipo === 'disco' ? ancho : ancho * asp;
+  const grupo = new THREE.Group(); grupo.name = 'decor_' + (d.src.split('/').pop() || '');
+  const opMax = d.opacidad ?? (d.tipo === 'fondo' ? 0.85 : 1);
+  let lamina;
+  if (d.tipo === 'figura') {
+    // figura recortada (PNG/WebP con transparencia): de pie, sin marco, con sombra de su silueta
+    lamina = new THREE.Mesh(new THREE.PlaneGeometry(ancho, alto),
+      new THREE.MeshStandardMaterial({ map: tex, roughness: 0.62, metalness: 0, transparent: true, alphaTest: 0.4, side: THREE.DoubleSide }));
+    lamina.castShadow = d.sombra !== false; lamina.receiveShadow = false;
+  } else if (d.tipo === 'calco') {
+    // dibujo a tinta apoyado en el suelo (el papel ya fue retirado): recibe las sombras de los objetos
+    lamina = new THREE.Mesh(new THREE.PlaneGeometry(ancho, alto),
+      new THREE.MeshStandardMaterial({ map: tex, roughness: 0.9, metalness: 0, transparent: true, depthWrite: false,
+        polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 }));
+    lamina.receiveShadow = true;
+  } else if (d.tipo === 'fondo') {
+    lamina = new THREE.Mesh(new THREE.PlaneGeometry(ancho, alto),
+      new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, toneMapped: false }));
+    lamina.renderOrder = -2;
+  } else if (d.tipo === 'disco') {
+    lamina = new THREE.Mesh(new THREE.CircleGeometry(ancho / 2, 96),
+      new THREE.MeshPhysicalMaterial({ map: tex, roughness: 0.4, clearcoat: 0.6, clearcoatRoughness: 0.12, transparent: true, alphaTest: 0.02, side: THREE.DoubleSide }));
+    lamina.position.z = 0.012;
+    const marco = d.marco ?? 'oro';
+    if (marco !== 'ninguno') {
+      const aro = new THREE.Mesh(new THREE.TorusGeometry(ancho / 2 + ancho * 0.03, ancho * 0.035, 20, 128), marco === 'fino' ? matFino() : matOro());
+      aro.castShadow = true; grupo.add(aro);
+      const dorso = new THREE.Mesh(new THREE.CircleGeometry(ancho / 2 + ancho * 0.05, 96), matFino()); dorso.position.z = -0.01; dorso.rotation.y = Math.PI; grupo.add(dorso);
+    }
+  } else {
+    lamina = new THREE.Mesh(new THREE.PlaneGeometry(ancho, alto),
+      new THREE.MeshPhysicalMaterial({ map: tex, roughness: d.tipo === 'suelo' ? 0.75 : 0.5, clearcoat: d.tipo === 'suelo' ? 0.1 : 0.35, clearcoatRoughness: 0.3, transparent: true }));
+    lamina.receiveShadow = true;
+    const marco = d.marco ?? (d.tipo === 'suelo' ? 'ninguno' : 'oro');
+    if (marco !== 'ninguno') grupo.add(marcoRect(ancho, alto, marco));
+    if (d.tipo === 'cuadro') {
+      const dorso = new THREE.Mesh(new THREE.BoxGeometry(ancho, alto, 0.02), matFino()); dorso.position.z = -0.012; dorso.castShadow = true; grupo.add(dorso);
+    }
+  }
+  grupo.add(lamina);
+  if (d.pos) grupo.position.fromArray(d.pos);
+  // apoyadas en el suelo del estudio: la figura se para sobre él; el calco queda tendido sobre él
+  if (d.tipo === 'figura' && d.apoyo === 'suelo') grupo.position.y = piso + alto / 2 + (d.elevar || 0);
+  if (d.tipo === 'calco') grupo.position.y = piso + 0.004 + (d.elevar || 0);
+  const base = grupo.position.clone();
+  if ((d.tipo === 'suelo' || d.tipo === 'calco') && !d.rot) grupo.rotation.x = -Math.PI / 2;
+  if (d.tipo === 'calco' && d.giro) grupo.rotation.z = d.giro * DEG;
+  if (d.rot) grupo.rotation.set(d.rot[0] * DEG, d.rot[1] * DEG, d.rot[2] * DEG);
+  scene.add(grupo);
+  let pie = null;
+  if (d.pie) {
+    const div = document.createElement('div'); div.className = 'etq pie'; div.innerHTML = d.pie;
+    pie = new CSS2DObject(div); pie.center.set(0.5, 0);
+    const sinMarco = d.marco === 'ninguno' || ['fondo', 'figura', 'calco'].includes(d.tipo);
+    pie.position.set(0, -alto / 2 - (sinMarco ? 0.06 : Math.max(0.12, alto * 0.09)), 0.02);
+    grupo.add(pie);
+  }
+  const mats = []; grupo.traverse((o) => { if (o.isMesh) { const ms = Array.isArray(o.material) ? o.material : [o.material]; ms.forEach((m) => { m.transparent = true; mats.push(m); }); } });
+  const it = { d, grupo, base, mats, pie, op: 0, meta: 0, opMax };
+  if (d.mira && d.mira !== 'camara' && nodos[d.mira]) {
+    const nLook = d.mira.startsWith('cam_') ? nodos['look_' + d.mira.slice(4)] : null;
+    if (d.tipo === 'figura' && d.apoyo === 'suelo') { // de pie: sólo gira en torno a la vertical, hacia la cámara de ese estado
+      nodos[d.mira].getWorldPosition(v); v.y = grupo.position.y; grupo.lookAt(v);
+      if (d.giroExtra) grupo.rotateY(d.giroExtra * DEG);
+    } else if (nLook) { // alineada con el encuadre de ese estado: de frente a la cámara y derecha en pantalla
+      const cam = new THREE.PerspectiveCamera(); nodos[d.mira].getWorldPosition(cam.position);
+      nLook.getWorldPosition(v); cam.lookAt(v); grupo.quaternion.copy(cam.quaternion);
+    } else { grupo.updateMatrixWorld(true); nodos[d.mira].getWorldPosition(v); grupo.lookAt(v); }
+  }
+  aplicarOpacidad(it, 0);
+  return it;
 }
 
 function aplicarOpacidad(it, op) {
@@ -165,6 +194,8 @@ export function animarDecor(dt, camera) {
   for (const it of items) {
     if (it.d.ancla && items.nodos[it.d.ancla]) { items.nodos[it.d.ancla].getWorldPosition(v); it.grupo.position.copy(v).add(it.base); }
     if (it.d.mira === 'camara') { v.copy(camera.position); v.y = it.grupo.position.y; it.grupo.lookAt(v); }
-    if (Math.abs(it.meta - it.op) > 0.002) aplicarOpacidad(it, it.op + (it.meta - it.op) * Math.min(1, dt * 3.5));
+    // las figuras recortadas usan corte por transparencia: aparecen y desaparecen sin fundido (si no, «saltan» a mitad del fundido)
+    if (it.d.tipo === 'figura') { if (it.op !== it.meta) aplicarOpacidad(it, it.meta); }
+    else if (Math.abs(it.meta - it.op) > 0.002) aplicarOpacidad(it, it.op + (it.meta - it.op) * Math.min(1, dt * 3.5));
   }
 }

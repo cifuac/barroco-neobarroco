@@ -17,7 +17,7 @@ for l in salida.split('estados (cámara → objetivo, fov):')[1].strip().splitli
     lk = [float(v) for v in l.split('look=(')[1].split(')')[0].split(',')]
     fov = float(l.split('fov=')[1].split()[0])
     cams[k] = (np.array(c), np.array(lk), fov)
-ASP = 1920 / 904
+ASP = 1920 / 983
 from PIL import Image
 out = []
 for p in json.load(open(plan_f)):
@@ -35,11 +35,27 @@ for p in json.load(open(plan_f)):
     ancho = alto if tipo == 'disco' else alto / asp
     # semiancho en coordenadas de pantalla (con marco); «izq»/«der» fijan el borde en vez del centro.
     # Para que tampoco se corte en pantalla completa (16:9), los bordes deben quedar dentro de ±0.8.
-    semi = (ancho / 2) * (1.0 if tipo == 'fondo' else 1.14) / (h * ASP / 2)
-    x = p['x'] if 'x' in p else (p['izq'] + semi if 'izq' in p else p['der'] - semi)
-    pos = cam + f * dist + der * (x * h * ASP / 2) + arr * (p['y'] * h / 2)
-    e = {k: v for k, v in p.items() if k not in ('estado', 'x', 'y', 'dist', 'alto', 'izq', 'der')}
-    e.update({'tipo': tipo, 'ancho': round(float(ancho), 3), 'pos': [round(float(v), 3) for v in pos], 'mira': f"cam_{p['estado']}"})
+    if p.get('suelo'):
+        pisos = json.load(open(os.path.join(aqui, 'pisos.json')))
+        piso = pisos[id]
+        # rayo desde la cámara por el punto de pantalla (tan del semiángulo) hasta el plano y = piso
+        th = math.tan(math.radians(fov) / 2)
+        dirr = f + der * (p['x'] * th * ASP) + arr * (p['y'] * th)
+        if dirr[1] >= -1e-6: sys.exit(f"el punto ({p['x']}, {p['y']}) del estado {p['estado']} no mira al suelo")
+        t = (piso - cam[1]) / dirr[1]
+        pos = cam + dirr * t
+        if 'alto_m' in p:
+            if tipo == 'calco': ancho = p['alto_m']; alto = ancho * asp
+            else: alto = p['alto_m']; ancho = alto if tipo == 'disco' else alto / asp
+        if tipo == 'figura': p.setdefault('apoyo', 'suelo')
+    else:
+        if 'alto_m' in p: alto = p['alto_m']; ancho = alto if tipo == 'disco' else alto / asp
+        semi = (ancho / 2) * (1.0 if tipo in ('fondo', 'figura') else 1.14) / (h * ASP / 2)
+        x = p['x'] if 'x' in p else (p['izq'] + semi if 'izq' in p else p['der'] - semi)
+        pos = cam + f * dist + der * (x * h * ASP / 2) + arr * (p['y'] * h / 2)
+    e = {k: v for k, v in p.items() if k not in ('estado', 'x', 'y', 'dist', 'alto', 'izq', 'der', 'suelo', 'alto_m')}
+    e.update({'tipo': tipo, 'ancho': round(float(ancho), 3), 'pos': [round(float(v), 3) for v in pos]})
+    if tipo != 'calco': e.setdefault('mira', f"cam_{p['estado']}")
     e.setdefault('estados', [p['estado']])
     out.append(e)
 os.makedirs(os.path.join(docs, 'decor'), exist_ok=True)

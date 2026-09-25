@@ -13,19 +13,7 @@
    "look": "look_0",
    "fov": 6.3,
    "t1": 0,
-   "etiquetas": [
-    "lbl_p_perm",
-    "lbl_p_cond",
-    "lbl_p_fon",
-    "lbl_p_f",
-    "lbl_p_snte1",
-    "lbl_p_snte2",
-    "lbl_p_sdo",
-    "lbl_c_snte1",
-    "lbl_c_snte3",
-    "lbl_c_sdo",
-    "lbl_c_snte2"
-   ],
+   "etiquetas": [],
    "orbita": false,
    "slider": null,
    "pregunta": null
@@ -39,9 +27,6 @@
    "fov": 30,
    "t1": 3.4,
    "etiquetas": [
-    "lbl_e1_snte1",
-    "lbl_e1_snte2",
-    "lbl_e1_sdo",
     "lbl_e1_yll"
    ],
    "orbita": true,
@@ -66,8 +51,7 @@
    "etiquetas": [
     "lbl_e2_snte1",
     "lbl_e2_snte2",
-    "lbl_e2_snte3",
-    "lbl_e2_sdo"
+    "lbl_e2_snte3"
    ],
    "orbita": true,
    "slider": {
@@ -86,11 +70,10 @@
    "ref": "Sarduy sobre Cruz-Diez · §2 c",
    "cam": "cam_3",
    "look": "look_3",
-   "fov": 5.109825749976896,
+   "fov": 4.991144614742365,
    "t1": 10.3,
    "etiquetas": [
-    "lbl_e3_leyenda",
-    "lbl_e2_sdo"
+    "lbl_e3_leyenda"
    ],
    "orbita": false,
    "slider": {
@@ -109,11 +92,10 @@
    "ref": "Cabrera Infante, «maquinoscrito» · §2 c",
    "cam": "cam_4",
    "look": "look_4",
-   "fov": 5.109825749976896,
+   "fov": 4.991144614742365,
    "t1": 12.1,
    "etiquetas": [
-    "lbl_e3_leyenda",
-    "lbl_e2_sdo"
+    "lbl_e3_leyenda"
    ],
    "orbita": false,
    "slider": {
@@ -128,62 +110,6 @@
   }
  ],
  "etiquetas": {
-  "lbl_p_perm": {
-   "html": "<em>Permutación</em>",
-   "clase": "serif"
-  },
-  "lbl_p_cond": {
-   "html": "<em>Condensación</em>",
-   "clase": "serif"
-  },
-  "lbl_p_fon": {
-   "html": "<span style=\"font-variant-numeric:lining-nums\">Fonema<sup>1</sup>… Fonema<sup>2</sup>… etc.</span>",
-   "clase": "grande snte"
-  },
-  "lbl_p_f": {
-   "html": "<span style=\"font-variant-numeric:lining-nums\">F<sup>1</sup>… F<sup>2</sup>… etc.</span>",
-   "clase": "grande snte"
-  },
-  "lbl_p_snte1": {
-   "html": "<span style=\"font-variant-numeric:lining-nums\">Significante<sup>1</sup></span>",
-   "clase": "grande snte"
-  },
-  "lbl_p_snte2": {
-   "html": "<span style=\"font-variant-numeric:lining-nums\">Snte.<sup>2</sup></span>",
-   "clase": "grande snte"
-  },
-  "lbl_p_sdo": {
-   "html": "Significado",
-   "clase": "grande sdo"
-  },
-  "lbl_c_snte1": {
-   "html": "<span style=\"font-variant-numeric:lining-nums\">Snte.<sup>1</sup></span>",
-   "clase": "grande snte"
-  },
-  "lbl_c_snte3": {
-   "html": "<span style=\"font-variant-numeric:lining-nums\">Snte.<sup>3</sup></span>",
-   "clase": "grande snte"
-  },
-  "lbl_c_sdo": {
-   "html": "Sdo.",
-   "clase": "grande sdo"
-  },
-  "lbl_c_snte2": {
-   "html": "<span style=\"font-variant-numeric:lining-nums\">Snte.<sup>2</sup></span>",
-   "clase": "grande snte"
-  },
-  "lbl_e1_snte1": {
-   "html": "Significante<sup>1</sup>",
-   "clase": "snte"
-  },
-  "lbl_e1_snte2": {
-   "html": "Snte.<sup>2</sup>",
-   "clase": "snte"
-  },
-  "lbl_e1_sdo": {
-   "html": "Significado",
-   "clase": "sdo"
-  },
   "lbl_e1_yll": {
    "html": "y ⇄ ll",
    "clase": "trayecto"
@@ -200,14 +126,69 @@
    "html": "Snte.<sup>3</sup>",
    "clase": "snte"
   },
-  "lbl_e2_sdo": {
-   "html": "Sdo.",
-   "clase": "sdo"
-  },
   "lbl_e3_leyenda": {
-   "html": "Snte.<sup>1</sup> desde la izquierda · <b>Snte.<sup>3</sup> de frente</b> · Snte.<sup>2</sup> desde la derecha",
+   "html": "izquierda: Snte.<sup>1</sup> · de frente: <b>Snte.<sup>3</sup></b> · derecha: Snte.<sup>2</sup>",
    "clase": "snte"
   }
  },
- "estudio": {}
+ "estudio": {
+  "materiales": {
+   "dorado_tablilla": {
+    "color": "#DDB34C",
+    "metalness": 0.85,
+    "roughness": 0.3,
+    "clearcoat": 0.4,
+    "clearcoatRoughness": 0.15,
+    "envMapIntensity": 1.7,
+    "emissive": "#B8891A",
+    "emissiveIntensity": 0.45
+   },
+   "dorado_letra": {
+    "color": "#8A650C",
+    "metalness": 0.15,
+    "roughness": 0.6,
+    "envMapIntensity": 0.35,
+    "emissive": "#5A420A",
+    "emissiveIntensity": 0.15
+   },
+   "grafito_barra": {
+    "roughness": 0.55,
+    "clearcoat": 0.25,
+    "clearcoatRoughness": 0.3,
+    "envMapIntensity": 0.5
+   },
+   "letra_tinta": {
+    "color": "#232220",
+    "roughness": 0.85,
+    "metalness": 0,
+    "envMapIntensity": 0.25
+   },
+   "tesela_piedra": {
+    "color": "#ECE6DB",
+    "roughness": 0.55,
+    "clearcoat": 0.25,
+    "clearcoatRoughness": 0.35,
+    "envMapIntensity": 0.8
+   },
+   "plinto_piedra": {
+    "color": "#DED7CB",
+    "roughness": 0.7,
+    "clearcoat": 0.15,
+    "clearcoatRoughness": 0.4,
+    "envMapIntensity": 0.7
+   },
+   "liston_piedra": {
+    "color": "#F0EBE2",
+    "roughness": 0.6,
+    "clearcoat": 0.2,
+    "clearcoatRoughness": 0.35,
+    "envMapIntensity": 0.8
+   },
+   "tablero_piedra": {
+    "color": "#E2DBCF",
+    "roughness": 0.85,
+    "envMapIntensity": 0.6
+   }
+  }
+ }
 }

@@ -1,14 +1,15 @@
 {
  "imagenes": [
   {
-   "src": "imagenes/columnas.webp",
-   "pie": "Del clásico al barroco",
-   "tipo": "cuadro",
-   "ancho": 2.177,
+   "src": "imagenes/recortes/columna-clasica.webp",
+   "tipo": "figura",
+   "pie": "columna clásica",
+   "apoyo": "suelo",
+   "ancho": 0.368,
    "pos": [
-    -5.161,
-    0.998,
-    -3.449
+    -4.8,
+    -0.81,
+    -1.1
    ],
    "mira": "cam_3",
    "estados": [
@@ -16,14 +17,30 @@
    ]
   },
   {
-   "src": "imagenes/papaya.webp",
-   "pie": "Una fuente con forma de papaya",
-   "tipo": "cuadro",
-   "ancho": 2.755,
+   "src": "imagenes/recortes/columna-salomonica.webp",
+   "tipo": "figura",
+   "pie": "columna salomónica",
+   "apoyo": "suelo",
+   "ancho": 0.428,
    "pos": [
-    -6.345,
-    0.711,
-    -3.982
+    2.8,
+    -0.81,
+    -3.4
+   ],
+   "mira": "cam_3",
+   "estados": [
+    3
+   ]
+  },
+  {
+   "src": "imagenes/recortes/papaya.webp",
+   "tipo": "figura",
+   "apoyo": "suelo",
+   "ancho": 0.822,
+   "pos": [
+    3.9,
+    -0.81,
+    -8.001
    ],
    "mira": "cam_7",
    "estados": [

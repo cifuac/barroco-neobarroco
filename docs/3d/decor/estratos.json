@@ -1,15 +1,17 @@
 {
  "imagenes": [
   {
-   "src": "imagenes/contraluz.webp",
-   "marco": "fino",
-   "pie": "A contraluz: el otro texto",
-   "tipo": "cuadro",
-   "ancho": 1.972,
+   "src": "imagenes/recortes/contraluz.webp",
+   "tipo": "figura",
+   "elevar": 0.1,
+   "lavado": 0.2,
+   "pie": "a contraluz: la filigrana",
+   "apoyo": "suelo",
+   "ancho": 2.085,
    "pos": [
-    5.809,
-    0.076,
-    -0.712
+    3.415,
+    -1.189,
+    0.475
    ],
    "mira": "cam_2",
    "estados": [
@@ -17,16 +19,21 @@
    ]
   },
   {
-   "src": "imagenes/tinta.webp",
-   "marco": "fino",
-   "tipo": "cuadro",
-   "ancho": 2.212,
-   "pos": [
-    4.217,
-    0.658,
-    1.462
+   "src": "imagenes/recortes/mancha-carmin.webp",
+   "tipo": "calco",
+   "recorte": [
+    0.2,
+    0.36,
+    0.78,
+    0.97
    ],
-   "mira": "cam_3",
+   "giro": 180,
+   "ancho": 2.6,
+   "pos": [
+    0.899,
+    -1.189,
+    2.298
+   ],
    "estados": [
     3
    ]

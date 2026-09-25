@@ -7,9 +7,9 @@ Figura 3 (Sarduy 1972, l. 322-327), dos esquemas lado a lado:
     entre cada extremo y el centro: la superior entra al centro, la inferior vuelve al extremo).
 
 Estados:
-  0 Figura 3 literal (tele frontal).
-  1 Permutación en volumen: teselas-letra; y/ll se intercambian («vaya un gallo» → «valla un gayo», lectura
-    docente de «O se me valla un gayo», l. 341); el Significado (oro) no se mueve.
+  0 Figura 3 literal (tele frontal): letras de la figura como geometría (tinta; Significado/Sdo. en oro), trazos finos.
+  1 Permutación en volumen: tablillas-letra sobre plintos bajos; y/ll se intercambian («vaya un gallo» → «valla
+    un gayo», lectura docente de «O se me valla un gayo», l. 341); el Significado (tablilla de oro) no se mueve.
   2 Condensación: letras viajan desde AMO y desde ESCLAVO y componen AMOSCLAVO; los laterales PERMANECEN
     («puesta en escena», l. 399-404).
   3 El lector dentro: 24 listones de perfil trapezoidal sobre la barra y el Sdo.; caras izquierdas AMO,
@@ -17,13 +17,17 @@ Estados:
     Slider de azimut. AMO y ESCLAVO (los laterales) entran en el dispositivo y dejan la escena.
   4 MAQUINOSCRITO: el mismo mecanismo con MÁQUINA / MANUSCRITO (l. 341-342).
 
+Dirección de arte («lámina de museo»): trazos finos, sólidos delgados con bisel pequeño, oro sólo para el
+Significado, grafito para los significantes, esmeralda para los trayectos; rótulos grabados en los plintos en
+lugar de etiquetas pegadas. Todo se posa en un mismo piso (PISO, medido en tools/pisos.json).
+
 Nota: el tercer término (l. 320-321) no es el «cuarto elemento» de Cruz-Diez (l. 358-359).
 """
 import sys, os, math
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'lib'))
 import bb
 import bpy, bmesh
-from mathutils import Vector
+from mathutils import Vector, Matrix
 
 S = bb.Escena('condensacion', 'Permutación y condensación: la figura 3 con el lector dentro', dur=12.3)
 M = bb.mat
@@ -31,8 +35,63 @@ TINY = 0.0001
 T3 = (TINY, TINY, TINY)
 C = 'CONSTANT'
 LIN = 'LINEAR'
-FUENTE = bb.FUENTES['serif']
 FPS = bb.FPS
+
+# tipografía: Big Caslon (pariente de la Libre Caslon de la presentación); cifras voladas de Times (de caja alta:
+# las elzevirianas de Caslon/Georgia hacen que el «1» volado se lea como una «I»); títulos en Georgia cursiva.
+_F_CASLON = '/System/Library/Fonts/Supplemental/BigCaslon.ttf'
+_F_TIMES = '/System/Library/Fonts/Supplemental/Times New Roman.ttf'
+FUENTE = _F_CASLON if os.path.exists(_F_CASLON) else bb.FUENTES['serif']
+F_NUM = _F_TIMES if os.path.exists(_F_TIMES) else bb.FUENTES['serif']
+F_ITAL = bb.FUENTES['serif_it']
+
+PISO = -0.254        # z del piso de toda la escena (base de las tablillas de oro): ver tools/pisos.json
+
+
+# ================================================================ materiales
+def mat_propio(nombre, hexcol, rough=0.6, metal=0.0):
+    """Material liso con color propio (rol «otro» en estudio.js: conserva color y rugosidad)."""
+    if nombre in bb._MATS:
+        return bb._MATS[nombre]
+    m = bpy.data.materials.new(nombre)
+    try:
+        m.use_nodes = True
+    except Exception:
+        pass
+    b = m.node_tree.nodes.get('Principled BSDF')
+    b.inputs['Base Color'].default_value = bb.lin(hexcol)
+    b.inputs['Metallic'].default_value = metal
+    b.inputs['Roughness'].default_value = rough
+    m.diffuse_color = bb.lin(hexcol)
+    bb._MATS[nombre] = m
+    return m
+
+
+INK = M('soporte', 'grafito_linea')     # trazos y corchetes: tinta
+BARRA = M('soporte', 'grafito_barra')   # la barra de la fracción: tinta
+LACA = M('significante')                # letras-significante en volumen: grafito lacado
+# oro liso (sin la trama del pan de oro, que en tablillas de 1 m se leía como azulejos) y letras de tinta mate
+# (de frente, la laca reflejaba el estudio y la figura se veía gris): rol «otro» + ajustes en S.estudio.
+ORO = mat_propio('dorado_tablilla', '#D8AE48', 0.32, 0.85)
+ORO_L = mat_propio('dorado_letra', '#8A650C', 0.6, 0.15)
+TINTA_L = mat_propio('letra_tinta', '#232220', 0.85)
+ESM = M('trayecto')                     # trayectos y relaciones: esmeralda
+TESELA = mat_propio('tesela_piedra', '#ECE6DB', 0.55)
+PLINTO = mat_propio('plinto_piedra', '#DED7CB', 0.7)
+LISTON = mat_propio('liston_piedra', '#F0EBE2', 0.6)
+TABLERO = mat_propio('tablero_piedra', '#E2DBCF', 0.85)
+S.estudio = {'materiales': {
+    'dorado_tablilla': {'color': '#DDB34C', 'metalness': 0.85, 'roughness': 0.3, 'clearcoat': 0.4, 'clearcoatRoughness': 0.15,
+                        'envMapIntensity': 1.7, 'emissive': '#B8891A', 'emissiveIntensity': 0.45},
+    'dorado_letra': {'color': '#8A650C', 'metalness': 0.15, 'roughness': 0.6, 'envMapIntensity': 0.35,
+                     'emissive': '#5A420A', 'emissiveIntensity': 0.15},
+    'grafito_barra': {'roughness': 0.55, 'clearcoat': 0.25, 'clearcoatRoughness': 0.3, 'envMapIntensity': 0.5},
+    'letra_tinta': {'color': '#232220', 'roughness': 0.85, 'metalness': 0, 'envMapIntensity': 0.25},
+    'tesela_piedra': {'color': '#ECE6DB', 'roughness': 0.55, 'clearcoat': 0.25, 'clearcoatRoughness': 0.35, 'envMapIntensity': 0.8},
+    'plinto_piedra': {'color': '#DED7CB', 'roughness': 0.7, 'clearcoat': 0.15, 'clearcoatRoughness': 0.4, 'envMapIntensity': 0.7},
+    'liston_piedra': {'color': '#F0EBE2', 'roughness': 0.6, 'clearcoat': 0.2, 'clearcoatRoughness': 0.35, 'envMapIntensity': 0.8},
+    'tablero_piedra': {'color': '#E2DBCF', 'roughness': 0.85, 'envMapIntensity': 0.6},
+}}
 
 
 # ================================================================ helpers locales (no tocan bb.py)
@@ -56,7 +115,7 @@ def malla(nombre, verts, caras, material=None, parent=None, loc=(0, 0, 0)):
 
 
 def tubo(nombre, pts, r, material, parent=None, segs=10):
-    """Tubo barrido a lo largo de una polilínea en el plano XZ (sin torsión)."""
+    """Tubo barrido a lo largo de una polilínea (sin torsión)."""
     pts = [Vector(p) for p in pts]
     bm = bmesh.new()
     anillos = []
@@ -94,37 +153,43 @@ def centrar_origen(ob):
     return ob
 
 
-def corchete(nombre, x0, x1, zb, zt, r=0.009, rc=0.035, material=None, parent=None, y=0.0):
+def corchete(nombre, x0, x1, zb, zt, r=0.006, rc=0.03, material=None, parent=None, y=0.0):
     """Corchete inferior con ganchos hacia arriba y esquinas redondeadas (plano XZ)."""
     pts = [(x0, y, zt)]
-    for k in range(7):  # esquina izquierda
-        a = math.radians(180 + 90 * k / 6)
+    for k in range(9):  # esquina izquierda
+        a = math.radians(180 + 90 * k / 8)
         pts.append((x0 + rc + rc * math.cos(a), y, zb + rc + rc * math.sin(a)))
-    for k in range(7):  # esquina derecha
-        a = math.radians(270 + 90 * k / 6)
+    for k in range(9):  # esquina derecha
+        a = math.radians(270 + 90 * k / 8)
         pts.append((x1 - rc + rc * math.cos(a), y, zb + rc + rc * math.sin(a)))
     pts.append((x1, y, zt))
     return centrar_origen(tubo(nombre, pts, r, material, parent))
 
 
-def flecha(nombre, a, b, r=0.01, rc=0.032, lc=0.085, material=None, parent=None):
-    """Flecha (asta + punta) en un grupo con origen en la cola: escalar el grupo la hace crecer."""
+def flecha(nombre, a, b, r=0.0045, rc=0.015, lc=0.065, material=None, parent=None):
+    """Flecha fina (asta + punta esbelta) en un grupo con origen en la cola: escalar el grupo la hace crecer."""
     a, b = Vector(a), Vector(b)
     g = bb.grupo(nombre, tuple(a), parent)
     d = b - a
     u = d.normalized()
     base = u * (d.length - lc)
-    tubo(nombre + '_asta', [(0, 0, 0), tuple(base + u * 0.01)], r, material, g)
+    tubo(nombre + '_asta', [(0, 0, 0), tuple(base + u * 0.006)], r, material, g)
     bb.cono(nombre + '_punta', tuple(base), tuple(d), r=rc, material=material, parent=g)
     return g
 
 
-# ---------------------------------------------------------------- texto como geometría (Georgia, bb.FUENTES['serif'])
+def reparentar(ob, padre):
+    """Cuelga ob (sin padre, sin giro) de un grupo sin giro ni escala, conservando su posición."""
+    ob.parent = padre
+    ob.location = Vector(ob.location) - Vector(padre.location)
+
+
+# ---------------------------------------------------------------- texto como geometría
 RES_TEXTO = 4
 
 
 def texto_malla(nombre, cuerpo, size=1.0, extrude=0.0, fuente=FUENTE, res=RES_TEXTO):
-    """Como bb.texto (curva de texto → malla), pero con resolución de curva controlada para el peso del GLB."""
+    """Como bb.texto (curva de texto → malla), con resolución de curva controlada para el peso del GLB."""
     cu = bpy.data.curves.new(nombre, 'FONT')
     cu.body = cuerpo
     cu.size = size
@@ -142,25 +207,29 @@ def texto_malla(nombre, cuerpo, size=1.0, extrude=0.0, fuente=FUENTE, res=RES_TE
     return bpy.context.view_layer.objects.active
 
 
-def _medir_H():
-    ob = texto_malla('_refH', 'H', size=1.0, extrude=0.0)
-    ys = [v.co.y for v in ob.data.vertices]
-    me = ob.data
-    bpy.data.objects.remove(ob)
-    bpy.data.meshes.remove(me)
-    return min(ys), max(ys) - min(ys)
+_CAPS = {}
 
 
-BASE1, CAP1 = _medir_H()
+def cap_de(fuente):
+    """(línea de base, altura de la H) de la fuente a tamaño 1."""
+    if fuente not in _CAPS:
+        ob = texto_malla('_refH', 'H', size=1.0, extrude=0.0, fuente=fuente)
+        ys = [v.co.y for v in ob.data.vertices]
+        me = ob.data
+        bpy.data.objects.remove(ob)
+        bpy.data.meshes.remove(me)
+        _CAPS[fuente] = (min(ys), max(ys) - min(ys))
+    return _CAPS[fuente]
 
 
 def glifos(cuerpo, cap, extrude, fuente=FUENTE):
-    """Devuelve (lista de glifos, ancho total). Cada glifo: dict(cx, x0, x1, verts, caras) con verts en
+    """Devuelve (lista de glifos, ancho total, x0). Cada glifo: dict(cx, x0, x1, verts, caras) con verts en
     coordenadas del texto (x, y, z), línea de base en y=0; se agrupan componentes que se solapan en x (tildes)."""
-    size = cap / CAP1
+    base1, cap1 = cap_de(fuente)
+    size = cap / cap1
     ob = texto_malla('_tmp', cuerpo, size=size, extrude=extrude, fuente=fuente)
     me = ob.data
-    base = BASE1 * size
+    base = base1 * size
     V = [Vector((v.co.x, v.co.y - base, v.co.z)) for v in me.vertices]
     F = [tuple(p.vertices) for p in me.polygons]
     bpy.data.objects.remove(ob)
@@ -222,9 +291,9 @@ def palabra_objetos(nombre, cuerpo, cap, extrude, material, parent, loc, fuente=
     return res, ancho
 
 
-def glifo_unico(nombre, cuerpo, cap, extrude, material, parent, loc):
+def glifo_unico(nombre, cuerpo, cap, extrude, material, parent, loc, fuente=FUENTE):
     """Varios caracteres como un solo objeto (p. ej. «LL»), centrado en x, base en loc.z."""
-    gl, ancho, x0 = glifos(cuerpo, cap, extrude)
+    gl, ancho, x0 = glifos(cuerpo, cap, extrude, fuente)
     xc = x0 + ancho / 2
     verts, caras = [], []
     for g in gl:
@@ -248,6 +317,47 @@ def palabra_plana_bm(cuerpo, cap, fuente=FUENTE):
                 pass
     bm.verts.ensure_lookup_table()
     return bm, ancho
+
+
+# renglones con cifras voladas: tramos (texto, fuente, escala, subida, espacio_antes) — subida y espacio en «caps»
+def T(txt, esp=0.0):
+    return (txt, FUENTE, 1.0, 0.0, esp)
+
+
+def SUP(d, esp=0.045):
+    return (d, F_NUM, 0.6, 0.5, esp)
+
+
+ESP = 0.36   # espacio entre palabras (en alturas de mayúscula)
+
+
+def renglon(nombre, tramos, cap, material, centro, parent=None, extrude=0.003):
+    """Renglón de pie (plano XZ, mirando a -Y) centrado en `centro` (x, y, z del centro óptico: base = z − cap/2)."""
+    verts, caras = [], []
+    cur = 0.0
+    for txt, fuente, esc, subida, esp in tramos:
+        gl, ancho, x0 = glifos(txt, cap * esc, extrude, fuente)
+        cur += esp * cap
+        dx = cur - x0
+        for g in gl:
+            n0 = len(verts)
+            verts += [Vector((v.x + dx, v.y + subida * cap, v.z)) for v in g['verts']]
+            caras += [tuple(n0 + i for i in f) for f in g['caras']]
+        cur += ancho
+    xs = [v.x for v in verts]
+    xc = (min(xs) + max(xs)) / 2
+    ob = malla(nombre, [de_pie(v, xc) for v in verts], caras, material, None,
+               (centro[0], centro[1], centro[2] - cap / 2))
+    if parent is not None:
+        reparentar(ob, parent)
+    return ob
+
+
+def inscripcion(nombre, tramos, cap, material, cara_y, zc, parent, x=0.0, relieve=0.0012):
+    """Rótulo grabado sobre la cara frontal (y = cara_y) de un sólido, en coordenadas locales de `parent`."""
+    ob = renglon(nombre, tramos, cap, material, (x, cara_y - relieve - 0.0004, zc), None, extrude=relieve)
+    ob.parent = parent
+    return ob
 
 
 # ---------------------------------------------------------------- animación
@@ -343,6 +453,13 @@ def recorrer(ob, t0, t1, p0, p1, alto, adelante, n=12):
         S.clave(ob, t0 + (t1 - t0) * tau, loc=tuple(p), interp=LIN)
 
 
+# ================================================================ medidas comunes de la «fracción»
+H_ORO = 0.11              # tablilla de oro (Significado / Sdo.), apoyada en el piso
+H_BAR = 0.016             # la barra: una tablilla delgada de tinta
+Z_BAR = H_ORO + H_BAR / 2  # centro de la barra (local a los grupos, cuyo origen está en el piso)
+Z_BT = H_ORO + H_BAR       # cara superior de la barra
+BEV = 0.004               # bisel de las tablillas
+
 # ================================================================ geometría de la figura 3
 # Escaneo (1550×390 px): figura en x 40-1387, y 33-277. Se escala a 6,6 m de ancho, centrada en el origen.
 ESC = 6.6 / 1347.0
@@ -350,83 +467,62 @@ def fx(px): return (px - 713.5) * ESC
 def fz(py): return (155.0 - py) * ESC
 
 
-# ---------------------------------------------------------------- estado 0: figura plana (plano XZ, de frente a -Y)
-# En el tema claro (papel) el marfil de 'lamina' se funde con el fondo: los trazos de la figura (corchetes,
-# barras, fracción) y las barras de volumen van en tinta oscura (prefijo 'grafito' → tinta en estudio.js).
-LAM = M('soporte', 'grafito_linea')
-BARRA = M('soporte', 'grafito_barra')
-NAC = M('significante')
-ORO = M('significado')
-CIAN = M('trayecto')
-GRAF = M('soporte')
-
+# ---------------------------------------------------------------- estado 0: la figura, grabada (plano XZ, de frente a -Y)
 plana_i = bb.grupo('plana_permutacion', (fx(467), 0, 0))
 plana_d = bb.grupo('plana_condensacion', (fx(1157), 0, 0))
-c1 = corchete('corchete1_plano', fx(41), fx(540), fz(143), fz(108), r=0.008, rc=0.03, material=LAM)
-c2 = corchete('corchete2_plano', fx(584), fx(891), fz(143), fz(108), r=0.008, rc=0.03, material=LAM)
-barra_pl = bb.caja('barra_plana', (fx(895) - fx(40), 0.02, 0.022), ((fx(40) + fx(895)) / 2, 0, fz(221.5)), LAM)
-def reparentar(ob, padre):
-    """Cuelga ob (sin padre, sin giro) de un grupo sin giro ni escala, conservando su posición."""
-    ob.parent = padre
-    ob.location = Vector(ob.location) - Vector(padre.location)
-
-
-for ob in (c1, c2, barra_pl):
-    reparentar(ob, plana_i)
-frac_pl = bb.caja('fraccion_plana', (fx(1203) - fx(1112), 0.02, 0.02), ((fx(1112) + fx(1203)) / 2, 0, fz(160.7)), LAM)
-FA = dict(r=0.0085, rc=0.026, lc=0.07, material=CIAN)
-fpl = [flecha('flecha_plana_si', (fx(1038), 0, fz(160.7)), (fx(1094), 0, fz(160.7)), **FA),
-       flecha('flecha_plana_sd', (fx(1270), 0, fz(160.7)), (fx(1216), 0, fz(160.7)), **FA),
-       flecha('flecha_plana_ii', (fx(1106), 0, fz(201)), (fx(1030), 0, fz(181)), **FA),
-       flecha('flecha_plana_id', (fx(1204), 0, fz(201)), (fx(1282), 0, fz(179)), **FA)]
-for ob in [frac_pl] + fpl:
-    reparentar(ob, plana_d)
+R0 = 0.0062                 # trazo de la figura
+CAP0 = 0.1                  # altura de mayúscula de la figura
+Y0 = 0.0
+piezas_i, piezas_d = [], []
+piezas_i.append(corchete('corchete1_plano', fx(41), fx(540), fz(143), fz(108), r=R0, rc=0.03, material=INK))
+piezas_i.append(corchete('corchete2_plano', fx(584), fx(891), fz(143), fz(108), r=R0, rc=0.03, material=INK))
+piezas_i.append(tubo('barra_plana', [(fx(40), Y0, fz(221.5)), (fx(895), Y0, fz(221.5))], R0 * 1.25, INK))
+piezas_d.append(tubo('fraccion_plana', [(fx(1110), Y0, fz(160.7)), (fx(1205), Y0, fz(160.7))], R0 * 1.25, INK))
+FA = dict(r=0.0052, rc=0.018, lc=0.075, material=ESM)
+piezas_d += [flecha('flecha_plana_si', (fx(1038), 0, fz(160.7)), (fx(1096), 0, fz(160.7)), **FA),
+             flecha('flecha_plana_sd', (fx(1277), 0, fz(160.7)), (fx(1219), 0, fz(160.7)), **FA),
+             flecha('flecha_plana_ii', (fx(1104), 0, fz(203)), (fx(1030), 0, fz(182)), **FA),
+             flecha('flecha_plana_id', (fx(1210), 0, fz(203)), (fx(1284), 0, fz(181)), **FA)]
+# letras de la figura (tinta; el Significado en oro)
+piezas_i += [
+    renglon('titulo_permutacion', [(u'Permutación', F_ITAL, 1.0, 0.0, 0.0)], 0.088, TINTA_L, (fx(151), Y0, fz(46))),
+    renglon('p_fonemas', [T('Fonema'), SUP('1'), T('…', 0.03), T('Fonema', ESP), SUP('2'), T('…', 0.03), T('etc.', ESP)],
+            CAP0, TINTA_L, (fx(290), Y0, fz(113))),
+    renglon('p_significante1', [T('Significante'), SUP('1')], CAP0, TINTA_L, (fx(290), Y0, fz(179))),
+    renglon('p_f', [T('F'), SUP('1'), T('…', 0.03), T('F', ESP), SUP('2'), T('…', 0.03), T('etc.', ESP)],
+            CAP0, TINTA_L, (fx(737), Y0, fz(113))),
+    renglon('p_snte2', [T('Snte.'), SUP('2')], CAP0, TINTA_L, (fx(737), Y0, fz(179))),
+    renglon('significado_plano', [T('Significado')], CAP0 * 1.05, ORO_L, (fx(467), Y0, fz(258))),
+]
+piezas_d += [
+    renglon('titulo_condensacion', [(u'Condensación', F_ITAL, 1.0, 0.0, 0.0)], 0.088, TINTA_L, (fx(1085), Y0, fz(46))),
+    renglon('c_snte1', [T('Snte.'), SUP('1')], CAP0, TINTA_L, (fx(980), Y0, fz(164))),
+    renglon('c_snte3', [T('Snte.'), SUP('3')], CAP0, TINTA_L, (fx(1157), Y0, fz(131))),
+    renglon('sdo_plano', [T('Sdo.')], CAP0 * 1.05, ORO_L, (fx(1157), Y0, fz(192))),
+    renglon('c_snte2', [T('Snte.'), SUP('2')], CAP0, TINTA_L, (fx(1337), Y0, fz(164))),
+]
+for ob in piezas_i:
+    reparentar(ob, plana_i) if ob.parent is None else None
+for ob in piezas_d:
+    reparentar(ob, plana_d) if ob.parent is None else None
 for g in (plana_i, plana_d):
     fijar(g, esc=(1, 1, 1))
     saltar(g, 0.3, 1.0, TINY)
 
-YL = -0.06
-
-
-def LN(html):
-    """Cifras de caja alta: en Cormorant (clase 'grande') el «1» elzeviriano volado se lee como una «I»."""
-    return f'<span style="font-variant-numeric:lining-nums">{html}</span>'
-
-
-S.etiqueta('p_perm', '<em>Permutación</em>', (fx(141), YL, fz(46)), clase='serif')
-S.etiqueta('p_cond', '<em>Condensación</em>', (fx(1055), YL, fz(46)), clase='serif')
-S.etiqueta('p_fon', LN('Fonema<sup>1</sup>… Fonema<sup>2</sup>… etc.'), (fx(286), YL, fz(113)), clase='grande snte')
-S.etiqueta('p_f', LN('F<sup>1</sup>… F<sup>2</sup>… etc.'), (fx(729), YL, fz(113)), clase='grande snte')
-S.etiqueta('p_snte1', LN('Significante<sup>1</sup>'), (fx(287), YL, fz(178)), clase='grande snte')
-S.etiqueta('p_snte2', LN('Snte.<sup>2</sup>'), (fx(737), YL, fz(176)), clase='grande snte')
-S.etiqueta('p_sdo', 'Significado', (fx(461), YL, fz(257)), clase='grande sdo')
-S.etiqueta('c_snte1', LN('Snte.<sup>1</sup>'), (fx(978), YL, fz(164)), clase='grande snte')
-S.etiqueta('c_snte3', LN('Snte.<sup>3</sup>'), (fx(1157), YL, fz(124)), clase='grande snte')
-S.etiqueta('c_sdo', 'Sdo.', (fx(1157), YL, fz(197)), clase='grande sdo')
-S.etiqueta('c_snte2', LN('Snte.<sup>2</sup>'), (fx(1338), YL, fz(163)), clase='grande snte')
-ETQ0 = ['p_perm', 'p_cond', 'p_fon', 'p_f', 'p_snte1', 'p_snte2', 'p_sdo', 'c_snte1', 'c_snte3', 'c_sdo', 'c_snte2']
-
 
 # ---------------------------------------------------------------- estado 1: permutación en volumen
-# ZB1: el fondo del Significado queda a la misma altura que el del Sdo. del estado 2 (≈ fz(160.7) − 0,226): el
-# visor pone el suelo de sombras bajo lo visible al final de la línea de tiempo, y así la permutación también
-# se posa sobre él (antes flotaba por debajo, sin sombra).
-XP, ZB1 = -1.2, fz(160.7) + 0.009
-perm = bb.grupo('permutacion', (XP, 0, ZB1))
+XP = -1.2
+perm = bb.grupo('permutacion', (XP, 0, PISO))
 fijar(perm, esc=(1, 1, 1))
 desaparecer(perm, 3.55, 3.95)
 
-barra1 = bb.caja('barra_perm', (4.55, 0.44, 0.04), (0, 0, 0), BARRA, perm, bevel=0.01)
-oro1 = bb.caja('significado', (1.5, 0.28, 0.21), (0, -0.1, -0.13), ORO, perm, bevel=0.02)
-aparecer(barra1, 0.2, 0.75)
-aparecer(oro1, 0.35, 0.9)
-
-CAP_T = 0.11
-TW, TLL, TH, TD = 0.165, 0.245, 0.2, 0.07
-GAP, ESP = 0.022, 0.075
-RH = 0.15                  # altura del zócalo de cada cadena
-Z_T = 0.02 + RH            # base de las teselas (local al grupo)
-Y_T = -0.06                # y del centro de las teselas
+CAP_T = 0.1
+TW, TLL, TH, TD = 0.148, 0.222, 0.185, 0.022   # tablillas: ancho, ancho de LL, alto, grosor
+GAP, ESPT = 0.016, 0.07
+RH = 0.11                  # alto del plinto de cada cadena
+PD = 0.15                  # fondo del plinto
+Z_T = Z_BT + RH            # base de las tablillas (local al grupo)
+Y_T = -PD / 2 + 0.03       # y del centro de las tablillas (cerca del canto frontal del plinto)
 
 
 def disposicion(chars):
@@ -434,7 +530,7 @@ def disposicion(chars):
     for ch in chars:
         if ch == ' ':
             xs.append(None)
-            cur += ESP
+            cur += ESPT
             continue
         w = TLL if ch == 'LL' else TW
         xs.append(cur + w / 2)
@@ -447,26 +543,35 @@ FILA = ['V', 'A', 'Y', 'A', ' ', 'U', 'N', ' ', 'G', 'A', 'LL', 'O']
 FILA2 = ['V', 'A', 'LL', 'A', ' ', 'U', 'N', ' ', 'G', 'A', 'Y', 'O']
 xs1, ANCHO_F = disposicion(FILA)
 xs2, _ = disposicion(FILA2)
-SEP = 0.32
+SEP = 0.34
 CX = [-(ANCHO_F / 2 + SEP / 2), (ANCHO_F / 2 + SEP / 2)]
+L_BAR1 = 2 * ANCHO_F + SEP + 0.34
+
+oro1 = bb.caja('significado', (1.5, 0.24, H_ORO), (0, 0.0, H_ORO / 2), ORO, perm, bevel=0.006)
+inscripcion('significado_inscripcion', [T('Significado')], 0.054, TINTA_L, -0.12, 0.0, oro1)
+barra1 = bb.caja('barra_perm', (L_BAR1, 0.24, H_BAR), (0, 0, Z_BAR), BARRA, perm, bevel=BEV)
+aparecer(barra1, 0.2, 0.75)
+aparecer(oro1, 0.35, 0.9)
 
 
 def tesela(nombre, ch, loc, parent):
-    """Tesela de grafito con la letra (o el dígrafo LL, un solo fonema) incrustada en nácar."""
+    """Tablilla delgada de piedra clara con la letra (o el dígrafo LL, un solo fonema) en grafito."""
     g = bb.grupo(nombre, loc, parent)
     w = TLL if ch == 'LL' else TW
-    bb.caja(nombre + '_cuerpo', (w, TD, TH), (0, 0, TH / 2), GRAF, g, bevel=0.012)
-    glifo_unico(nombre + '_letra', ch, CAP_T, 0.0, NAC, g, (0, -TD / 2 - 0.0015, TH / 2 - CAP_T / 2))
+    bb.caja(nombre + '_cuerpo', (w, TD, TH), (0, 0, TH / 2), TESELA, g, bevel=0.0035)
+    glifo_unico(nombre + '_letra', ch, CAP_T, 0.0025, LACA, g, (0, -TD / 2 - 0.0028, TH / 2 - CAP_T / 2))
     return g
 
 
 filas, teselas = [], [[], []]
+ETQ_PL = ([T('Significante'), SUP('1')], [T('Snte.'), SUP('2')])
 for r in range(2):
     cx = CX[r]
-    zocalo = bb.caja(f'zocalo_{r}', (ANCHO_F + 0.1, 0.3, RH), (cx, -0.02, 0.02 + RH / 2), GRAF, perm, bevel=0.012)
+    zocalo = bb.caja(f'zocalo_{r}', (ANCHO_F + 0.12, PD, RH), (cx, 0.0, Z_BT + RH / 2), PLINTO, perm, bevel=BEV)
+    inscripcion(f'zocalo_{r}_inscripcion', ETQ_PL[r], 0.05, TINTA_L, -PD / 2, -0.013, zocalo)
     aparecer(zocalo, 0.3 + 0.1 * r, 0.8 + 0.1 * r)
-    corch = corchete(f'corchete_{r}', cx - ANCHO_F / 2 - 0.045, cx + ANCHO_F / 2 + 0.045, Z_T + 0.004, Z_T + 0.1,
-                     r=0.0075, rc=0.028, material=LAM, parent=perm, y=-0.19)
+    corch = corchete(f'corchete_{r}', cx - ANCHO_F / 2 - 0.035, cx + ANCHO_F / 2 + 0.035, Z_T - 0.021, Z_T + 0.075,
+                     r=0.0042, rc=0.022, material=INK, parent=perm, y=-PD / 2 - 0.006)
     aparecer(corch, 0.55 + 0.1 * r, 1.0 + 0.1 * r)
     fila = bb.grupo(f'fila_{r}', (cx, Y_T, Z_T), perm)
     filas.append(fila)
@@ -492,39 +597,39 @@ S.clave(medio, TS + 0.7 * (TE - TS), loc=(TLL - TW, 0, 0))
 gY, gLL = teselas[1][iY], teselas[1][iLL]
 pY0, pY1 = Vector((xs1[iY], 0, 0)), Vector((xs2[iLL], 0, 0))
 pL0, pL1 = Vector((xs1[iLL], 0, 0)), Vector((xs2[iY], 0, 0))
+ALTO_Y, ADEL_Y, ALTO_L, ADEL_L = 0.42, 0.16, 0.28, -0.2
 fijar(gY, loc=tuple(pY0))
 fijar(gLL, loc=tuple(pL0))
-recorrer(gY, TS, TE, pY0, pY1, 0.46, 0.2)
-recorrer(gLL, TS, TE, pL0, pL1, 0.3, -0.24)
+recorrer(gY, TS, TE, pY0, pY1, ALTO_Y, ADEL_Y)
+recorrer(gLL, TS, TE, pL0, pL1, ALTO_L, ADEL_L)
 
-# trazas punteadas de los dos recorridos (cian = trayecto), sobre el canto superior de las teselas
-arcos = []
-for nombre, p0, p1, alto, adel in (('arco_y', pY0, pY1, 0.46, 0.2), ('arco_ll', pL0, pL1, 0.3, -0.24)):
+# trazas punteadas de los dos recorridos (esmeralda = trayecto), sobre el canto superior de las tablillas
+for nombre, p0, p1, alto, adel in (('arco_y', pY0, pY1, ALTO_Y, ADEL_Y), ('arco_ll', pL0, pL1, ALTO_L, ADEL_L)):
     off = Vector((cx2, Y_T, Z_T + TH + 0.03))
-    pts = [tuple(p) for p in trayecto_puntos(p0 + off, p1 + off, alto, adel, n=48)]
+    pts = [tuple(p) for p in trayecto_puntos(p0 + off, p1 + off, alto, adel, n=64)]
     g = bb.grupo(nombre, (0, 0, 0), perm)
-    bb.polilinea_punteada(nombre + '_guiones', pts, guion=0.05, hueco=0.035, r=0.0085, material=CIAN, parent=g,
-                          flecha={'r': 0.028, 'largo': 0.075})
+    bb.polilinea_punteada(nombre + '_guiones', pts, guion=0.034, hueco=0.026, r=0.0042, material=ESM, parent=g,
+                          flecha={'r': 0.014, 'largo': 0.058})
     fijar(g, esc=T3)
     saltar(g, 1.3, TINY, 1.0)
-    arcos.append(g)
 
-S.etiqueta('e1_snte1', 'Significante<sup>1</sup>', (XP + CX[0], -0.2, ZB1 + 0.02 + 0.055), clase='snte')
-S.etiqueta('e1_snte2', 'Snte.<sup>2</sup>', (XP + CX[1], -0.2, ZB1 + 0.02 + 0.055), clase='snte')
-S.etiqueta('e1_sdo', 'Significado', (XP, -0.26, ZB1 - 0.13), clase='sdo')
-S.etiqueta('e1_yll', 'y ⇄ ll', (XP + cx2 + (xs1[iY] + xs1[iLL]) / 2, -0.1, ZB1 + Z_T + TH + 0.52), clase='trayecto')
+APEX_Y = XP + cx2 + (xs1[iY] + xs1[iLL]) / 2
+S.etiqueta('e1_yll', 'y ⇄ ll', (APEX_Y, -0.08, PISO + Z_T + TH + 0.03 + ALTO_Y + 0.1), clase='trayecto')
 
 
 # ---------------------------------------------------------------- estado 2: condensación (AMO ⇄ AMOSCLAVO ⇄ ESCLAVO)
-XC, ZB2 = fx(1157), fz(160.7)
-cond = bb.grupo('condensacion', (XC, 0, ZB2))
-YC = -0.07
-CAP_L = 0.16
-EXT_L = 0.018
-BAR_W = 1.75
+XC = fx(1157)
+cond = bb.grupo('condensacion', (XC, 0, PISO))
+YC = 0.0
+CAP_L = 0.2
+EXT_L = 0.012
+BAR_W = 1.95
+H_PL = 0.03                 # plintos bajos de los laterales
+Y_LAT = -0.62               # los laterales, adelantados: el tercer término queda al fondo, sobre el Sdo.
 
-barra2 = bb.caja('barra_cond', (BAR_W, 0.34, 0.04), (0, YC, 0), BARRA, cond, bevel=0.01)
-oro2 = bb.caja('sdo', (0.8, 0.26, 0.2), (0, YC - 0.05, -0.126), ORO, cond, bevel=0.02)
+barra2 = bb.caja('barra_cond', (BAR_W, 0.22, H_BAR), (0, YC, Z_BAR), BARRA, cond, bevel=BEV)
+oro2 = bb.caja('sdo', (0.8, 0.24, H_ORO), (0, YC, H_ORO / 2), ORO, cond, bevel=0.006)
+inscripcion('sdo_inscripcion', [T('Sdo.')], 0.056, TINTA_L, -0.12, 0.0, oro2)
 
 T2A = 3.75  # aparición del aparato de condensación
 fijar(barra2, esc=T3)
@@ -537,16 +642,15 @@ gl_c, ancho_c, x0_c = glifos('AMOSCLAVO', CAP_L, EXT_L)
 ranuras = [g['cx'] - (x0_c + ancho_c / 2) for g in gl_c]
 assert len(ranuras) == 9, len(ranuras)
 
-INNER2 = BAR_W / 2 + 0.62     # borde interior de los laterales en el estado 2
-Z_LAT = -0.078                 # línea de base de los laterales (su centro queda a la altura de la barra)
+INNER2 = BAR_W / 2 + 0.3     # borde interior de los laterales en el estado 2
 
 
 def lateral(nombre, cuerpo, lado, inner):
     gl, ancho, x0 = glifos(cuerpo, CAP_L, EXT_L)
     cxw = lado * (inner + ancho / 2)
-    g = bb.grupo(nombre, (cxw, YC, Z_LAT), cond)
-    letras, _ = palabra_objetos(nombre + '_l', cuerpo, CAP_L, EXT_L, NAC, g, (0, 0, 0))
-    bb.caja(nombre + '_plinto', (ancho + 0.16, 0.26, 0.03), (0, 0, -0.018), GRAF, g, bevel=0.008)
+    g = bb.grupo(nombre, (cxw, Y_LAT, 0.0), cond)
+    letras, _ = palabra_objetos(nombre + '_l', cuerpo, CAP_L, EXT_L, LACA, g, (0, 0, H_PL))
+    bb.caja(nombre + '_plinto', (ancho + 0.16, 0.2, H_PL), (0, 0, H_PL / 2), PLINTO, g, bevel=BEV)
     return g, letras, ancho, cxw
 
 
@@ -555,17 +659,19 @@ g_esc, l_esc, w_esc, cx_esc = lateral('esclavo', 'ESCLAVO', 1, INNER2)
 aparecer(g_amo, T2A + 0.2, T2A + 0.7)
 aparecer(g_esc, T2A + 0.25, T2A + 0.75)
 
-# flechas opuestas (ida arriba, vuelta abajo), como en la figura
-FB = dict(r=0.012, rc=0.036, lc=0.09, material=CIAN)
-a_si = flecha('flecha_si', (-INNER2 + 0.07, YC, 0.03), (-BAR_W / 2 - 0.05, YC, 0.03), parent=cond, **FB)
-a_ii = flecha('flecha_ii', (-BAR_W / 2 - 0.05, YC, -0.14), (-INNER2 + 0.07, YC, -0.045), parent=cond, **FB)
-a_sd = flecha('flecha_sd', (INNER2 - 0.07, YC, 0.03), (BAR_W / 2 + 0.05, YC, 0.03), parent=cond, **FB)
-a_id = flecha('flecha_id', (BAR_W / 2 + 0.05, YC, -0.14), (INNER2 - 0.07, YC, -0.045), parent=cond, **FB)
+# flechas opuestas (ida arriba, hacia el tercer término; vuelta abajo, desde el Sdo.), como en la figura
+FB = dict(r=0.0045, rc=0.015, lc=0.065, material=ESM)
+ZA_SUP, ZA_INF = Z_BT + 0.6 * CAP_L, 0.06
+ZL_SUP, ZL_INF = H_PL + 0.8 * CAP_L, H_PL + 0.25 * CAP_L
+XL = INNER2 - 0.05
+a_si = flecha('flecha_si', (-XL, Y_LAT + 0.03, ZL_SUP), (-BAR_W / 2 - 0.04, YC - 0.03, ZA_SUP), parent=cond, **FB)
+a_ii = flecha('flecha_ii', (-0.4 - 0.05, YC - 0.03, ZA_INF), (-XL, Y_LAT + 0.03, ZL_INF), parent=cond, **FB)
+a_sd = flecha('flecha_sd', (XL, Y_LAT + 0.03, ZL_SUP), (BAR_W / 2 + 0.04, YC - 0.03, ZA_SUP), parent=cond, **FB)
+a_id = flecha('flecha_id', (0.4 + 0.05, YC - 0.03, ZA_INF), (XL, Y_LAT + 0.03, ZL_INF), parent=cond, **FB)
 aparecer(a_si, 4.4, 4.8)
 aparecer(a_sd, 4.45, 4.85)
 
 # letras viajeras: copias que salen de AMO y de ESCLAVO (los originales permanecen)
-Z_RAN = 0.02
 TV = 1.35
 orden = [(l_amo[2], cx_amo, 2, 4.9), (l_esc[1], cx_esc, 3, 4.95),
          (l_amo[1], cx_amo, 1, 5.15), (l_esc[2], cx_esc, 4, 5.2),
@@ -578,19 +684,18 @@ for (ob_o, cx_rel), cxw, ranura, t0 in orden:
     cp.name = f'viajera_{ranura}'
     bpy.context.scene.collection.objects.link(cp)
     cp.parent = cond
-    p0 = Vector((cxw + cx_rel, YC, Z_LAT))
-    p1 = Vector((ranuras[ranura], YC, Z_RAN))
+    p0 = Vector((cxw + cx_rel, Y_LAT, H_PL))
+    p1 = Vector((ranuras[ranura], YC, Z_BT))
     fijar(cp, loc=tuple(p0), esc=T3)
     saltar(cp, t0, TINY, 1.0)
-    recorrer(cp, t0, t0 + TV, p0, p1, 0.36, 0.22)
+    recorrer(cp, t0, t0 + TV, p0, p1, 0.4, 0.0)
     viajeras.append(cp)
 aparecer(a_ii, 7.2, 7.6)
 aparecer(a_id, 7.25, 7.65)
 
-S.etiqueta('e2_snte1', 'Snte.<sup>1</sup>', (0, -0.2, -0.13), parent=g_amo, clase='snte')
-S.etiqueta('e2_snte2', 'Snte.<sup>2</sup>', (0, -0.2, -0.13), parent=g_esc, clase='snte')
-S.etiqueta('e2_snte3', 'Snte.<sup>3</sup>', (XC, -0.1, ZB2 + 0.36), clase='snte')
-S.etiqueta('e2_sdo', 'Sdo.', (XC, YC - 0.21, ZB2 - 0.126), clase='sdo')
+S.etiqueta('e2_snte1', 'Snte.<sup>1</sup>', (0, -0.17, -0.02), parent=g_amo, clase='snte')
+S.etiqueta('e2_snte2', 'Snte.<sup>2</sup>', (0, -0.17, -0.02), parent=g_esc, clase='snte')
+S.etiqueta('e2_snte3', 'Snte.<sup>3</sup>', (XC, YC + 0.05, PISO + Z_BT + CAP_L + 0.12), clase='snte')
 
 
 # ---------------------------------------------------------------- estado 3: el lector dentro (listones trapezoidales)
@@ -604,9 +709,10 @@ EPS = 0.0015      # separación del texto respecto de la cara
 RECORTE = 0.004   # el texto lateral no llega al canto frontal (evita astillas vistas desde el otro lado)
 XS = [(j - (NF - 1) / 2) * P_ for j in range(NF)]
 W_ = XS[-1] - XS[0] + B_
-Z_PB = 0.02       # base del panel (sobre la barra), local a cond
+Z_PB = Z_BT       # base del panel (sobre la barra), local a cond
+Y_PB = 0.085      # tablero + listones (0,19 m de fondo) centrados sobre la barra (0,22 m)
 
-panel = bb.grupo('panel', (0, 0, Z_PB), cond)
+panel = bb.grupo('panel', (0, Y_PB, Z_PB), cond)
 bm = bmesh.new()
 for x in XS:
     q = [(x - B_ / 2, 0.0), (x + B_ / 2, 0.0), (x + T_ / 2, -D_), (x - T_ / 2, -D_)]
@@ -617,32 +723,31 @@ for x in XS:
     for k in range(4):
         bm.faces.new((lo[k], lo[(k + 1) % 4], hi[(k + 1) % 4], hi[k]))
 bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
-listones = bb._obj_from_bm('listones', bm, GRAF, panel)
+listones = bb._obj_from_bm('listones', bm, LISTON, panel)
 for p in listones.data.polygons:
     p.use_smooth = False
-tablero = bb.caja('tablero', (W_, 0.03, H_), (0, 0.015, H_ / 2), M('barro'), panel)
+tablero = bb.caja('tablero', (W_ + 0.004, 0.022, H_ + 0.004), (0, 0.011, H_ / 2), TABLERO, panel, bevel=0.002)
 
-BAR3 = (W_ + 0.12) / BAR_W
+BAR3 = (W_ + 0.1) / BAR_W
 
-# cámaras del estado 3 (el slider de azimut gira alrededor de la vertical que pasa por el objetivo)
+# cámaras de los estados 3 y 4 (el slider de azimut gira alrededor de la vertical que pasa por el objetivo)
 RH3 = 24.0
 ELEV3 = math.radians(5.0)
-# el objetivo va 0,35 m a la derecha del panel y 0,08 m por debajo de la barra: el dispositivo queda a la izquierda y
-# arriba, y en ningún azimut (±40°) el estante roza la tarjeta de texto, ni incrustado (1920×904) ni a pantalla
-# completa (16:9); el alto visible (2,15 m) es el mayor que lo cumple con márgenes (comprobado por proyección).
-LOOK3 = Vector((XC + 0.35, 0.0, ZB2 - 0.08))
+LOOK3 = Vector((XC - 0.058, 0.0, PISO + 0.12))
 CAM3 = LOOK3 + Vector((0, -RH3, RH3 * math.tan(ELEV3)))
-VIS_H3 = 2.15                  # alto visible (m) a la distancia del objetivo
+VIS_H3 = 2.1                   # alto visible (m) a la distancia del objetivo
 AZ = 40.0
 
 
-def cam_az(phi_deg):
+def cam_az(phi_deg, cam=None, look=None):
+    cam = Vector(cam) if cam is not None else CAM3
+    look = Vector(look) if look is not None else LOOK3
     ph = math.radians(phi_deg)
-    off = CAM3 - LOOK3
-    return LOOK3 + Vector((-off.y * math.sin(ph), off.y * math.cos(ph), off.z))
+    off = cam - look
+    return look + Vector((off.x * math.cos(ph) - off.y * math.sin(ph), off.x * math.sin(ph) + off.y * math.cos(ph), off.z))
 
 
-ORIG_P = Vector((XC, 0, ZB2 + Z_PB))
+ORIG_P = Vector((XC, Y_PB, PISO + Z_PB))
 C_F = CAM3 - ORIG_P
 C_L = cam_az(-AZ) - ORIG_P
 C_R = cam_az(AZ) - ORIG_P
@@ -772,7 +877,7 @@ def texto_panel(nombre, izq, frente, der, parent, fuente=FUENTE):
     for b_ in (bmF, bmL, bmR):
         b_.free()
     print(f'[condensacion] {nombre}: cap frente {capF:.3f}, izq {capL:.3f}, der {capR:.3f}')
-    return malla(nombre, acc[0], acc[1], NAC, parent)
+    return malla(nombre, acc[0], acc[1], LACA, parent)
 
 
 txtA = texto_panel('texto_amosclavo', 'AMO', 'AMOSCLAVO', 'ESCLAVO', panel)
@@ -785,11 +890,10 @@ for a in (a_si, a_ii, a_sd, a_id):
 S.clave(barra2, T3A, esc=(1, 1, 1))
 S.clave(barra2, T3A + 0.6, esc=(BAR3, 1, 1))
 # AMO y ESCLAVO entran en el dispositivo (van hacia los cantos del panel y se desvanecen): en los estados 3 y 4
-# no queda ningún lateral en la escena, así que nada asoma por los bordes en ningún punto del deslizador
-# (antes se apartaban a ±3,3 m y, con el lector a ±40°, un trozo de ESCLAVO/AMO entraba en el cuadro incrustado).
+# no queda ningún lateral en la escena, así que nada asoma por los bordes en ningún punto del deslizador.
 for g, lado in ((g_amo, -1), (g_esc, 1)):
     p = Vector(g.location)
-    q = Vector((lado * (W_ / 2 - 0.2), p.y, p.z))
+    q = Vector((lado * (W_ / 2 - 0.2), YC, p.z))
     fijar(g, loc=tuple(p))
     S.clave(g, T3A, loc=tuple(p), esc=(1, 1, 1))
     S.clave(g, T3A + 0.8, loc=tuple(q), esc=T3)
@@ -803,9 +907,9 @@ fijar(txtA, esc=(1, 1, 1))
 fijar(txtB, esc=T3)
 
 # Las etiquetas HTML no cambian con el deslizador: un «Snte.³» fijo rotularía mal AMO (Snte.¹) y ESCLAVO (Snte.²)
-# vistos de lado. Se usa una leyenda que vale para las tres posiciones del lector.
-S.etiqueta('e3_leyenda', 'Snte.<sup>1</sup> desde la izquierda · <b>Snte.<sup>3</sup> de frente</b> · '
-           'Snte.<sup>2</sup> desde la derecha', (XC, -0.2, ZB2 + Z_PB + H_ + 0.085), clase='snte')
+# vistos de lado. Se usa una leyenda breve que vale para las tres posiciones del lector.
+S.etiqueta('e3_leyenda', 'izquierda: Snte.<sup>1</sup> · de frente: <b>Snte.<sup>3</sup></b> · derecha: Snte.<sup>2</sup>',
+           (XC, Y_PB - D_ / 2, PISO + Z_PB + H_ + 0.075), clase='snte')
 # (la aclaración sobre Cruz-Diez / Le Parc está en la diapositiva 20: no se rotula en la escena)
 
 # ---------------------------------------------------------------- estado 4: MAQUINOSCRITO (mismos listones)
@@ -821,20 +925,20 @@ for a in avisos:
     print('[condensacion] AVISO', a)
 
 # ================================================================ estados
-# cámara horizontal 0,52 m por debajo del centro de la figura: la figura sube en el cuadro y deja libre la tarjeta
+# cámara horizontal por debajo del centro de la figura: la figura sube en el cuadro y deja libre la tarjeta
 FRENTE = dict(cam=(0.0, -38.0, -0.52), look=(0.0, 0.0, -0.52), fov=6.3)
 
 
-def acercar(cam, look, k):
-    cam, look = Vector(cam), Vector(look)
-    return tuple(look + (cam - look) / k), tuple(look)
+def orbita(look, dist, elev, az=0.0):
+    """Cámara a `dist` del objetivo, `elev` grados sobre la horizontal y `az` grados a la derecha del eje -Y."""
+    look = Vector(look)
+    e, a = math.radians(elev), math.radians(az)
+    return tuple(look + dist * Vector((math.sin(a) * math.cos(e), -math.cos(a) * math.cos(e), math.sin(e)))), tuple(look)
 
 
-c1_, l1_ = acercar((XP - 1.4, -7.4, ZB1 + 2.3 - 0.15), (XP + 0.05, 0.0, ZB1 - 0.05 - 0.15), 1.33)
+c1_, l1_ = orbita((XP - 0.07, 0.0, PISO + 0.02), 5.6, 19.0, -8.0)
 E1 = dict(cam=c1_, look=l1_, fov=30)
-# cámara y objetivo 0,28 m más abajo: la fila sube en el cuadro y «Snte.²» no toca el panel de texto
-# (en la diapositiva el visor mide 1920×904 y el panel crece con el deslizador)
-c2_, l2_ = acercar((XC - 0.9, -7.0, ZB2 + 1.25 - 0.46), (XC + 0.24, 0.0, ZB2 - 0.1 - 0.46), 1.25)
+c2_, l2_ = orbita((XC + 0.33, -0.3, PISO - 0.22), 6.25, 30.0, -3.0)
 E2 = dict(cam=c2_, look=l2_, fov=30)
 E3 = dict(cam=tuple(CAM3), look=tuple(LOOK3), fov=2 * math.degrees(math.atan(VIS_H3 / 2 / (CAM3 - LOOK3).length)))
 SLIDER_LECTOR = {'tipo': 'azimut', 'min': -AZ, 'max': AZ, 'etiqueta': 'posición del lector',
@@ -843,12 +947,12 @@ SLIDER_LECTOR = {'tipo': 'azimut', 'min': -AZ, 'max': AZ, 'etiqueta': 'posición
 S.estado('Figura 3',
          'La figura tal como la dibuja Sarduy: a la izquierda, la <b>permutación</b> (dos cadenas, un solo Significado); '
          'a la derecha, la <b>condensación</b> (surge un tercer término).',
-         'Figura 3 según Sarduy 1972, reconstrucción · l. 317-327', etiquetas=ETQ0, orbita=False, t1=0, **FRENTE)
+         'Figura 3 según Sarduy 1972, reconstrucción · l. 317-327', etiquetas=[], orbita=False, t1=0, **FRENTE)
 S.estado('Permutación',
          'La y de «vaya» y la ll de «gallo» cambian de lugar: «valla un gayo». Dos significantes, un solo '
          '<b>Significado</b>, que no se mueve. (La lectura y/ll es interpretación docente.)',
          'Cabrera Infante, «O se me valla un gayo» · l. 322-324 · l. 341',
-         etiquetas=['e1_snte1', 'e1_snte2', 'e1_sdo', 'e1_yll'], t1=3.4,
+         etiquetas=['e1_yll'], t1=3.4,
          slider={'tipo': 'tiempo', 't0': 1.45, 't1': 3.35, 'etiqueta': 'permutación y ⇄ ll',
                  'min_txt': 'vaya un gallo', 'max_txt': 'valla un gayo'}, **E1)
 # Estado 2: la pregunta de predicción no se responde en el texto (se ve en la escena). Con la curva de
@@ -857,7 +961,7 @@ S.estado('Condensación',
          'Letras de AMO y de ESCLAVO viajan y componen AMOSCLAVO, el tercer término, sobre el Sdo. '
          'Mira los laterales: es la «puesta en escena» de dos significantes.',
          'Cabrera Infante, «amosclavo» · «puesta en escena» · l. 341-342 · l. 399-404',
-         etiquetas=['e2_snte1', 'e2_snte2', 'e2_snte3', 'e2_sdo'], t1=7.9,
+         etiquetas=['e2_snte1', 'e2_snte2', 'e2_snte3'], t1=7.9,
          slider={'tipo': 'tiempo', 't0': 4.85, 't1': 7.9, 'etiqueta': 'condensación',
                  'min_txt': 'AMO · ESCLAVO', 'max_txt': 'AMOSCLAVO'},
          pregunta='¿Desaparecen AMO y ESCLAVO cuando surge el tercer término?', **E2)
@@ -866,12 +970,12 @@ S.estado('El lector dentro',
          'Desde la izquierda, AMO; desde la derecha, ESCLAVO; de frente, AMOSCLAVO. Ninguna vista sola es la obra: '
          'el desplazamiento del lector, «comparable a la lectura», condensa las tres.',
          'Sarduy sobre Cruz-Diez · l. 320-321 · l. 353-359',
-         etiquetas=['e3_leyenda', 'e2_sdo'], t1=10.3, orbita=False, slider=SLIDER_LECTOR, **E3)
+         etiquetas=['e3_leyenda'], t1=10.3, orbita=False, slider=SLIDER_LECTOR, **E3)
 S.estado('Maquinoscrito',
          'El mismo mecanismo: MÁQUINA desde la izquierda, MANUSCRITO desde la derecha y, de frente, '
          'el tercer término, MAQUINOSCRITO.',
          'Cabrera Infante, «maquinoscrito» · l. 341-342',
-         etiquetas=['e3_leyenda', 'e2_sdo'], t1=12.1, orbita=False, slider=SLIDER_LECTOR, **E3)
+         etiquetas=['e3_leyenda'], t1=12.1, orbita=False, slider=SLIDER_LECTOR, **E3)
 
 # ---------------------------------------------------------------- recuento
 tris = 0
@@ -882,14 +986,42 @@ print(f'[condensacion] triángulos ≈ {tris} (las viajeras comparten malla con 
 
 aplicar_interpolaciones()
 
-# luz frontal pareja sólo para pósters (el GLB no exporta luces): el texto de los listones queda legible
-_ld = bpy.data.lights.new('frontal_poster', 'AREA')
-_ld.energy, _ld.size, _ld.color = 900, 8.0, (1.0, 0.96, 0.9)
-_lo = bpy.data.objects.new('frontal_poster', _ld)
-_lo.location = (0.8, -9.0, 2.2)
-_lo.rotation_mode = 'QUATERNION'
-_lo.rotation_quaternion = (Vector((0.8, 0.0, 0.0)) - Vector(_lo.location)).to_track_quat('-Z', 'Y')
-_lo['poster_only'] = True
-bpy.context.scene.collection.objects.link(_lo)
+
+# ---------------------------------------------------------------- informe de encuadre (sólo consola)
+def _proy(cam, look, fov, asp, P):
+    cam, look = Vector(cam), Vector(look)
+    f = (look - cam).normalized()
+    r = f.cross(Vector((0, 0, 1))).normalized()
+    u = r.cross(f)
+    d = Vector(P) - cam
+    z = d.dot(f)
+    th = math.tan(math.radians(fov) / 2)
+    return d.dot(r) / z / (th * asp), d.dot(u) / z / th
+
+
+def informe_encuadre():
+    sc = bpy.context.scene
+    for n, e in enumerate(S.estados):
+        sc.frame_set(S.f(e['t1']))
+        azs = [0.0]
+        if e.get('slider') and e['slider'].get('tipo') == 'azimut':
+            azs = [e['slider']['min'], 0.0, e['slider']['max']]
+        for az in azs:
+            cam = cam_az(az, e['_cam'], e['_look'])
+            for vista, W, H in (('embed', 1920, 983), ('visor', 1920, 1080)):
+                x0 = y0 = 1e9
+                x1 = y1 = -1e9
+                for ob in bpy.data.objects:
+                    if ob.type != 'MESH' or min(ob.matrix_world.to_scale()) < 0.01:
+                        continue
+                    for c in ob.bound_box:
+                        x, y = _proy(cam, e['_look'], e['fov'], W / H, ob.matrix_world @ Vector(c))
+                        px, py = (x + 1) / 2 * W, (1 - y) / 2 * H
+                        x0, x1, y0, y1 = min(x0, px), max(x1, px), min(y0, py), max(y1, py)
+                print(f'[encuadre] e{n} az={az:+.0f} {vista}: x {x0:.0f}–{x1:.0f}  y {y0:.0f}–{y1:.0f}')
+    sc.frame_set(0)
+
+
+informe_encuadre()
 
 S.exportar()

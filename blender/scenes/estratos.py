@@ -1,16 +1,18 @@
 """N5 · Estratos — leer en filigrana: cita, reminiscencia y gramas (Sarduy 1972, l. 406-771).
 
-Un bloque-texto de 6 losas (4 × 3 × 1,2 m). Coordenadas locales del grupo «bloque»: acostado,
-superficie de lectura arriba (z = 0), renglones a lo largo de X, apilados en Y (primer renglón en +Y).
-En el estado 0 el bloque está de pie (rot. X +90°): la superficie mira a -Y, como una página.
+Lámina de museo: papel, tinta y oro. Un bloque-texto de 6 tablillas (4 × 3 × 1,2 m). Coordenadas locales del
+grupo «bloque»: acostado, superficie de lectura arriba (z = 0), renglones a lo largo de X, apilados en Y
+(primer renglón en +Y). En el estado 0 el bloque está de pie (rot. X +90°): la superficie mira a -Y, como una página.
 
 Estratos (de arriba abajo):
-  capa0  superficie: el texto visible (marfil, renglones de tinta)      → cita (placas carmín encima)
-  capa1  texto en filigrana (laca grafito, versos claros)               → parodia: Góngora sobre Lope
-  capa2-5 geología del texto (piedra); en el estado 3 las tiñe desde abajo la reminiscencia (carmín fundido)
-Gramas (estado 4): palíndromo en tipos de tinta con arcos de lectura; grama sémico: dos indicadores
-convergen hacia una cámara bajo el último renglón («mal de ojo», oro).
-Red en volumen (estado 5): despiece vertical con hilos; descripción en condicional (l. 459-462).
+  capa0  superficie: renglones en trazos finos gris cálido (tinta diluida)   → cita: tiras carmín pegadas encima
+  capa1  texto en filigrana: versos en grafito (Lope bajo Góngora)            → visible cuando la superficie se
+         vuelve una hoja translúcida y se levanta (estado 2)
+  capa2-5 geología del texto (papel → gris cálido); en el estado 3 la reminiscencia las tiñe de carmín desde abajo
+Gramas (estado 4): la superficie, hoja translúcida levantada; el renglón 9 se alza en letras (palíndromo) entre dos
+flechas finas en espejo (→ arriba, ← abajo); grama sémico: dos palabras del último renglón señalan, a través de la
+hoja, un ojo DIBUJADO (contorno almendrado bermellón, iris de oro) tendido bajo la línea: «mal de ojo».
+Red en volumen (estado 5): despiece vertical con hilos finos punteados; descripción en condicional (l. 459-462).
 """
 import sys, os, math, random
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'lib'))
@@ -67,6 +69,13 @@ def bm_caja(bm, size, loc):
         v.co = Vector((v.co.x * size[0] + loc[0], v.co.y * size[1] + loc[1], v.co.z * size[2] + loc[2]))
 
 
+def bm_disco(bm, centro, r, h, eje=(0, 0, 1), segs=48):
+    """Disco plano (cilindro bajo) centrado en `centro`, con su eje en `eje`."""
+    g = bmesh.ops.create_cone(bm, cap_ends=True, segments=segs, radius1=r, radius2=r, depth=h)
+    q = Vector((0, 0, 1)).rotation_difference(Vector(eje).normalized())
+    bmesh.ops.transform(bm, matrix=Matrix.Translation(Vector(centro)) @ q.to_matrix().to_4x4(), verts=g['verts'])
+
+
 def malla(nombre, bm, material, parent=None, loc=(0, 0, 0), bevel=0.0, seg=1):
     ob = bb._obj_from_bm(nombre, bm, material, parent, loc)
     for p in ob.data.polygons:
@@ -78,13 +87,6 @@ def malla(nombre, bm, material, parent=None, loc=(0, 0, 0), bevel=0.0, seg=1):
         mod.limit_method = 'ANGLE'
         bb.aplicar(ob)
     return ob
-
-
-def tubo(nombre, puntos, r, material, parent=None, loc=(0, 0, 0), lados=8):
-    """Tubo continuo (barrido) a lo largo de `puntos` (coordenadas relativas a loc)."""
-    bm = bmesh.new()
-    tubo_bm(bm, puntos, r, lados)
-    return bb._obj_from_bm(nombre, bm, material, parent, loc)
 
 
 def tubo_bm(bm, puntos, r, lados=8):
@@ -136,7 +138,7 @@ _GLIFOS = {}
 
 
 def glifo(ch, size, extrude, res=3):
-    """Malla compartida de una letra (Georgia), de pie mirando a -Y; devuelve (mesh, zmin, alto)."""
+    """Malla de una letra (Georgia), de pie mirando a -Y; devuelve (mesh, zmin, alto)."""
     if ch in _GLIFOS:
         return _GLIFOS[ch]
     cu = bpy.data.curves.new('glifo_' + ch, 'FONT')
@@ -163,7 +165,7 @@ def glifo(ch, size, extrude, res=3):
     return _GLIFOS[ch]
 
 
-def palabras(x0, x1, lmin=0.1, lmax=0.42, gap=0.05):
+def palabras(x0, x1, lmin=0.08, lmax=0.34, gap=0.045):
     """Segmentos-palabra entre x0 y x1 (el último se estira hasta x1: renglón justificado)."""
     out, x = [], x0
     while x < x1 - 1e-6:
@@ -175,42 +177,45 @@ def palabras(x0, x1, lmin=0.1, lmax=0.42, gap=0.05):
     return out
 
 
+def bez(p0, c, p1, n=30):
+    return [(1 - t) ** 2 * p0 + 2 * (1 - t) * t * c + t ** 2 * p1 for t in (i / n for i in range(n + 1))]
+
+
 # ---------------------------------------------------------------- materiales
-PAPEL = M('lamina')                         # superficie: el texto visible
-NACAR = M('significante')                   # texto en filigrana (laca grafito en el visor)
-TINTA = mat_hex('tinta_renglon', '#2A2B2F', rough=0.5)
-# versos de Lope: claros sobre la laca grafito (marca de agua); rol «otro» → conserva este color
-SEPIA = mat_hex('verso_filigrana', '#EFE9DD', rough=0.55)
-VELO = mat_hex('papel_contraluz', '#F1EADC', rough=0.45, emi='#F3EDE2', emis=0.5, alpha=0.36)   # único translúcido (luz a contraluz)
-MAG = M('ajeno')
-COSTURA = mat_hex('hilo_costura', '#F6F1E8', rough=0.5)     # pespunte claro sobre el carmín de la cita
-CIAN = M('trayecto')
+# (nombres elegidos para que el estudio del visor respete el color: ver rol() en docs/3d/estudio.js)
+PAPEL = M('lamina')                                              # superficie: papel
+NACAR = M('significante')                                        # letras del palíndromo: laca grafito
+TRAZO = mat_hex('renglon_trazo', '#8F877D', rough=0.92)          # renglones: tinta diluida, gris cálido
+VERSO = mat_hex('verso_grafito', '#4A443E', rough=0.7)           # versos de Lope (filigrana): grafito
+VELO = mat_hex('papel_contraluz', '#F1EADC', rough=0.45, emi='#F3EDE2', emis=0.5, alpha=0.42)   # hoja a contraluz
+FILETE = mat_hex('filete_grafito', '#4A443E', rough=0.5)         # contorno fino de la hoja translúcida
+CARMIN = mat_hex('carmin_cita', '#6B1539', rough=0.62)            # tiras de cita: carmín
+TRAZO_CITA = mat_hex('renglon_cita', '#F2E6EA', rough=0.8)       # la frase ajena, clara sobre el carmín
+CIAN = M('trayecto')                                             # esmeralda: lectura, flechas, hilos
 ORO = M('significado')
 BERM = M('ausencia')
-HUECO = mat_hex('hueco', '#1A1310', rough=0.95)
+PUPILA = mat_hex('pupila_grafito', '#2F2B28', rough=0.5)
 
-# piedra neutra (papel → azogue), sin tonos café; tinte: del carmín pálido al carmín pleno
-COL_PIEDRA = ['#E9E1D2', '#CFC6B8', '#C4C2BD', '#A9A8A4', '#8E8D8A', '#747370']
-COL_TINTE = [None, None, '#C08DA3', '#A65B7D', '#8E3162', '#78164A']   # la reminiscencia tiñe hacia arriba
+# estratos: papel → gris cálido (sin café); tinte de la reminiscencia: del carmín pálido al carmín pleno
+COL_PIEDRA = [None, '#DDD6CA', '#CEC6B9', '#BEB6A9', '#ADA599', '#9C9489']
+COL_TINTE = [None, None, '#DCC6CB', '#C495A4', '#A35D78', '#7E264D']
 
-# ajustes del visor «galería clara» (docs/3d/estudio.js) sólo para esta escena
 S.estudio = {
     'materiales': {
-        'lamina': {'color': '#FFFDF9'},                                  # la página se despega del fondo papel
-        'tinta_renglon': {'clearcoat': 0.0, 'roughness': 0.85, 'envMapIntensity': 0.3},    # sin brillo: oscuros en toda la lámina
-        'ajeno': {'clearcoat': 0.1, 'clearcoatRoughness': 0.5, 'roughness': 0.75, 'envMapIntensity': 0.5},   # carmín parejo, sin reflejo lechoso
-        'hueco': {'roughness': 0.55, 'clearcoat': 0.3, 'emissiveIntensity': 0.06},
+        'lamina': {'color': '#FFFDF9'},                                   # la página se despega del fondo papel
+        'renglon_trazo': {'envMapIntensity': 0.3},
+        'carmin_cita': {'envMapIntensity': 0.45},
+        'verso_grafito': {'envMapIntensity': 0.4},
     },
 }
-MAT_BASE = [PAPEL, NACAR] + [mat_hex(f'estrato{k}', COL_PIEDRA[k], rough=0.8) for k in range(2, 6)]
-MAT_TINTE = [PAPEL, NACAR] + [mat_hex(f'tinte{k}', COL_TINTE[k], rough=0.55, coat=0.25) for k in range(2, 6)]
+MAT_BASE = [PAPEL] + [mat_hex(f'estrato{k}', COL_PIEDRA[k], rough=0.85) for k in range(1, 6)]
+MAT_TINTE = [PAPEL, MAT_BASE[1]] + [mat_hex(f'tinte{k}', COL_TINTE[k], rough=0.8) for k in range(2, 6)]
 
-# ---------------------------------------------------------------- bloque y losas
-W, D, TH, GAP = 4.0, 3.0, 0.2, 0.008
+# ---------------------------------------------------------------- bloque y tablillas
+W, D, TH, GAP = 4.0, 3.0, 0.2, 0.022
 Y0, Y1 = -D / 2, D / 2
-YC = -1.22                 # plano del corte del estado 4 (cara frontal nueva)
 H = TH - GAP
-BEV = 0.012
+BEV = 0.008
 DZ = [(5 - k) * 0.45 for k in range(6)]     # despiece vertical (estado 5)
 
 
@@ -225,124 +230,103 @@ def ztop(k):
 bloque = bb.grupo('bloque')
 capas = [bb.grupo(f'capa{k}', (0, 0, 0), bloque) for k in range(6)]
 
-llenas, llenas_t, cortadas = {}, {}, {}
+llenas, llenas_t = {}, {}
 for k in range(6):
     llenas[k] = bb.caja(f'losa{k}', (W, D, H), (0, 0, zc(k)), MAT_BASE[k], capas[k], bevel=BEV)
     if k >= 2:
         llenas_t[k] = bb.caja(f'losa{k}_tinte', (W, D, H), (0, 0, zc(k)), MAT_TINTE[k], capas[k], bevel=BEV)
-    cortadas[k] = bb.caja(f'losa{k}_corte', (W, Y1 - YC, H), (0, (YC + Y1) / 2, zc(k)), MAT_BASE[k], capas[k], bevel=BEV)
-velo = bb.caja('losa0_velo', (W, D, H), (0, 0, zc(0)), VELO, capas[0], bevel=BEV)
-# filete de las 12 aristas del velo: sin él, la hoja translúcida levantada casi no se distingue del fondo papel
+
+# contorno fino de cada tablilla (como en un grabado): las 12 aristas en grafito
+def aristas_bm(bm, hx, hy, hz, r):
+    v = [Vector((sx * hx, sy * hy, sz * hz)) for sx in (-1, 1) for sy in (-1, 1) for sz in (-1, 1)]
+    for i in range(8):
+        for j in range(i + 1, 8):
+            if sum(1 for c in range(3) if v[i][c] != v[j][c]) == 1:
+                tubo_bm(bm, [v[i], v[j]], r, 6)
+
+
+contornos = {}
+for k in range(6):
+    bm = bmesh.new()
+    aristas_bm(bm, W / 2 + 0.0015, D / 2 + 0.0015, H / 2 + 0.0015, 0.0035)
+    contornos[k] = bb._obj_from_bm(f'contorno{k}', bm, FILETE, capas[k], (0, 0, zc(k)))
+
+# la superficie a contraluz: una HOJA delgada translúcida (no un bloque de vidrio), con un filete fino de grafito
+VT = 0.03
+ZV = ztop(0) - VT / 2
+velo = bb.caja('hoja_contraluz', (W, D, VT), (0, 0, ZV), VELO, capas[0], bevel=0.004)
 bm = bmesh.new()
-_hx, _hy, _hz = W / 2 + 0.004, D / 2 + 0.004, H / 2 + 0.004
-_v = [Vector((sx * _hx, sy * _hy, sz * _hz)) for sx in (-1, 1) for sy in (-1, 1) for sz in (-1, 1)]
-for _a in range(8):
-    for _b in range(_a + 1, 8):
-        if sum(1 for i in range(3) if _v[_a][i] != _v[_b][i]) == 1:
-            tubo_bm(bm, [_v[_a], _v[_b]], 0.0075, 6)
-filete = bb._obj_from_bm('filete_velo', bm, mat_hex('filete_velo', '#56626A', rough=0.5), capas[0], (0, 0, zc(0)))
+aristas_bm(bm, W / 2 + 0.003, D / 2 + 0.003, VT / 2 + 0.002, 0.0045)
+filete = bb._obj_from_bm('filete_hoja', bm, FILETE, capas[0], (0, 0, ZV))
 
-# cámara oval bajo el último renglón (grama sémico): hueco por Boolean en las losas cortadas
-XC, ZC = -0.85, -0.5
-RX, RY, RZ = 0.5, 0.3, 0.24
-cort = bb.esfera('cortador', 1.0, (XC, YC, ZC), HUECO, None, subdiv=3)
-cort.scale = (RX, RY, RZ)
-bpy.context.view_layer.update()
-for k in (1, 2, 3):
-    ob = cortadas[k]
-    mod = ob.modifiers.new('camara', 'BOOLEAN')
-    mod.operation = 'DIFFERENCE'
-    mod.object = cort
-    try:
-        mod.solver = 'EXACT'
-    except Exception:
-        pass
-    try:
-        mod.material_mode = 'TRANSFER'
-    except Exception:
-        pass
-    bb.aplicar(ob)
-    mats = ob.data.materials
-    for p in ob.data.polygons:        # paredes de la cámara lisas; el resto, facetas vivas
-        p.use_smooth = mats[p.material_index] is not None and mats[p.material_index].name.startswith('hueco')
-bpy.data.objects.remove(cort)
-
-# rebanada frontal que cae en el estado 4 (colores finales)
-piezas = [bb.caja(f'rebanada{k}', (W, YC - Y0, H), (0, 0, zc(k) + 0.6), MAT_BASE[k], None, bevel=BEV) for k in range(6)]
-reb = unir(piezas, 'rebanada')
-reb.parent = bloque
-reb.location = (0, (Y0 + YC) / 2, -0.6)
-
-# ---------------------------------------------------------------- renglones de la superficie (tinta)
+# ---------------------------------------------------------------- renglones de la superficie (trazos finos)
 YL = [1.2 - i * (2.3 / 11) for i in range(12)]
 SPEC = {0: (-1.7, 1.7), 1: (-1.7, 1.7), 2: (-1.7, 1.7), 3: (-1.7, 0.35), 4: (-1.45, 1.7), 5: (-1.7, 1.7),
         6: (-1.7, 1.7), 7: (-1.7, 0.9), 8: (-1.45, 1.7), 9: (-1.7, 1.7), 10: (-1.7, 1.7), 11: (-1.7, 1.1)}
 IND = [(-1.7, -1.22), (-0.55, 0.22)]           # «mal de muerte», «traspiés en la alabanza»
-BY, BZ = 0.07, 0.022
-ZB = ztop(0) + BZ / 2 - 0.002
+RY_, RZ_ = 0.042, 0.005                        # ancho (en Y) y alto del trazo
+ZR = ztop(0) + RZ_ / 2 - 0.001
 
 
-def barras(bm, segs, y, h=BZ, z=ZB, ancho=BY):
+def trazos(bm, segs, y, ancho=RY_, alto=RZ_, z=ZR):
     for a, b in segs:
-        bm_caja(bm, (b - a, ancho, h), ((a + b) / 2, y, z))
+        bm_caja(bm, (b - a, ancho, alto), ((a + b) / 2, y, z))
 
 
 bm = bmesh.new()
 for i, y in enumerate(YL):
     if i in (9, 11):
         continue
-    barras(bm, palabras(*SPEC[i]), y)
-barras(bm, palabras(-1.17, -0.6) + palabras(0.27, 1.1), YL[11])
-renglones = malla('renglones', bm, TINTA, capas[0])
+    trazos(bm, palabras(*SPEC[i]), y)
+trazos(bm, palabras(-1.17, -0.6) + palabras(0.27, 1.1), YL[11])
+renglones = malla('renglones', bm, TRAZO, capas[0])
 
 bm = bmesh.new()
-barras(bm, palabras(*SPEC[9]), YL[9])
-renglon9 = malla('renglon_palindromo', bm, TINTA, capas[0])
+trazos(bm, palabras(*SPEC[9]), YL[9])
+renglon9 = malla('renglon_palindromo', bm, TRAZO, capas[0])
 
 bm = bmesh.new()
-barras(bm, IND, YL[11])
-ind_tinta = malla('indicadores_tinta', bm, TINTA, capas[0])
+trazos(bm, IND, YL[11])
+ind_tinta = malla('indicadores_tinta', bm, TRAZO, capas[0])
 bm = bmesh.new()
-barras(bm, IND, YL[11], h=0.034, z=ztop(0) + 0.015, ancho=0.085)
+trazos(bm, IND, YL[11], ancho=0.058, alto=0.012, z=ztop(0) + 0.005)
 ind_cian = malla('indicadores', bm, CIAN, capas[0])
 
-# lectura lineal (estado 0): flecha cian sobre el primer renglón
-ZL = ztop(0) + 0.03
-lect = punteada('lectura', [(-1.7, 1.375, ZL), (1.74, 1.375, ZL)], (0, 1.375, ZL), capas[0], CIAN,
-                flecha={'r': 0.05, 'largo': 0.13}, guion=0.13, hueco=0.08, r=0.016)
+# lectura lineal (estado 0): flecha fina esmeralda sobre el primer renglón
+ZL = ztop(0) + 0.02
+lect = punteada('lectura', [(-1.7, 1.37, ZL), (1.78, 1.37, ZL)], (-1.7, 1.37, ZL), capas[0], CIAN,
+                flecha={'r': 0.034, 'largo': 0.15}, guion=0.09, hueco=0.06, r=0.011)
 
-# ---------------------------------------------------------------- texto en filigrana (capa1): versos en sepia
+# ---------------------------------------------------------------- texto en filigrana (capa1): versos en grafito
 bm = bmesh.new()
 for j in range(13):
     y = 1.3 - j * 0.2
-    x1 = -1.7 + RNG.uniform(1.6, 2.7)
-    barras(bm, palabras(-1.7, x1, 0.12, 0.5, 0.06), y, h=0.016, z=ztop(1) + 0.006, ancho=0.075)
-lope = malla('renglones_filigrana', bm, SEPIA, capas[1])
+    x1 = -1.7 + RNG.uniform(1.7, 2.9)
+    trazos(bm, palabras(-1.7, x1, 0.1, 0.42, 0.05), y, ancho=0.028, alto=0.004, z=ztop(1) + 0.0015)
+lope = malla('versos_filigrana', bm, VERSO, capas[1])
 
-# ---------------------------------------------------------------- citas: placas magenta de borde vivo, con costura
-# (clave, renglón, x, largo, rótulo, giro, desplazamiento del rótulo (dx, dy)): los rótulos se abren hacia
-# afuera (arriba-izquierda, arriba-derecha, abajo-izquierda, abajo-derecha) para no pisarse entre sí
-CITAS = [('rulfo', 1, -0.95, 1.1, 'una frase de Rulfo', 2.5, (-0.3, 0.43)),
-         ('hugues', 4, 0.8, 0.7, 'Víctor Hugues · Carpentier', -3.0, (0.3, 0.3)),
-         ('rocamadour', 6, -0.55, 0.76, 'Rocamadour · Cortázar', 3.0, (-0.3, -0.37)),
-         ('cruz', 8, 0.95, 0.7, 'Artemio Cruz · Fuentes', -2.0, (0.25, -0.37))]
-PH, PT = 0.25, 0.05
-ZP = ztop(0) + BZ + PT / 2
+# ---------------------------------------------------------------- citas: tiras carmín delgadas, con la frase ajena
+# (clave, renglón, x, largo, rótulo, giro, desplazamiento del rótulo (dx, dy))
+CITAS = [('rulfo', 1, -0.95, 1.1, 'Rulfo · una frase', 2.0, (-0.35, 0.36)),
+         ('hugues', 4, 0.8, 0.72, 'Carpentier · Víctor Hugues', -2.5, (0.45, 0.33)),
+         ('rocamadour', 6, -0.55, 0.78, 'Cortázar · Rocamadour', 2.5, (-0.35, -0.34)),
+         ('cruz', 8, 0.95, 0.72, 'Fuentes · Artemio Cruz', -1.5, (0.4, -0.34))]
+PH, PT = 0.19, 0.012
+ZP = ztop(0) + RZ_ + PT / 2
 citas = []
 for clave, i, x, L, html, giro, (ldx, ldy) in CITAS:
-    placa = bb.caja('cita_' + clave, (L, PH, PT), (0, 0, 0), MAG, None)
-    ix, iy = L / 2 - 0.036, PH / 2 - 0.036
-    rect = [(-ix, -iy, PT / 2 + 0.002), (ix, -iy, PT / 2 + 0.002), (ix, iy, PT / 2 + 0.002),
-            (-ix, iy, PT / 2 + 0.002), (-ix, -iy, PT / 2 + 0.002)]
-    cos_ = bb.polilinea_punteada('costura_' + clave, rect, guion=0.045, hueco=0.03, r=0.008, material=COSTURA, parent=None)
-    g = unir([placa, cos_], 'cita_' + clave)
+    tira = bb.caja('cita_' + clave, (L, PH, PT), (0, 0, 0), CARMIN, None, bevel=0.003)
+    bm = bmesh.new()
+    trazos(bm, palabras(-L / 2 + 0.07, L / 2 - 0.07, 0.07, 0.24, 0.04), 0, ancho=0.03, alto=0.003, z=PT / 2 + 0.001)
+    frase = malla('frase_' + clave, bm, TRAZO_CITA)
+    g = unir([tira, frase], 'cita_' + clave)
     g.parent = capas[0]
     g.location = (x, YL[i], ZP)
     g.rotation_euler = (0, 0, math.radians(giro))
-    S.etiqueta('c_' + clave, html, (x + ldx, YL[i] + ldy, ZP + 0.05), parent=capas[0], clase='ajeno')
+    S.etiqueta('c_' + clave, html, (x + ldx, YL[i] + ldy, ZP + 0.03), parent=capas[0], clase='ajeno')
     citas.append(g)
 
-# ---------------------------------------------------------------- gramas fonéticos: palíndromo (l. 655)
+# ---------------------------------------------------------------- grama fonético: palíndromo (l. 655)
 FRASE = 'DÁBALE ARROZ A LA ZORRA EL ABAD'
 PASO, ESP, TAM = 0.126, 0.065, 0.24
 xs, x = [], 0.0
@@ -355,133 +339,126 @@ for ch in FRASE:
 sh = -(xs[0] + xs[-1]) / 2 + 0.05
 xs = [v + sh for v in xs]
 y9 = YL[9]
-# letras sueltas: comparten malla por letra; el grupo sólo se TRASLADA (aparcado dentro de la losa 1,
-# emerge por el renglón 9 y queda suspendido sobre él en el estado 4): el exportador no hornea a los hijos.
-Z_PAL_ARRIBA = ztop(0) + 0.4                   # base de las letras, suspendidas sobre su renglón (por encima de los de atrás)
-Z_PAL_ABAJO = ztop(1) - 0.186                  # aparcado dentro de la losa 1 (opaca)
-pal = bb.grupo('palindromo', (0, y9, Z_PAL_ABAJO), capas[1])
+Z_BASE = 0.3                                   # base de las letras sobre su renglón (relativa a la hoja)
 letras = [c for c in FRASE if c != ' ']
-altos = []
+obs, altos = [], []
 for n, (ch, xv) in enumerate(zip(letras, xs)):
-    me, ymin, alto = glifo(ch, TAM, 0.016)
-    if not me.materials:
-        me.materials.append(NACAR)
-    ob = bpy.data.objects.new(f'letra{n:02d}', me)
+    me, ymin, alto = glifo(ch, TAM, 0.014)
+    ob = bpy.data.objects.new(f'letra{n:02d}', me.copy())
+    ob.data.materials.clear()
+    ob.data.materials.append(NACAR)
     ob.rotation_euler = (math.radians(90), 0, 0)
-    ob.location = (xv, 0, -ymin)
-    bb._link(ob, pal)
+    ob.location = (xv, 0, Z_BASE - ymin)
+    bb._link(ob)
     altos.append(alto)
-print('[estratos] alto máx. de letra', round(max(altos), 3), 'losa', round(H, 3))
-Z0 = Z_PAL_ARRIBA + sorted(altos)[len(altos) // 2] + 0.045      # arranque común de los arcos
-arcos = []
-for k in range(12):
-    a, b = xs[k], xs[24 - k]
-    cx, rx = (a + b) / 2, (b - a) / 2
-    ry = 0.05 + 0.24 * rx
-    pts = bb.arco(0, 0, rx, ry, 180, 0, n=40 + int(rx * 30), z=0, plano='XZ')
-    arcos.append(tubo(f'arco{k:02d}', pts, 0.0095, CIAN, capas[0], (cx, y9, Z0)))
-ALTO_ARCO = 0.05 + 0.24 * (xs[24] - xs[0]) / 2
+bpy.context.view_layer.update()
+pal = unir([bpy.data.objects[f'letra{n:02d}'] for n in range(len(letras))], 'palindromo')
+bb.aplicar(pal)
+bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
+pal.parent = capas[0]
+pal.location = (0, y9, ztop(0))                 # origen en el renglón: al escalar en z, las letras «salen» de él
+ALTO = max(altos)
+print('[estratos] alto máx. de letra', round(ALTO, 3))
+XA, XB = xs[0] - 0.08, xs[-1] + 0.12           # extremos de las flechas del palíndromo
+ZI = ztop(0) + Z_BASE + ALTO + 0.085           # → arriba: lectura de izquierda a derecha
+ZV_ = ztop(0) + Z_BASE - 0.085                 # ← abajo: de derecha a izquierda
+ida = punteada('pal_ida', [(XA, y9, ZI), (XB, y9, ZI)], (XA, y9, ZI), capas[0], CIAN,
+               flecha={'r': 0.03, 'largo': 0.13}, guion=0.08, hueco=0.05, r=0.009)
+vuelta = punteada('pal_vuelta', [(XB, y9, ZV_), (XA, y9, ZV_)], (XB, y9, ZV_), capas[0], CIAN,
+                  flecha={'r': 0.03, 'largo': 0.13}, guion=0.08, hueco=0.05, r=0.009)
 
-# ---------------------------------------------------------------- grama sémico: cámara, núcleo, indicadores
-nucleo = bb.esfera('nucleo_mal_de_ojo', 1.0, (XC, YC + 0.1, ZC), ORO, bloque, subdiv=3)
-nucleo.scale = (0.3, 0.13, 0.14)
-NUC = (0.3, 0.13, 0.14)
-cont = bb.polilinea_punteada('contorno_camara', bb.arco(0, 0, RX + 0.035, RZ + 0.035, 90, 450, n=140, z=0, plano='XZ'),
-                             guion=0.085, hueco=0.05, r=0.017, material=BERM, parent=bloque)
-cont.location = (XC, YC - 0.02, ZC)
-
-
-def flecha_sem(nombre, pts):
-    return punteada(nombre, pts, pts[0], bloque, CIAN, flecha={'r': 0.042, 'largo': 0.11},
-                    guion=0.06, hueco=0.04, r=0.013)
+# ---------------------------------------------------------------- grama sémico: el ojo dibujado bajo la línea
+LIFT2, LIFT4 = 0.75, 0.62          # altura de la hoja levantada en los estados 2 y 4
+XE, YE = -0.8, -0.9               # centro del ojo, bajo el último renglón (tendido sobre la capa 1)
+EA, EB = 0.6, 0.23                 # semiancho y semialto del contorno almendrado
+ZE = ztop(1) + 0.004
 
 
+def almendra(a, b, signo, n=48):
+    """Arco de circunferencia entre (-a, 0) y (a, 0) que pasa por (0, signo·b): medio contorno de un ojo."""
+    R = (a * a + b * b) / (2 * b)
+    c = b - R
+    t0 = math.atan2(-c, a)
+    out = []
+    for i in range(n + 1):
+        t = (math.pi - t0) + (2 * t0 - math.pi) * i / n
+        out.append(Vector((R * math.cos(t), signo * (c + R * math.sin(t)), 0)))
+    return out
+
+
+bm = bmesh.new()
+tubo_bm(bm, almendra(EA, EB, 1), 0.012, 8)
+tubo_bm(bm, almendra(EA, EB, -1), 0.012, 8)
+ojo_contorno = bb._obj_from_bm('ojo_contorno', bm, BERM, capas[1], (XE, YE, ZE + 0.012))
+bm = bmesh.new()
+bm_disco(bm, (0, 0, 0.006), 0.1, 0.012)
+ojo_iris = bb._obj_from_bm('ojo_iris', bm, ORO, capas[1], (XE, YE, ZE))
+bm = bmesh.new()
+bm_disco(bm, (0, 0, 0.014), 0.038, 0.006, segs=32)
+ojo_pupila = bb._obj_from_bm('ojo_pupila', bm, PUPILA, capas[1], (XE, YE, ZE))
+ojo = [ojo_contorno, ojo_iris, ojo_pupila]
+
+# indicadores: desde cada palabra (sobre la hoja levantada) hasta un ángulo del ojo, a través de la hoja
 xi1, xi2 = sum(IND[0]) / 2, sum(IND[1]) / 2
-zf = ztop(0) + 0.05
-fl1 = flecha_sem('indicador1', [(xi1, YL[11], zf), (xi1 + 0.04, YC - 0.03, 0.0), (XC - 0.43, YC - 0.03, ZC + 0.13)])
-fl2 = flecha_sem('indicador2', [(xi2, YL[11], zf), (xi2 - 0.06, YC - 0.03, 0.0), (XC + 0.43, YC - 0.03, ZC + 0.13)])
-
-# ---------------------------------------------------------------- red en volumen: hilos entre estratos (posiciones del despiece)
-def zbot_x(k):
-    return ztop(k) - H + DZ[k]
+ZH = ztop(0) + LIFT4 + 0.012                   # cara superior de la hoja levantada (coords. del bloque)
 
 
-def ztop_x(k):
-    return ztop(k) + DZ[k]
+def flecha_sem(nombre, p0, p1, curva):
+    p0, p1 = Vector(p0), Vector(p1)
+    c = (p0 + p1) / 2 + Vector(curva)
+    return punteada(nombre, bez(p0, c, p1, 24), p0, bloque, CIAN, flecha={'r': 0.028, 'largo': 0.11},
+                    guion=0.065, hueco=0.042, r=0.0085)
 
 
+fl1 = flecha_sem('indicador1', (xi1, YL[11], ZH), (XE - 0.36, YE + 0.05, ZE + 0.06), (-0.12, 0.0, 0))
+fl2 = flecha_sem('indicador2', (xi2, YL[11], ZH), (XE + 0.36, YE + 0.05, ZE + 0.06), (0.12, 0.0, 0))
+
+# ---------------------------------------------------------------- red en volumen: hilos finos entre estratos (despiece)
 def zmid_x(k):
     return zc(k) + DZ[k]
 
 
-def bez(p0, c, p1, n=30):
-    return [(1 - t) ** 2 * p0 + 2 * (1 - t) * t * c + t ** 2 * p1 for t in (i / n for i in range(n + 1))]
-
-
-# arcos delante del apilado (enlazan estratos no contiguos) y hilos cortos en los intersticios (contiguos)
-ARCOS_RED = [(0, 2, -1.55, -0.95), (0, 4, -0.3, 0.4), (1, 3, 0.85, 1.45), (1, 5, -0.95, -0.3),
-             (2, 4, -1.8, -1.35), (3, 5, 0.45, 1.05), (0, 3, 1.25, 1.8), (2, 5, 0.1, -0.5)]
-GAPS_RED = [(0, -0.75, -0.45), (1, 0.35, 0.8), (2, -1.25, -0.9), (3, 1.3, 0.95), (4, -0.2, 0.25)]
+# arcos delante del apilado (enlazan estratos no contiguos) y hilos cortos entre estratos contiguos
+ARCOS_RED = [(0, 2, -1.45, -0.95), (0, 4, 0.35, 0.95), (1, 3, 1.25, 1.7), (1, 5, -0.6, -0.1),
+             (2, 5, -1.75, -1.35), (3, 5, 0.75, 1.25)]
+CORTOS_RED = [(0, 1, -0.25, 0.05), (2, 3, 0.15, -0.2), (3, 4, -0.95, -0.6)]
 hilos = []
-YF = Y0 - 0.006
-for n, (a, b, ua, ub) in enumerate(ARCOS_RED):
+YF = Y0 - 0.004
+for n, (a, b, ua, ub) in enumerate(ARCOS_RED + CORTOS_RED):
     p = Vector((ua, YF, zmid_x(a)))
     q = Vector((ub, YF, zmid_x(b)))
-    c = (p + q) / 2 + Vector((0, -(0.32 + 0.1 * (b - a)), 0))
-    bm = bmesh.new()
-    tubo_bm(bm, [v - p for v in bez(p, c, q)], 0.014, 8)
+    c = (p + q) / 2 + Vector((0, -(0.12 + 0.13 * (b - a)), 0))
+    pts = bez(p, c, q, 36)
+    ob = punteada(f'hilo{n:02d}', pts, p, bloque, CIAN, guion=0.07, hueco=0.04, r=0.0085)
+    bm = bmesh.new()                              # dos nudos planos sobre las caras frontales
     for v in (Vector((0, 0, 0)), q - p):
-        gs = bmesh.ops.create_icosphere(bm, subdivisions=2, radius=0.042)
-        bmesh.ops.translate(bm, vec=v, verts=gs['verts'])
-    hilos.append(bb._obj_from_bm(f'hilo{n:02d}', bm, CIAN, bloque, tuple(p)))
-for m, (k, ua, ub) in enumerate(GAPS_RED):     # por delante de las caras frontales: se leen enteros
-    p = Vector((ua, Y0 - 0.05, ztop(k) - H + DZ[k] + 0.03))
-    q = Vector((ub, Y0 - 0.05, ztop(k + 1) + DZ[k + 1] - 0.03))
-    bm = bmesh.new()
-    tubo_bm(bm, [Vector((0, 0, 0)), q - p], 0.013, 8)
-    for v in (Vector((0, 0, 0)), q - p):
-        gs = bmesh.ops.create_icosphere(bm, subdivisions=2, radius=0.036)
-        bmesh.ops.translate(bm, vec=v, verts=gs['verts'])
-    hilos.append(bb._obj_from_bm(f'hilo{len(ARCOS_RED) + m:02d}', bm, CIAN, bloque, tuple(p)))
+        bm_disco(bm, v + Vector((0, 0.002, 0)), 0.03, 0.006, eje=(0, 1, 0), segs=28)
+    nudos = bb._obj_from_bm(f'hilo{n:02d}_nudos', bm, CIAN, None, (0, 0, 0))
+    nudos.location = ob.location
+    ob = unir([ob, nudos], f'hilo{n:02d}')
+    hilos.append(ob)
 
-# ---------------------------------------------------------------- anclas de rótulos (coords. del padre)
-LBL_RECEPTOR = (-0.3, 1.9, 0.12)
-LBL_GONGORA = (-1.0, 1.75, zc(0))
-LBL_LOPE = (-0.5, -1.75, zc(1) - 0.4)    # ante la cara frontal, sin tapar los versos que asoman
-LBL_MARCA = (3.55, 0.6, 0.1)            # a la derecha de la lámina levantada, en dos líneas
-LBL_CITA_SUP = (-0.5, 1.9, 0.15)
-LBL_REMIN = (4.1, -1.5, -0.75)          # a la derecha de los estratos teñidos, por encima de la tarjeta
-LBL_EJEMPLOS = (-2.35, -1.62, zc(5) - 0.08)
-LBL_IND1 = (xi1 - 0.3, YC - 0.05, -0.2)
-LBL_IND2 = (xi2 + 0.42, YC - 0.05, -0.2)
-LBL_SEMICO = (XC + 1.68, YC - 0.05, ZC - 0.2)     # sobre la piedra, lejos de «traspiés…»
-LBL_RCOND = (0.6, 1.95, zc(0) + 0.3)
-LBL_RX, LBL_RY, LBL_RZ = -3.0, -0.6, 0.1   # rótulos del despiece: a la izquierda de cada estrato
-
-# ---------------------------------------------------------------- etiquetas
-# estado 0: junto a la punta de la flecha (a la izquierda chocaría con el canto en pantalla completa)
-S.etiqueta('lectura', 'lectura lineal', (2.75, 1.375, 0.05), parent=capas[0], clase='trayecto')
-# estado 1
-S.etiqueta('receptor', 'texto receptor: García Márquez, <i>Cien años de soledad</i>', LBL_RECEPTOR, parent=capas[0], clase='snte')
+# ---------------------------------------------------------------- etiquetas (máx. 4 por estado)
+# estado 0
+S.etiqueta('lectura', 'lectura lineal', (2.35, 1.37, 0.05), parent=capas[0], clase='trayecto')
 # estado 2
-S.etiqueta('gongora', 'Góngora: el romance visible', LBL_GONGORA, parent=capas[0], clase='serif')
-S.etiqueta('lope', 'Lope: el romance anterior, debajo', LBL_LOPE, parent=capas[1], clase='serif')
-S.etiqueta('marca', 'filigrana: la marca de agua,<br>visible a contraluz', LBL_MARCA, parent=capas[0], clase='nota')
+S.etiqueta('gongora', 'Góngora: el romance visible', (-0.9, 1.72, ztop(0)), parent=capas[0])
+S.etiqueta('lope', 'Lope: el romance anterior, debajo', (-0.55, -1.72, zc(1) - 0.05), parent=capas[1])
 # estado 3
-S.etiqueta('cita_sup', 'cita: marcas visibles en la superficie', LBL_CITA_SUP, parent=capas[0], clase='ajeno')
-S.etiqueta('remin', 'reminiscencia:<br>tiñe desde abajo, sin aflorar', LBL_REMIN, parent=bloque, clase='serif')
-S.etiqueta('ejemplos', 'Lisandro Otero, <i>La situación</i> · Amelia Peláez', LBL_EJEMPLOS, parent=capas[5], clase='ajeno')
+S.etiqueta('cita_sup', 'cita: en la superficie', (-0.55, 1.8, 0.08), parent=capas[0], clase='ajeno')
+S.etiqueta('remin', 'reminiscencia: tiñe desde abajo', (2.95, -1.2, zc(3)), parent=bloque)
+S.etiqueta('ejemplos', 'Lisandro Otero, <i>La situación</i> · Amelia Peláez', (-1.9, -1.62, zc(5) - 0.2), parent=bloque, clase='nota')
 # estado 4
-S.etiqueta('fonetico', 'grama fonético: un palíndromo, legible en los dos sentidos', (xs[12], y9, Z0 + ALTO_ARCO + 0.16), parent=capas[0], clase='trayecto')
-S.etiqueta('ind1', '«mal de<br>muerte»', LBL_IND1, parent=bloque, clase='trayecto')
-S.etiqueta('ind2', '«traspiés en<br>la alabanza»', LBL_IND2, parent=bloque, clase='trayecto')
-S.etiqueta('ojo', '«mal de ojo»', (XC, YC - 0.05, ZC - 0.42), parent=bloque, clase='grande sdo')
-S.etiqueta('semico', 'grama sémico, bajo la línea · Lezama, <i>Paradiso</i>', LBL_SEMICO, parent=bloque, clase='nota')
+S.etiqueta('fonetico', 'palíndromo: se lee en los dos sentidos', (0.05, y9, ZI + 0.16), parent=capas[0], clase='trayecto')
+S.etiqueta('ind1', '«mal de muerte»', (xi1 - 0.62, YL[11] - 0.1, ZH - 0.3), parent=bloque, clase='nota')
+S.etiqueta('ind2', '«traspiés en la alabanza»', (xi2 + 0.8, YL[11] - 0.1, ZH - 0.3), parent=bloque, clase='nota')
+S.etiqueta('ojo', '«mal de ojo»: bajo la línea', (XE + 0.25, YE - 0.62, ZE), parent=capas[1], clase='sdo')
 # estado 5
+LBL_RX, LBL_RY, LBL_RZ = -2.75, -0.6, 0.05     # rótulos del despiece: a la izquierda de cada estrato
 S.etiqueta('r0', 'superficie y citas', (LBL_RX, LBL_RY, zc(0) + LBL_RZ), parent=capas[0], clase='ajeno')
-S.etiqueta('r1', 'texto en filigrana', (LBL_RX, LBL_RY, zc(1) + LBL_RZ), parent=capas[1], clase='snte')
-S.etiqueta('r3', 'estratos teñidos: reminiscencia', (LBL_RX - 0.3, LBL_RY, zc(3) + LBL_RZ), parent=capas[3], clase='ajeno')
-S.etiqueta('rcond', 'Sarduy, en condicional: «se presentaría… como una red»', LBL_RCOND, parent=capas[0], clase='nota')
+S.etiqueta('r1', 'filigrana', (LBL_RX, LBL_RY, zc(1) + LBL_RZ), parent=capas[1])
+S.etiqueta('r3', 'estratos teñidos', (LBL_RX, LBL_RY, zc(3) + LBL_RZ), parent=capas[3], clase='ajeno')
+S.etiqueta('rcond', 'Sarduy, en condicional: «se presentaría… como una red»', (0.4, 1.9, zc(0) + 0.35), parent=capas[0], clase='nota')
 
 # ---------------------------------------------------------------- línea de tiempo
 # (en Blender 5.2 la preferencia de interpolación no se aplica a keyframe_insert: toda clave nace BEZIER;
@@ -528,11 +505,15 @@ def fijar_interpolacion():
             fc.update()
 
 
+def aparece(ob, t0, t1, esc=1.0):
+    S.clave(ob, 0, esc=OFF, interp=C)
+    S.clave(ob, t0, esc=OFF)
+    S.clave(ob, t1, esc=esc)
+
+
 R90, R0 = (math.radians(90), 0, 0), (0, 0, 0)
-LIFT = 0.75
 # ── estado 1 (0 → 2.5 s): la página se acuesta; las citas se pegan encima
-# de pie, la página se apoya en el suelo de sombras (sin alzarla, su borde inferior lo atravesaba)
-ZUP = 0.3
+ZUP = D / 2 + zc(5) - H / 2      # de pie, la página se apoya en el suelo de sombras (base de la última tablilla)
 S.clave(bloque, 0, loc=(0, 0, ZUP), rot=R90, interp=C)
 S.clave(bloque, 0.25, loc=(0, 0, ZUP), rot=R90)
 S.clave(bloque, 1.5, loc=(0, 0, 0), rot=R0)
@@ -561,93 +542,74 @@ for i, g in enumerate(citas):
     S.clave(g, t5, loc=alto, esc=OFF)
     S.clave(g, t5 + 0.4, loc=base, esc=1.0)
 
-# ── estado 2 (2.5 → 3.9 s): la superficie se vuelve translúcida y se levanta: debajo, otro texto
+# ── estado 2 (2.5 → 3.9 s): la superficie se vuelve una hoja translúcida y se levanta: debajo, otro texto
 S.clave(llenas[0], 0, esc=1.0, interp=C)
-salto(llenas[0], 3.0, 1.0, OFF)
+S.clave(contornos[0], 0, esc=1.0, interp=C)
 S.clave(velo, 0, esc=OFF, interp=C)
-salto(velo, 3.0, OFF, 1.0)
 S.clave(filete, 0, esc=OFF, interp=C)
-salto(filete, 3.0, OFF, 1.0)
+for ob, a, b in ((llenas[0], 1.0, OFF), (contornos[0], 1.0, OFF), (velo, OFF, 1.0), (filete, OFF, 1.0)):
+    salto(ob, 3.0, a, b)
 for k in range(6):
     S.clave(capas[k], 0, loc=(0, 0, 0), interp=C)
 S.clave(capas[0], 3.0, loc=(0, 0, 0))
-S.clave(capas[0], 3.8, loc=(0, 0, LIFT))
+S.clave(capas[0], 3.8, loc=(0, 0, LIFT2))
 
 # ── estado 3 (3.9 → 6.1 s): la superficie vuelve; la reminiscencia tiñe los estratos desde abajo
-S.clave(capas[0], 4.0, loc=(0, 0, LIFT))
+S.clave(capas[0], 4.0, loc=(0, 0, LIFT2))
 S.clave(capas[0], 4.55, loc=(0, 0, 0))
-salto(velo, 4.6, 1.0, OFF)
-salto(filete, 4.6, 1.0, OFF)
-salto(llenas[0], 4.6, OFF, 1.0)
+for ob, a, b in ((llenas[0], OFF, 1.0), (contornos[0], OFF, 1.0), (velo, 1.0, OFF), (filete, 1.0, OFF)):
+    salto(ob, 4.6, a, b)
 for k, t in zip((5, 4, 3, 2), (4.9, 5.25, 5.6, 5.95)):
     S.clave(llenas[k], 0, esc=1.0, interp=C)
     salto(llenas[k], t, 1.0, OFF)
     S.clave(llenas_t[k], 0, esc=OFF, interp=C)
     salto(llenas_t[k], t, OFF, 1.0)
-S.clave(llenas[1], 0, esc=1.0, interp=C)
 
-# ── estado 4 (6.1 → 8.5 s): el tinte se retira (los gramas son intratextuales, no «alógenos», l. 606-608);
-#    corte bajo el renglón; gramas
-TCUT = 6.5
+# ── estado 4 (6.1 → 8.5 s): el tinte se retira (los gramas son intratextuales, l. 606-608); la superficie vuelve
+#    a ser hoja translúcida y se levanta; el renglón 9 se alza en letras; bajo la línea, el ojo
 for k, t in zip((2, 3, 4, 5), (6.15, 6.22, 6.29, 6.36)):
     salto(llenas_t[k], t, 1.0, OFF)
     salto(llenas[k], t, OFF, 1.0)
-arriba = llenas
-for k in range(6):
-    salto(arriba[k], TCUT, 1.0, OFF)
-    S.clave(cortadas[k], 0, esc=OFF, interp=C)
-    salto(cortadas[k], TCUT, OFF, 1.0)
-p_reb = Vector(reb.location)
-S.clave(reb, 0, loc=p_reb, esc=OFF, interp=C)
-salto(reb, TCUT, OFF, 1.0)
-S.clave(reb, TCUT + 0.05, loc=p_reb)
-S.clave(reb, 6.8, esc=1.0)
-S.clave(reb, 7.25, loc=p_reb + Vector((0, -0.4, -1.5)), esc=OFF)
-# palíndromo: el renglón se levanta en letras
+for ob, a, b in ((llenas[0], 1.0, OFF), (contornos[0], 1.0, OFF), (velo, OFF, 1.0), (filete, OFF, 1.0)):
+    salto(ob, 6.45, a, b)
+S.clave(capas[0], 6.5, loc=(0, 0, 0))
+S.clave(capas[0], 7.1, loc=(0, 0, LIFT4))
+# palíndromo: el renglón se levanta en letras (escala vertical desde el renglón)
 S.clave(renglon9, 0, esc=1.0, interp=C)
-salto(renglon9, 6.7, 1.0, OFF)
-P_ABAJO, P_ARRIBA = (0, y9, Z_PAL_ABAJO), (0, y9, Z_PAL_ARRIBA)
-S.clave(pal, 0, loc=P_ABAJO, interp=C)
-S.clave(pal, 6.65, loc=P_ABAJO)
-S.clave(pal, 7.3, loc=P_ARRIBA)
-for k, a in enumerate(arcos):          # del centro hacia afuera
-    t = 7.3 + 0.07 * (11 - k)
-    S.clave(a, 0, esc=OFF, interp=C)
-    S.clave(a, t, esc=OFF)
-    S.clave(a, t + 0.4, esc=1.0)
+salto(renglon9, 6.75, 1.0, OFF)
+S.clave(pal, 0, esc=OFF, interp=C)
+salto(pal, 6.75, OFF, (1, 1, OFF))
+S.clave(pal, 7.35, esc=(1, 1, 1))
+aparece(ida, 7.35, 7.75)
+aparece(vuelta, 7.55, 7.95)
 # grama sémico
 S.clave(ind_tinta, 0, esc=1.0, interp=C)
 salto(ind_tinta, 6.9, 1.0, OFF)
 S.clave(ind_cian, 0, esc=OFF, interp=C)
 salto(ind_cian, 6.9, OFF, 1.0)
-S.clave(nucleo, 0, esc=OFF, interp=C)
-S.clave(nucleo, 7.2, esc=OFF)
-S.clave(nucleo, 7.6, esc=NUC)
-S.clave(cont, 0, esc=OFF, interp=C)
-salto(cont, 7.3, OFF, 1.0)
+for o in ojo:
+    aparece(o, 7.2, 7.6)
+S.clave(lope, 0, esc=1.0, interp=C)                 # los versos de Lope se apartan: bajo la hoja, sólo el ojo
+salto(lope, 6.45, 1.0, OFF)
+salto(lope, 9.0, OFF, 1.0)
 for f in (fl1, fl2):
-    S.clave(f, 0, esc=OFF, interp=C)
-    S.clave(f, 7.5, esc=OFF)
-    S.clave(f, 8.0, esc=1.0)
+    aparece(f, 7.6, 8.1)
 
-# ── estado 5 (8.5 → 11.4 s): se cierra el corte; despiece vertical; hilos
+# ── estado 5 (8.5 → 11.4 s): la hoja baja y vuelve a ser superficie; despiece vertical; hilos
 T5 = 8.55
-S.clave(pal, T5, loc=P_ARRIBA)
-S.clave(pal, T5 + 0.34, loc=P_ABAJO)
-salto(renglon9, T5 + 0.36, OFF, 1.0)
-for a in arcos:
-    S.clave(a, T5, esc=1.0)
-    S.clave(a, T5 + 0.3, esc=OFF)
+S.clave(pal, T5, esc=(1, 1, 1))
+S.clave(pal, T5 + 0.3, esc=(1, 1, OFF))
+salto(pal, T5 + 0.33, (1, 1, OFF), OFF)
+salto(renglon9, T5 + 0.33, OFF, 1.0)
+for o in (ida, vuelta, fl1, fl2) + tuple(ojo):
+    S.clave(o, T5, esc=1.0)
+    S.clave(o, T5 + 0.25, esc=OFF)
 salto(ind_cian, T5 + 0.2, 1.0, OFF)
 salto(ind_tinta, T5 + 0.2, OFF, 1.0)
-S.clave(nucleo, T5, esc=NUC)
-S.clave(nucleo, T5 + 0.3, esc=OFF)
-salto(cont, T5 + 0.2, 1.0, OFF)
-for f in (fl1, fl2):
-    salto(f, T5 + 0.2, 1.0, OFF)
-for k in range(6):
-    salto(cortadas[k], T5 + 0.36, 1.0, OFF)
-    salto(arriba[k], T5 + 0.36, OFF, 1.0)
+S.clave(capas[0], 8.6, loc=(0, 0, LIFT4))
+S.clave(capas[0], 9.0, loc=(0, 0, 0))
+for ob, a, b in ((llenas[0], OFF, 1.0), (contornos[0], OFF, 1.0), (velo, 1.0, OFF), (filete, 1.0, OFF)):
+    salto(ob, 9.0, a, b)
 # la reminiscencia vuelve a teñir los estratos profundos (desde abajo) antes del despiece
 for k, t in zip((5, 4, 3, 2), (9.0, 9.07, 9.14, 9.21)):
     salto(llenas[k], t, 1.0, OFF)
@@ -658,9 +620,7 @@ for k in range(6):
     S.clave(capas[k], TE1, loc=(0, 0, DZ[k]))
 for n, h in enumerate(hilos):
     t = TE1 + 0.06 * n
-    S.clave(h, 0, esc=OFF, interp=C)
-    S.clave(h, t, esc=OFF)
-    S.clave(h, t + 0.35, esc=1.0)
+    aparece(h, t, t + 0.35)
 T_FIN = TE1 + 0.06 * (len(hilos) - 1) + 0.4
 
 # ── rótulos: el visor los enciende al entrar en el estado, antes de que termine la animación.
@@ -678,11 +638,10 @@ def aparcar(clave, t_on):
     S.clave(ob, fr / bb.FPS, loc=real)
 
 
-for clave, t_on in [('receptor', 1.5),
-                    ('c_rulfo', 1.45 + 0.4), ('c_hugues', 1.59 + 0.4), ('c_rocamadour', 1.73 + 0.4), ('c_cruz', 1.87 + 0.4),
-                    ('gongora', 3.0), ('lope', 3.0), ('marca', 3.0),
+for clave, t_on in [('c_rulfo', 1.45 + 0.4), ('c_hugues', 1.59 + 0.4), ('c_rocamadour', 1.73 + 0.4), ('c_cruz', 1.87 + 0.4),
+                    ('gongora', 3.0), ('lope', 3.0),
                     ('cita_sup', 4.95), ('remin', 5.0), ('ejemplos', 5.0),
-                    ('ind1', 6.9), ('ind2', 6.9), ('fonetico', 7.35), ('semico', 7.35), ('ojo', 7.55),
+                    ('ind1', 6.9), ('ind2', 6.9), ('fonetico', 7.4), ('ojo', 7.55),
                     ('rcond', 9.3), ('r0', 10.0), ('r1', 10.0), ('r3', 10.0)]:
     aparcar(clave, t_on)
 
@@ -694,14 +653,14 @@ def camara(look, az, el, dist, fov):
     return dict(cam=tuple(round(v, 3) for v in cam), look=look, fov=fov)
 
 
-# encuadres pensados para 2,12:1 (incrustado) y 16:9 (pantalla completa): el objeto queda a la izquierda de
-# la tarjeta de texto (abajo a la derecha) y por encima de la barra de estados; el título de la pantalla completa, libre
-FRENTE = camara((1.05, 0.3, -0.02), -13, 8, 31, 9.8)      # página de frente, apenas girada: se ve el canto de los estratos
-CITA = camara((1.0, -0.55, -0.55), -12, 52, 10.5, 30)
-FILI = camara((1.15, -0.3, -0.3), -12, 45, 11.2, 30)
-REMI = dict(cam=(-4.14, -7.34, 2.07), look=(1.2, 0.0, -1.06), fov=32)
-GRAM = camara((1.25, -0.4, -0.2), -10, 9, 8.2, 32)
-RED = camara((1.2, 0.0, 0.25), -18, 22, 11.2, 36)
+# encuadres pensados para el visor incrustado (1920 × 983) y la pantalla completa (16:9): el objeto a la izquierda
+# de la tarjeta de texto (abajo a la derecha) y por encima de la barra de estados
+FRENTE = camara((0.846, 0.3, 0.224), -13, 8, 24.8, 9.8)
+CITA = camara((0.968, -0.35, -0.73), -12, 50, 8.7, 30)
+FILI = camara((1.985, -0.2, -0.67), -14, 34, 10.72, 30)
+REMI = camara((1.628, -0.2, -1.671), -30, 30, 10.02, 32)
+GRAM = camara((0.866, -0.55, -0.378), -8, 26, 7.6, 32)
+RED = camara((0.897, 0.0, -0.031), -18, 20, 9.62, 36)
 
 S.estado('Superficie',
          'La página de frente: renglones paralelos y regulares, un solo sentido de lectura. Debajo hay otros textos.',
@@ -710,11 +669,11 @@ S.estado('Superficie',
 S.estado('Cita',
          'La cita: un texto ajeno pegado sobre la superficie, «sin que su voz se altere». García Márquez incorpora una frase de Rulfo y personajes de otros autores.',
          'Intertextualidad: la cita · l. 530-547',
-         etiquetas=['receptor', 'c_rulfo', 'c_hugues', 'c_rocamadour', 'c_cruz'], t1=2.5, **CITA)
+         etiquetas=['c_rulfo', 'c_hugues', 'c_rocamadour', 'c_cruz'], t1=2.5, **CITA)
 S.estado('Filigrana',
          'A contraluz, la superficie se vuelve translúcida y deja ver otro texto debajo: el romance de Lope que el de Góngora desfigura y que «hay que leer en filigrana».',
          'Jammes, cit. por Sarduy · l. 408-424',
-         etiquetas=['gongora', 'lope', 'marca'], t1=3.9,
+         etiquetas=['gongora', 'lope'], t1=3.9,
          pregunta='Para Jammes, esa dependencia la hace «menor». ¿Y para Sarduy?', **FILI)
 S.estado('Reminiscencia',
          'A diferencia de la cita, la reminiscencia no aflora: se funde con el texto receptor y lo tiñe desde abajo, «modificando con sus texturas su geología».',
@@ -723,7 +682,7 @@ S.estado('Reminiscencia',
 S.estado('Gramas',
          'Intratextualidad, «escritura entre la escritura». Gramas fonéticos: las letras del renglón admiten otra lectura. Grama sémico: bajo la línea, dos indicadores convergen hacia un idiom que no aflora.',
          'l. 604-686 · Cabrera Infante, l. 655 · Paradiso, l. 670-677',
-         etiquetas=['fonetico', 'ind1', 'ind2', 'ojo', 'semico'], t1=8.5, **GRAM)
+         etiquetas=['fonetico', 'ind1', 'ind2', 'ojo'], t1=8.5, **GRAM)
 S.estado('Red en volumen',
          'Todos los estratos a la vez: una red de conexiones, de sucesivas filigranas. Sarduy lo formula en condicional: su expresión gráfica «no sería lineal… sino en volumen».',
          'l. 459-462 (condicional)',
@@ -733,7 +692,7 @@ S.estado('Red en volumen',
 
 fijar_interpolacion()
 
-# pósters (EEVEE): el velo translúcido se ve casi opaco con las luces de póster; sólo para el render
+# pósters (EEVEE): la hoja translúcida se ve casi opaca con las luces de póster; sólo para el render
 # de los pósters se aclara (el GLB ya se exportó con los valores del visor).
 _posters_bb = S._posters
 

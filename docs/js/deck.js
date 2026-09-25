@@ -98,7 +98,7 @@
     const d = ev.data || {};
     if (d.fuente !== 'visor3d') return;
     if (d.type === 'tecla') teclado({ key: d.key, preventDefault() {}, target: document.body });
-    if (d.type === 'listo') { const e3 = slides[idx].querySelector('.embed3d'); if (e3) e3.classList.add('vivo'); if (e3 && e3._iframe && e3._estado != null) enviar3D(e3, { type: 'estado', n: e3._estado }); }
+    if (d.type === 'listo') { document.querySelectorAll('.embed3d').forEach((e3) => { if (e3._iframe && ev.source === e3._iframe.contentWindow) { e3.classList.add('vivo'); if (e3._estado != null) enviar3D(e3, { type: 'estado', n: e3._estado }); } }); }
   });
   function abrir3D() {
     const e3 = slides[idx].querySelector('.embed3d');
@@ -130,6 +130,10 @@
     precargar(idx);
     aplicarPasos(sl);
     montar3D(sl);
+    // precarga: si esta diapositiva no tiene 3D y la siguiente sí, se monta ya (llega lista)
+    const sig = slides[idx + 1];
+    if (sig && !sl.querySelector('.embed3d') && sig.querySelector('.embed3d')) montar3D(sig);
+    slides.forEach((o, k) => { if (k !== idx && k !== idx + 1) desmontar3D(o); });
     actualizarPie();
     if (!desdeHash) history.replaceState(null, '', `#/${idx + 1}${paso ? '/' + paso : ''}`);
     document.getElementById('vivo').textContent = `Diapositiva ${idx + 1} de ${N}: ${sl.dataset.titulo || ''}`;

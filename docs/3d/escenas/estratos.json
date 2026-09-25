@@ -3,7 +3,7 @@
  "titulo": "Leer en filigrana: cita, reminiscencia y gramas",
  "fondo": "#14100D",
  "fps": 30,
- "duracion": 11.666666666666666,
+ "duracion": 11.6,
  "estados": [
   {
    "nombre": "Superficie",
@@ -29,7 +29,6 @@
    "fov": 30,
    "t1": 2.5,
    "etiquetas": [
-    "lbl_receptor",
     "lbl_c_rulfo",
     "lbl_c_hugues",
     "lbl_c_rocamadour",
@@ -49,8 +48,7 @@
    "t1": 3.9,
    "etiquetas": [
     "lbl_gongora",
-    "lbl_lope",
-    "lbl_marca"
+    "lbl_lope"
    ],
    "orbita": true,
    "slider": null,
@@ -85,8 +83,7 @@
     "lbl_fonetico",
     "lbl_ind1",
     "lbl_ind2",
-    "lbl_ojo",
-    "lbl_semico"
+    "lbl_ojo"
    ],
    "orbita": true,
    "slider": null,
@@ -99,7 +96,7 @@
    "cam": "cam_5",
    "look": "look_5",
    "fov": 36,
-   "t1": 11.62,
+   "t1": 11.38,
    "etiquetas": [
     "lbl_r0",
     "lbl_r1",
@@ -110,7 +107,7 @@
    "slider": {
     "tipo": "tiempo",
     "t0": 9.3,
-    "t1": 11.62,
+    "t1": 11.38,
     "etiqueta": "de la página al volumen",
     "min_txt": "bloque",
     "max_txt": "red"
@@ -120,83 +117,71 @@
  ],
  "etiquetas": {
   "lbl_c_rulfo": {
-   "html": "una frase de Rulfo",
+   "html": "Rulfo · una frase",
    "clase": "ajeno"
   },
   "lbl_c_hugues": {
-   "html": "Víctor Hugues · Carpentier",
+   "html": "Carpentier · Víctor Hugues",
    "clase": "ajeno"
   },
   "lbl_c_rocamadour": {
-   "html": "Rocamadour · Cortázar",
+   "html": "Cortázar · Rocamadour",
    "clase": "ajeno"
   },
   "lbl_c_cruz": {
-   "html": "Artemio Cruz · Fuentes",
+   "html": "Fuentes · Artemio Cruz",
    "clase": "ajeno"
   },
   "lbl_lectura": {
    "html": "lectura lineal",
    "clase": "trayecto"
   },
-  "lbl_receptor": {
-   "html": "texto receptor: García Márquez, <i>Cien años de soledad</i>",
-   "clase": "snte"
-  },
   "lbl_gongora": {
    "html": "Góngora: el romance visible",
-   "clase": "serif"
+   "clase": ""
   },
   "lbl_lope": {
    "html": "Lope: el romance anterior, debajo",
-   "clase": "serif"
-  },
-  "lbl_marca": {
-   "html": "filigrana: la marca de agua,<br>visible a contraluz",
-   "clase": "nota"
+   "clase": ""
   },
   "lbl_cita_sup": {
-   "html": "cita: marcas visibles en la superficie",
+   "html": "cita: en la superficie",
    "clase": "ajeno"
   },
   "lbl_remin": {
-   "html": "reminiscencia:<br>tiñe desde abajo, sin aflorar",
-   "clase": "serif"
+   "html": "reminiscencia: tiñe desde abajo",
+   "clase": ""
   },
   "lbl_ejemplos": {
    "html": "Lisandro Otero, <i>La situación</i> · Amelia Peláez",
-   "clase": "ajeno"
+   "clase": "nota"
   },
   "lbl_fonetico": {
-   "html": "grama fonético: un palíndromo, legible en los dos sentidos",
+   "html": "palíndromo: se lee en los dos sentidos",
    "clase": "trayecto"
   },
   "lbl_ind1": {
-   "html": "«mal de<br>muerte»",
-   "clase": "trayecto"
+   "html": "«mal de muerte»",
+   "clase": "nota"
   },
   "lbl_ind2": {
-   "html": "«traspiés en<br>la alabanza»",
-   "clase": "trayecto"
+   "html": "«traspiés en la alabanza»",
+   "clase": "nota"
   },
   "lbl_ojo": {
-   "html": "«mal de ojo»",
-   "clase": "grande sdo"
-  },
-  "lbl_semico": {
-   "html": "grama sémico, bajo la línea · Lezama, <i>Paradiso</i>",
-   "clase": "nota"
+   "html": "«mal de ojo»: bajo la línea",
+   "clase": "sdo"
   },
   "lbl_r0": {
    "html": "superficie y citas",
    "clase": "ajeno"
   },
   "lbl_r1": {
-   "html": "texto en filigrana",
-   "clase": "snte"
+   "html": "filigrana",
+   "clase": ""
   },
   "lbl_r3": {
-   "html": "estratos teñidos: reminiscencia",
+   "html": "estratos teñidos",
    "clase": "ajeno"
   },
   "lbl_rcond": {
@@ -209,21 +194,14 @@
    "lamina": {
     "color": "#FFFDF9"
    },
-   "tinta_renglon": {
-    "clearcoat": 0.0,
-    "roughness": 0.85,
+   "renglon_trazo": {
     "envMapIntensity": 0.3
    },
-   "ajeno": {
-    "clearcoat": 0.1,
-    "clearcoatRoughness": 0.5,
-    "roughness": 0.75,
-    "envMapIntensity": 0.5
+   "carmin_cita": {
+    "envMapIntensity": 0.45
    },
-   "hueco": {
-    "roughness": 0.55,
-    "clearcoat": 0.3,
-    "emissiveIntensity": 0.06
+   "verso_grafito": {
+    "envMapIntensity": 0.4
    }
   }
  }

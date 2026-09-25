@@ -9,7 +9,7 @@ export function prepararRender(renderer) {
   renderer.toneMappingExposure = 1.0;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.VSMShadowMap;
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
   renderer.setClearColor(0x000000, 0);
 }
 
@@ -32,7 +32,9 @@ const c = (hex) => new THREE.Color(hex);
 // Se proyectan en tres planos en el espacio del objeto: no necesitan UV y no «resbalan» cuando el objeto se mueve.
 const TEX = {};
 const TEX_NOMBRES = ['papel', 'marmol-claro', 'pan-de-oro', 'estuco'];
-async function precargarTexturas(renderer) {
+let _precarga = null;
+export function precargarTexturas(renderer) { return (_precarga ||= _precargar(renderer)); }
+async function _precargar(renderer) {
   const ld = new THREE.TextureLoader();
   await Promise.all(TEX_NOMBRES.map(async (n) => {
     try {
@@ -139,9 +141,9 @@ function mejorarBase(orig) {
       return m;
     }
     case 'marfil':
-      return fisico(orig, { color: c(PALETA.marfil), roughness: 0.78, sheen: 0.4, sheenRoughness: 0.7, sheenColor: c('#FFFFFF'), envMapIntensity: 0.7 });
+      return fisico(orig, { color: c(PALETA.marfil), roughness: 0.78, envMapIntensity: 0.7 });
     case 'propio_mate':
-      return fisico(orig, { roughness: 0.7, sheen: 0.3, sheenRoughness: 0.7, sheenColor: c('#FFFFFF'), envMapIntensity: 0.7 });
+      return fisico(orig, { roughness: 0.7, envMapIntensity: 0.7 });
     case 'velo': {
       const m = fisico(orig, { color: c(PALETA.cristal), roughness: 0.1, clearcoat: 1, clearcoatRoughness: 0.05, envMapIntensity: 1.2 });
       m.opacity = Math.min(Math.max(m.opacity, 0.1), 0.16); m.transparent = true; m.depthWrite = false;
@@ -230,5 +232,5 @@ export async function montarEstudio({ renderer, scene, raiz, fijarTiempoFinal, a
   suelo.position.set(centro.x, caja.min.y - 0.012, centro.z);
   suelo.receiveShadow = true; suelo.renderOrder = -1;
   scene.add(suelo);
-  return { centro, R };
+  return { centro, R, piso: caja.min.y };
 }

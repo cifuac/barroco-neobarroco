@@ -1,14 +1,15 @@
 {
  "imagenes": [
   {
-   "src": "imagenes/anamorfosis.webp",
-   "pie": "Anamorfosis: la figura sólo se endereza de lado",
-   "tipo": "cuadro",
-   "ancho": 0.864,
+   "src": "imagenes/recortes/anamorfosis.webp",
+   "tipo": "figura",
+   "pie": "El lector, de lado",
+   "apoyo": "suelo",
+   "ancho": 0.255,
    "pos": [
-    1.186,
-    -0.431,
-    0.028
+    0.667,
+    -0.254,
+    -0.041
    ],
    "mira": "cam_3",
    "estados": [
@@ -16,14 +17,14 @@
    ]
   },
   {
-   "src": "imagenes/maquina.webp",
-   "pie": "Máquina y manuscrito",
-   "tipo": "cuadro",
-   "ancho": 0.864,
+   "src": "imagenes/recortes/maquina.webp",
+   "tipo": "figura",
+   "apoyo": "suelo",
+   "ancho": 0.347,
    "pos": [
-    1.186,
-    -0.431,
-    0.028
+    0.646,
+    -0.254,
+    -0.041
    ],
    "mira": "cam_4",
    "estados": [

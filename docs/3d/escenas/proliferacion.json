@@ -3,7 +3,7 @@
  "titulo": "Proliferación: del arco abierto a la elipse",
  "fondo": "#14100D",
  "fps": 30,
- "duracion": 9.0,
+ "duracion": 10.0,
  "estados": [
   {
    "nombre": "Figura 2",
@@ -13,16 +13,7 @@
    "look": "look_0",
    "fov": 7.0,
    "t1": 0,
-   "etiquetas": [
-    "lbl_snte1",
-    "lbl_snte2",
-    "lbl_snte3",
-    "lbl_snte4",
-    "lbl_snte5",
-    "lbl_etc",
-    "lbl_e_snte",
-    "lbl_e_sdo"
-   ],
+   "etiquetas": [],
    "orbita": false,
    "slider": null,
    "pregunta": null
@@ -36,14 +27,10 @@
    "fov": 34,
    "t1": 1.75,
    "etiquetas": [
-    "lbl_obj1",
-    "lbl_obj2",
-    "lbl_obj3",
-    "lbl_obj4",
-    "lbl_obj5",
-    "lbl_etc",
-    "lbl_e1_snte",
-    "lbl_e3_sdo"
+    "lbl_n1",
+    "lbl_n2",
+    "lbl_n3",
+    "lbl_n4"
    ],
    "orbita": true,
    "slider": null,
@@ -58,14 +45,7 @@
    "fov": 34,
    "t1": 4.0,
    "etiquetas": [
-    "lbl_obj1",
-    "lbl_obj2",
-    "lbl_obj3",
-    "lbl_obj4",
-    "lbl_obj5",
-    "lbl_etc",
-    "lbl_e1_snte",
-    "lbl_e3_desorden"
+    "lbl_e_desorden"
    ],
    "orbita": true,
    "slider": null,
@@ -80,18 +60,8 @@
    "fov": 34,
    "t1": 5.1,
    "etiquetas": [
-    "lbl_mamp1",
-    "lbl_mamp2",
-    "lbl_mamp3",
-    "lbl_mamp4",
-    "lbl_mamp5",
-    "lbl_etc",
-    "lbl_lect1",
-    "lbl_lect2",
-    "lbl_lect3",
-    "lbl_lect4",
-    "lbl_e3_snte",
-    "lbl_e_vacio"
+    "lbl_e_vacio",
+    "lbl_lecturas"
    ],
    "orbita": true,
    "slider": null,
@@ -104,14 +74,8 @@
    "cam": "cam_4",
    "look": "look_4",
    "fov": 34,
-   "t1": 6.85,
+   "t1": 7.1,
    "etiquetas": [
-    "lbl_tab1",
-    "lbl_tab2",
-    "lbl_tab3",
-    "lbl_tab4",
-    "lbl_tab5",
-    "lbl_etc",
     "lbl_e_sdo_foco",
     "lbl_e_snte_foco",
     "lbl_cita1974"
@@ -119,8 +83,8 @@
    "orbita": true,
    "slider": {
     "tipo": "tiempo",
-    "t0": 5.35,
-    "t1": 6.85,
+    "t0": 5.6,
+    "t1": 7.1,
     "etiqueta": "excentricidad",
     "min_txt": "círculo: un centro",
     "max_txt": "elipse: dos focos"
@@ -134,25 +98,17 @@
    "cam": "cam_5",
    "look": "look_5",
    "fov": 34,
-   "t1": 8.25,
+   "t1": 8.5,
    "etiquetas": [
     "lbl_kepler",
     "lbl_kep_sol",
-    "lbl_kep_vacio",
-    "lbl_tab1",
-    "lbl_tab2",
-    "lbl_tab3",
-    "lbl_tab4",
-    "lbl_tab5",
-    "lbl_e_sdo_foco",
-    "lbl_e_snte_foco",
-    "lbl_etc"
+    "lbl_kep_vacio"
    ],
    "orbita": true,
    "slider": {
     "tipo": "tiempo",
-    "t0": 7.25,
-    "t1": 8.25,
+    "t0": 7.499999999999999,
+    "t1": 8.5,
     "etiqueta": "la órbita de Kepler",
     "min_txt": "círculo",
     "max_txt": "elipse"
@@ -161,153 +117,9 @@
   }
  ],
  "etiquetas": {
-  "lbl_etc": {
-   "html": "etc.",
-   "clase": "grande snte"
-  },
-  "lbl_e_snte": {
-   "html": "<s>Snte.</s>",
-   "clase": "grande tachado"
-  },
-  "lbl_e_sdo": {
-   "html": "Sdo.",
-   "clase": "grande sdo"
-  },
-  "lbl_e_desorden": {
-   "html": "Sdo. «desorden»",
-   "clase": "grande sdo"
-  },
-  "lbl_e_sdo_foco": {
-   "html": "<span style=\"display:inline-block;line-height:1.22\">Sdo.<br>foco presente</span>",
-   "clase": "sdo"
-  },
-  "lbl_e_snte_foco": {
-   "html": "<span style=\"display:inline-block;line-height:1.22\"><s>Snte.</s><br>foco ausente</span>",
-   "clase": "tachado"
-  },
-  "lbl_cita1974": {
-   "html": "<span style=\"display:inline-block;line-height:1.3;color:var(--azogue)\">lectura posterior<br>Sarduy 1974, cit. por Díaz 2011</span>",
-   "clase": "nota"
-  },
-  "lbl_e_vacio": {
-   "html": "ningún Sdo.",
-   "clase": "grande"
-  },
-  "lbl_e3_snte": {
-   "html": "<s>Snte.</s>",
-   "clase": "grande tachado"
-  },
-  "lbl_e1_snte": {
-   "html": "<s>Snte.</s>",
-   "clase": "grande tachado"
-  },
-  "lbl_e3_sdo": {
-   "html": "Sdo.",
-   "clase": "grande sdo"
-  },
-  "lbl_e3_desorden": {
-   "html": "Sdo. «desorden»",
-   "clase": "grande sdo"
-  },
-  "lbl_obj1": {
-   "html": "Snte.<sup>1</sup> · <span style=\"color:var(--magenta-claro);font-style:italic\">reloj de sol</span>",
-   "clase": "snte"
-  },
-  "lbl_obj2": {
-   "html": "Snte.<sup>2</sup> · <span style=\"color:var(--magenta-claro);font-style:italic\">balanza hidrostática</span>",
-   "clase": "snte"
-  },
-  "lbl_obj3": {
-   "html": "Snte.<sup>3</sup> · <span style=\"color:var(--magenta-claro);font-style:italic\">telescopio pequeño</span>",
-   "clase": "snte"
-  },
-  "lbl_obj4": {
-   "html": "Snte.<sup>4</sup> · <span style=\"color:var(--magenta-claro);font-style:italic\">armario</span>",
-   "clase": "snte"
-  },
-  "lbl_obj5": {
-   "html": "Snte.<sup>5</sup> · <i style=\"color:var(--azogue)\">por venir</i>",
-   "clase": "snte"
-  },
-  "lbl_tab1": {
-   "html": "Snte.<sup>1</sup>",
-   "clase": "snte"
-  },
-  "lbl_mamp1": {
-   "html": "<span style=\"color:var(--magenta-claro);font-style:italic\">seis cucharas</span>",
-   "clase": "nota"
-  },
-  "lbl_tab2": {
-   "html": "Snte.<sup>2</sup>",
-   "clase": "snte"
-  },
-  "lbl_mamp2": {
-   "html": "<span style=\"color:var(--magenta-claro);font-style:italic\">un vaso</span>",
-   "clase": "nota"
-  },
-  "lbl_tab3": {
-   "html": "Snte.<sup>3</sup>",
-   "clase": "snte"
-  },
-  "lbl_mamp3": {
-   "html": "<span style=\"color:var(--magenta-claro);font-style:italic\">quizá un plato</span>",
-   "clase": "nota"
-  },
-  "lbl_tab4": {
-   "html": "Snte.<sup>4</sup>",
-   "clase": "snte"
-  },
-  "lbl_mamp4": {
-   "html": "<span style=\"color:var(--magenta-claro);font-style:italic\">un ojo sobre una piel</span>",
-   "clase": "nota"
-  },
-  "lbl_tab5": {
-   "html": "Snte.<sup>5</sup>",
-   "clase": "snte"
-  },
-  "lbl_mamp5": {
-   "html": "<i>¿lo que vendría a cerrarla?</i>",
-   "clase": "snte"
-  },
-  "lbl_snte1": {
-   "html": "Snte.<sup>1</sup>",
-   "clase": "grande snte"
-  },
-  "lbl_snte2": {
-   "html": "Snte.<sup>2</sup>",
-   "clase": "grande snte"
-  },
-  "lbl_snte3": {
-   "html": "Snte.<sup>3</sup>",
-   "clase": "grande snte"
-  },
-  "lbl_snte4": {
-   "html": "Snte.<sup>4</sup>",
-   "clase": "grande snte"
-  },
-  "lbl_snte5": {
-   "html": "Snte.<sup>5</sup>",
-   "clase": "grande snte"
-  },
-  "lbl_lect1": {
-   "html": "<s>«Banquete»</s>",
-   "clase": "tachado"
-  },
-  "lbl_lect2": {
-   "html": "<s>«Ojo Profiláctico»</s>",
-   "clase": "tachado"
-  },
-  "lbl_lect3": {
-   "html": "<s>«Primitivismo»</s>",
-   "clase": "tachado"
-  },
-  "lbl_lect4": {
-   "html": "<s>«Ritualidad»</s>",
-   "clase": "tachado"
-  },
   "lbl_kepler": {
    "html": "Kepler, <em>Astronomia nova</em> (1609)",
-   "clase": "serif"
+   "clase": ""
   },
   "lbl_kep_sol": {
    "html": "sol",
@@ -316,29 +128,75 @@
   "lbl_kep_vacio": {
    "html": "foco vacío",
    "clase": "nota"
+  },
+  "lbl_n1": {
+   "html": "<span style=\"color:var(--magenta-claro);font-style:italic\">reloj de sol</span>",
+   "clase": "nota"
+  },
+  "lbl_n2": {
+   "html": "<span style=\"color:var(--magenta-claro);font-style:italic\">balanza</span>",
+   "clase": "nota"
+  },
+  "lbl_n3": {
+   "html": "<span style=\"color:var(--magenta-claro);font-style:italic\">telescopio</span>",
+   "clase": "nota"
+  },
+  "lbl_n4": {
+   "html": "<span style=\"color:var(--magenta-claro);font-style:italic\">armario</span>",
+   "clase": "nota"
+  },
+  "lbl_e_desorden": {
+   "html": "«desorden»",
+   "clase": "sdo"
+  },
+  "lbl_e_vacio": {
+   "html": "ningún Sdo.",
+   "clase": "grande"
+  },
+  "lbl_lecturas": {
+   "html": "<span style=\"display:inline-block;line-height:1.55;text-align:center\"><s>«Banquete»</s><br><s>«Ojo Profiláctico»</s><br><s>«Primitivismo»</s><br><s>«Ritualidad»</s></span>",
+   "clase": "nota"
+  },
+  "lbl_e_sdo_foco": {
+   "html": "<span style=\"color:var(--oro)\">foco presente</span>",
+   "clase": "nota"
+  },
+  "lbl_e_snte_foco": {
+   "html": "<span style=\"color:var(--bermellon)\">foco ausente</span>",
+   "clase": "nota"
+  },
+  "lbl_cita1974": {
+   "html": "lectura posterior · Sarduy 1974, cit. por Díaz 2011",
+   "clase": "nota"
   }
  },
  "estudio": {
   "materiales": {
-   "azogue_linea": {
-    "opacity": 0.995
+   "significante": {
+    "roughness": 0.5,
+    "clearcoat": 0.25,
+    "clearcoatRoughness": 0.35,
+    "envMapIntensity": 0.7
    },
-   "logos": {
-    "opacity": 0.995
+   "arco_nacar": {
+    "roughness": 0.5,
+    "clearcoat": 0.2,
+    "clearcoatRoughness": 0.35
    },
-   "hueco_kepler": {
-    "opacity": 0.995
+   "grafito_tinta": {
+    "color": "#17181B",
+    "roughness": 0.85,
+    "clearcoat": 0.0,
+    "envMapIntensity": 0.25
    },
    "significado": {
-    "roughness": 0.45
-   },
-   "cristal": {
-    "color": "#F4EEE3",
-    "opacity": 0.24
+    "roughness": 0.42
    },
    "fantasma": {
-    "color": "#2F3134",
-    "opacity": 0.62
+    "opacity": 0.55
+   },
+   "estrato_piel": {
+    "color": "#DED6CA"
    }
   }
  }

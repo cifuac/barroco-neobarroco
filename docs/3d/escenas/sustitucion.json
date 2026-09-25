@@ -11,13 +11,9 @@
    "ref": "Sarduy 1972 · figura 1 (§2 a)",
    "cam": "cam_0",
    "look": "look_0",
-   "fov": 4.8,
+   "fov": 4.3,
    "t1": 0,
-   "etiquetas": [
-    "lbl_snte",
-    "lbl_sdo",
-    "lbl_snte1"
-   ],
+   "etiquetas": [],
    "orbita": false,
    "slider": null,
    "pregunta": null
@@ -30,11 +26,7 @@
    "look": "look_1",
    "fov": 24,
    "t1": 0.5,
-   "etiquetas": [
-    "lbl_snte",
-    "lbl_sdo",
-    "lbl_snte1"
-   ],
+   "etiquetas": [],
    "orbita": true,
    "slider": null,
    "pregunta": null
@@ -47,11 +39,7 @@
    "look": "look_2",
    "fov": 32,
    "t1": 3.0,
-   "etiquetas": [
-    "lbl_snte",
-    "lbl_sdo",
-    "lbl_snte1"
-   ],
+   "etiquetas": [],
    "orbita": true,
    "slider": null,
    "pregunta": "¿Dónde queda el nuevo significante respecto del hueco?"
@@ -62,13 +50,9 @@
    "ref": "«Abertura, falla entre lo [nombrante] y lo nombrado» (§2 a)",
    "cam": "cam_3",
    "look": "look_3",
-   "fov": 32,
+   "fov": 33,
    "t1": 5.5,
    "etiquetas": [
-    "lbl_sdo",
-    "lbl_snte1",
-    "lbl_snte",
-    "lbl_clasico",
     "lbl_falla"
    ],
    "orbita": true,
@@ -91,9 +75,6 @@
    "fov": 32,
    "t1": 6.7,
    "etiquetas": [
-    "lbl_snte",
-    "lbl_sdo",
-    "lbl_snte1",
     "lbl_contexto"
    ],
    "orbita": true,
@@ -109,10 +90,7 @@
    "fov": 32,
    "t1": 6.7,
    "etiquetas": [
-    "lbl_snte",
-    "lbl_sdo",
     "lbl_ej_sdo",
-    "lbl_snte1",
     "lbl_ej_snte1"
    ],
    "orbita": true,
@@ -128,11 +106,8 @@
    "fov": 32,
    "t1": 6.7,
    "etiquetas": [
-    "lbl_snte",
-    "lbl_sdo",
     "lbl_porro_sdo",
     "lbl_porro_tach",
-    "lbl_snte1",
     "lbl_porro_snte1"
    ],
    "orbita": true,
@@ -149,9 +124,6 @@
    "t1": 8.8,
    "etiquetas": [
     "lbl_papaya_sdo",
-    "lbl_snte",
-    "lbl_sdo",
-    "lbl_snte1",
     "lbl_papaya_snte1",
     "lbl_papaya_nota"
    ],
@@ -161,29 +133,13 @@
   }
  ],
  "etiquetas": {
-  "lbl_snte": {
-   "html": "<s>Snte.</s>",
-   "clase": "grande tachado"
-  },
-  "lbl_sdo": {
-   "html": "Sdo.",
-   "clase": "grande sdo"
-  },
-  "lbl_snte1": {
-   "html": "Snte.<sup>1</sup>",
-   "clase": "grande snte"
-  },
-  "lbl_clasico": {
-   "html": "Snte.",
-   "clase": "grande snte"
-  },
   "lbl_falla": {
    "html": "abertura, falla",
    "clase": "serif"
   },
   "lbl_contexto": {
-   "html": "contexto (§2 a)",
-   "clase": "nota"
+   "html": "contexto",
+   "clase": "trayecto"
   },
   "lbl_ej_sdo": {
    "html": "«virilidad»",
@@ -198,7 +154,7 @@
    "clase": "sdo"
   },
   "lbl_porro_tach": {
-   "html": "<s>gárgola</s>  (significante codificado)",
+   "html": "<s>gárgola</s> (significante codificado)",
    "clase": "tachado"
   },
   "lbl_porro_snte1": {
@@ -214,26 +170,28 @@
    "clase": "snte"
   },
   "lbl_papaya_nota": {
-   "html": "en argot cubano, también el sexo femenino: erotiza la obra entera",
+   "html": "en argot cubano, también el sexo femenino",
    "clase": "nota"
   }
  },
  "estudio": {
   "materiales": {
-   "vidrio": {
-    "color": "#7E918B",
-    "opacity": 0.06,
-    "roughness": 0.12,
-    "clearcoat": 1,
-    "envMapIntensity": 1.2
+   "tinte_contexto": {
+    "color": "#16795A",
+    "opacity": 0.025,
+    "roughness": 0.95,
+    "envMapIntensity": 0.2
    },
-   "calido": {
+   "tinte_papaya": {
     "color": "#A3245F",
-    "opacity": 0.065,
-    "roughness": 0.25,
-    "emissive": "#A3245F",
-    "emissiveIntensity": 0.08,
-    "envMapIntensity": 0.8
+    "opacity": 0.025,
+    "roughness": 0.95,
+    "envMapIntensity": 0.2
+   },
+   "lamina_letras": {
+    "color": "#F1EADC",
+    "roughness": 0.6,
+    "envMapIntensity": 0.5
    }
   },
   "sombra": 0.18
