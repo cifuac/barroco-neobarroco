@@ -1,0 +1,4 @@
+[
+ {"src": "imagenes/anamorfosis.webp", "estado": 3, "izq": -0.8, "y": -0.3, "dist": 1.0, "alto": 0.3, "pie": "Anamorfosis: la figura sólo se endereza de lado"},
+ {"src": "imagenes/maquina.webp", "estado": 4, "izq": -0.8, "y": -0.3, "dist": 1.0, "alto": 0.3, "pie": "Máquina y manuscrito"}
+]

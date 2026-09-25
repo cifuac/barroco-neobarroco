@@ -3,7 +3,8 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-import { prepararRender, montarEstudio } from './estudio.js?v=7';
+import { prepararRender, montarEstudio } from './estudio.js?v=9';
+import { montarDecor, estadoDecor, inmediatoDecor, animarDecor } from './decor.js?v=9';
 
 const qs = new URLSearchParams(location.search);
 if (qs.get('tema')) document.documentElement.dataset.tema = qs.get('tema');
@@ -11,11 +12,13 @@ if (qs.get('acento')) document.documentElement.dataset.acento = qs.get('acento')
 const ID = qs.get('e') || 'sustitucion';
 const EMBED = qs.get('embed') === '1';
 const SIN_PANEL = qs.get('panel') === '0';
+const POSTER = qs.get('poster') === '1';
 let estadoInicial = parseInt(qs.get('s') || '0', 10) || 0;
 
 const $ = (id) => document.getElementById(id);
 const root = $('visor');
-if (EMBED) root.classList.add('embed');
+if (EMBED) { root.classList.add('embed'); document.documentElement.classList.add('embed-html'); }
+if (POSTER) root.classList.add('poster-modo');
 if (SIN_PANEL) root.classList.add('sin-panel');
 if (EMBED) $('volver').hidden = true;
 else if (qs.get('volver')) $('volver').href = '../index.html' + qs.get('volver');
@@ -72,8 +75,11 @@ async function init() {
     action.setLoop(THREE.LoopOnce); action.clampWhenFinished = true; action.play(); action.paused = true;
     clipDur = clip.duration;
   }
-  await montarEstudio({ renderer, scene, raiz: gltf.scene,
+  await montarEstudio({ renderer, scene, raiz: gltf.scene, ajustes: man.estudio || {},
     fijarTiempoFinal: (fin) => { if (action) { action.time = fin ? clipDur : 0; mixer.update(0); } } });
+
+  // imágenes en la escena (decor/<id>.json, opcional)
+  await montarDecor({ id: ID, scene, nodos, archivo: qs.get('decor') });
 
   // etiquetas
   for (const [nombre, def] of Object.entries(man.etiquetas || {})) {
@@ -101,6 +107,7 @@ async function init() {
   $('slider').addEventListener('input', (ev) => {
     const e = man.estados[actual]; if (!e || !e.slider) return;
     const v = ev.target.value / 1000;
+    pintarSlider();
     if (e.slider.tipo === 'tiempo') { tweenT = null; fijarTiempo(e.slider.t0 + (e.slider.t1 - e.slider.t0) * v); }
     if (e.slider.tipo === 'azimut') { tweenCam = null; azimut(e.slider.min + (e.slider.max - e.slider.min) * v); }
     post({ type: 'slider', v });
@@ -112,8 +119,11 @@ async function init() {
   ir(Math.min(estadoInicial, man.estados.length - 1), true);
   renderer.setAnimationLoop(bucle);
   requestAnimationFrame(() => $('poster').classList.add('fuera'));
+  document.documentElement.dataset.listo = '1';
   post({ type: 'listo', estados: man.estados.length, nombres: man.estados.map((e) => e.nombre) });
 }
+
+function pintarSlider() { const s = $('slider'); s.style.setProperty('--p', (s.value / 10) + '%'); }
 
 function redimensionar() {
   const w = root.clientWidth, h = root.clientHeight;
@@ -152,7 +162,7 @@ function ir(n, inmediato = false) {
   actual = n;
   // cámara
   const destPos = pos(e.cam), destLook = pos(e.look);
-  if (inmediato || reduce) {
+  if (inmediato || reduce || POSTER) {
     camera.position.copy(destPos); controls.target.copy(destLook); camera.fov = e.fov; camera.updateProjectionMatrix();
     tweenCam = null;
   } else {
@@ -161,7 +171,7 @@ function ir(n, inmediato = false) {
   controls.enabled = e.orbita !== false;
   // línea de tiempo
   if (action) {
-    if (inmediato || reduce || n < ant) { tweenT = null; fijarTiempo(e.t1); }
+    if (inmediato || reduce || POSTER || n < ant) { tweenT = null; fijarTiempo(e.t1); }
     else tweenT = { t0: tiempo, t1: e.t1, dur: Math.min(Math.max(Math.abs(e.t1 - tiempo), 0.3), 6), t: 0 };
   }
   // etiquetas
@@ -173,6 +183,8 @@ function ir(n, inmediato = false) {
     else if (!retraso) div.classList.add('on');
   }
   if (retraso) ir._t = setTimeout(() => { for (const n of vis) if (etiquetas[n]) etiquetas[n].classList.add('on'); }, retraso);
+  estadoDecor(n, retraso ? Math.min(retraso, 1200) : 0);
+  if (inmediato || reduce || POSTER) inmediatoDecor();
   // textos
   $('texto').innerHTML = e.texto || '';
   $('ref').textContent = e.ref || '';
@@ -186,6 +198,7 @@ function ir(n, inmediato = false) {
     $('slider-max').textContent = e.slider.max_txt || (e.slider.tipo === 'azimut' ? 'derecha' : '');
     const v0 = e.slider.tipo === 'azimut' ? (0 - e.slider.min) / (e.slider.max - e.slider.min) : 1;
     $('slider').value = Math.round(v0 * 1000);
+    pintarSlider();
   }
   [...$('estados').children].forEach((b, i) => { if (i === n) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current'); });
   post({ type: 'estado', n });
@@ -208,6 +221,7 @@ function bucle() {
     fijarTiempo(tweenT.t0 + (tweenT.t1 - tweenT.t0) * k);
     if (tweenT.t >= 1) tweenT = null;
   }
+  animarDecor(dt, camera);
   controls.update();
   renderer.render(scene, camera);
   labelRenderer.render(scene, camera);

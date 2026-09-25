@@ -11,7 +11,7 @@
    "ref": "Sarduy 1972 · figura 1 (§2 a)",
    "cam": "cam_0",
    "look": "look_0",
-   "fov": 5.6,
+   "fov": 4.8,
    "t1": 0,
    "etiquetas": [
     "lbl_snte",
@@ -28,7 +28,7 @@
    "ref": "§2 a",
    "cam": "cam_1",
    "look": "look_1",
-   "fov": 33,
+   "fov": 24,
    "t1": 0.5,
    "etiquetas": [
     "lbl_snte",
@@ -45,7 +45,7 @@
    "ref": "§2 a",
    "cam": "cam_2",
    "look": "look_2",
-   "fov": 33,
+   "fov": 32,
    "t1": 3.0,
    "etiquetas": [
     "lbl_snte",
@@ -62,12 +62,13 @@
    "ref": "«Abertura, falla entre lo [nombrante] y lo nombrado» (§2 a)",
    "cam": "cam_3",
    "look": "look_3",
-   "fov": 35,
+   "fov": 32,
    "t1": 5.5,
    "etiquetas": [
     "lbl_sdo",
     "lbl_snte1",
     "lbl_snte",
+    "lbl_clasico",
     "lbl_falla"
    ],
    "orbita": true,
@@ -87,7 +88,7 @@
    "ref": "«sólo en el contexto erótico del relato funciona» (§2 a)",
    "cam": "cam_4",
    "look": "look_4",
-   "fov": 40,
+   "fov": 32,
    "t1": 6.7,
    "etiquetas": [
     "lbl_snte",
@@ -105,10 +106,11 @@
    "ref": "Lezama Lima, Paradiso · §2 a",
    "cam": "cam_5",
    "look": "look_5",
-   "fov": 33,
+   "fov": 32,
    "t1": 6.7,
    "etiquetas": [
     "lbl_snte",
+    "lbl_sdo",
     "lbl_ej_sdo",
     "lbl_snte1",
     "lbl_ej_snte1"
@@ -123,9 +125,11 @@
    "ref": "§2 a",
    "cam": "cam_6",
    "look": "look_6",
-   "fov": 33,
+   "fov": 32,
    "t1": 6.7,
    "etiquetas": [
+    "lbl_snte",
+    "lbl_sdo",
     "lbl_porro_sdo",
     "lbl_porro_tach",
     "lbl_snte1",
@@ -141,11 +145,12 @@
    "ref": "§2 a",
    "cam": "cam_7",
    "look": "look_7",
-   "fov": 40,
+   "fov": 32,
    "t1": 8.8,
    "etiquetas": [
     "lbl_papaya_sdo",
     "lbl_snte",
+    "lbl_sdo",
     "lbl_snte1",
     "lbl_papaya_snte1",
     "lbl_papaya_nota"
@@ -212,5 +217,24 @@
    "html": "en argot cubano, también el sexo femenino: erotiza la obra entera",
    "clase": "nota"
   }
+ },
+ "estudio": {
+  "materiales": {
+   "vidrio": {
+    "color": "#56626A",
+    "opacity": 0.1,
+    "roughness": 0.2,
+    "envMapIntensity": 0.9
+   },
+   "calido": {
+    "color": "#A3245F",
+    "opacity": 0.065,
+    "roughness": 0.25,
+    "emissive": "#A3245F",
+    "emissiveIntensity": 0.08,
+    "envMapIntensity": 0.8
+   }
+  },
+  "sombra": 0.18
  }
 }

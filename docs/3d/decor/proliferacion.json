@@ -1,0 +1,51 @@
+{
+ "imagenes": [
+  {
+   "src": "imagenes/lamina.webp",
+   "marco": "fino",
+   "pie": "La cadena: reloj, balanza, telescopio, armario",
+   "tipo": "cuadro",
+   "ancho": 2.754,
+   "pos": [
+    5.431,
+    1.348,
+    -1.52
+   ],
+   "mira": "cam_1",
+   "estados": [
+    1
+   ]
+  },
+  {
+   "src": "imagenes/planta-oval.webp",
+   "marco": "fino",
+   "pie": "Planta oval: dos focos",
+   "tipo": "cuadro",
+   "ancho": 2.833,
+   "pos": [
+    6.382,
+    0.84,
+    -1.783
+   ],
+   "mira": "cam_4",
+   "estados": [
+    4
+   ]
+  },
+  {
+   "src": "imagenes/orbita.webp",
+   "marco": "fino",
+   "tipo": "cuadro",
+   "ancho": 1.842,
+   "pos": [
+    -2.838,
+    1.096,
+    -2.814
+   ],
+   "mira": "cam_5",
+   "estados": [
+    5
+   ]
+  }
+ ]
+}

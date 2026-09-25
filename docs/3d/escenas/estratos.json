@@ -11,7 +11,7 @@
    "ref": "«recorrido lineal, fijado, “normal” de la página» · §3 b",
    "cam": "cam_0",
    "look": "look_0",
-   "fov": 6.8,
+   "fov": 9.8,
    "t1": 0,
    "etiquetas": [
     "lbl_lectura"
@@ -26,7 +26,7 @@
    "ref": "Intertextualidad: la cita · §3 a",
    "cam": "cam_1",
    "look": "look_1",
-   "fov": 34,
+   "fov": 30,
    "t1": 2.5,
    "etiquetas": [
     "lbl_receptor",
@@ -45,7 +45,7 @@
    "ref": "Jammes, cit. por Sarduy · §3",
    "cam": "cam_2",
    "look": "look_2",
-   "fov": 34,
+   "fov": 30,
    "t1": 3.9,
    "etiquetas": [
     "lbl_gongora",
@@ -152,7 +152,7 @@
    "clase": "serif"
   },
   "lbl_marca": {
-   "html": "filigrana: la marca de agua, visible a contraluz",
+   "html": "filigrana: la marca de agua,<br>visible a contraluz",
    "clase": "nota"
   },
   "lbl_cita_sup": {
@@ -160,7 +160,7 @@
    "clase": "ajeno"
   },
   "lbl_remin": {
-   "html": "reminiscencia: tiñe desde abajo, sin aflorar",
+   "html": "reminiscencia:<br>tiñe desde abajo, sin aflorar",
    "clase": "serif"
   },
   "lbl_ejemplos": {
@@ -202,6 +202,29 @@
   "lbl_rcond": {
    "html": "Sarduy, en condicional: «se presentaría… como una red»",
    "clase": "nota"
+  }
+ },
+ "estudio": {
+  "materiales": {
+   "lamina": {
+    "color": "#FFFDF9"
+   },
+   "tinta_renglon": {
+    "clearcoat": 0.0,
+    "roughness": 0.85,
+    "envMapIntensity": 0.3
+   },
+   "ajeno": {
+    "clearcoat": 0.1,
+    "clearcoatRoughness": 0.5,
+    "roughness": 0.75,
+    "envMapIntensity": 0.5
+   },
+   "hueco": {
+    "roughness": 0.55,
+    "clearcoat": 0.3,
+    "emissiveIntensity": 0.06
+   }
   }
  }
 }

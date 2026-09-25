@@ -1,7 +1,9 @@
 # Nunca publicar material de trabajo (vive fuera de repo/, en _privado/)
-blender/out/
 *.blend
 *.blend1
-node_modules/
+*.pyc
 .DS_Store
+__pycache__/
+blender/out/
 docs/svg/_prueba.html
+node_modules/

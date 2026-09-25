@@ -1,0 +1,35 @@
+{
+ "imagenes": [
+  {
+   "src": "imagenes/contraluz.webp",
+   "marco": "fino",
+   "pie": "A contraluz: el otro texto",
+   "tipo": "cuadro",
+   "ancho": 1.972,
+   "pos": [
+    5.809,
+    0.076,
+    -0.712
+   ],
+   "mira": "cam_2",
+   "estados": [
+    2
+   ]
+  },
+  {
+   "src": "imagenes/tinta.webp",
+   "marco": "fino",
+   "tipo": "cuadro",
+   "ancho": 2.212,
+   "pos": [
+    4.217,
+    0.658,
+    1.462
+   ],
+   "mira": "cam_3",
+   "estados": [
+    3
+   ]
+  }
+ ]
+}

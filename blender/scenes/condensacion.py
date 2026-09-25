@@ -14,7 +14,7 @@ Estados:
     («puesta en escena», l. 399-404).
   3 El lector dentro: 24 listones de perfil trapezoidal sobre la barra y el Sdo.; caras izquierdas AMO,
     derechas ESCLAVO, de frente AMOSCLAVO (texto como geometría proyectada desde la posición del lector).
-    Slider de azimut. Dispositivo didáctico genérico: no reproduce obras de Cruz-Diez ni de Le Parc.
+    Slider de azimut. AMO y ESCLAVO (los laterales) entran en el dispositivo y dejan la escena.
   4 MAQUINOSCRITO: el mismo mecanismo con MÁQUINA / MANUSCRITO (l. 341-342).
 
 Nota: el tercer término (l. 320-321) no es el «cuarto elemento» de Cruz-Diez (l. 358-359).
@@ -351,7 +351,10 @@ def fz(py): return (155.0 - py) * ESC
 
 
 # ---------------------------------------------------------------- estado 0: figura plana (plano XZ, de frente a -Y)
-LAM = M('lamina')
+# En el tema claro (papel) el marfil de 'lamina' se funde con el fondo: los trazos de la figura (corchetes,
+# barras, fracción) y las barras de volumen van en tinta oscura (prefijo 'grafito' → tinta en estudio.js).
+LAM = M('soporte', 'grafito_linea')
+BARRA = M('soporte', 'grafito_barra')
 NAC = M('significante')
 ORO = M('significado')
 CIAN = M('trayecto')
@@ -405,12 +408,15 @@ ETQ0 = ['p_perm', 'p_cond', 'p_fon', 'p_f', 'p_snte1', 'p_snte2', 'p_sdo', 'c_sn
 
 
 # ---------------------------------------------------------------- estado 1: permutación en volumen
-XP, ZB1 = -1.2, fz(221.5)
+# ZB1: el fondo del Significado queda a la misma altura que el del Sdo. del estado 2 (≈ fz(160.7) − 0,226): el
+# visor pone el suelo de sombras bajo lo visible al final de la línea de tiempo, y así la permutación también
+# se posa sobre él (antes flotaba por debajo, sin sombra).
+XP, ZB1 = -1.2, fz(160.7) + 0.009
 perm = bb.grupo('permutacion', (XP, 0, ZB1))
 fijar(perm, esc=(1, 1, 1))
 desaparecer(perm, 3.55, 3.95)
 
-barra1 = bb.caja('barra_perm', (4.55, 0.44, 0.04), (0, 0, 0), LAM, perm, bevel=0.01)
+barra1 = bb.caja('barra_perm', (4.55, 0.44, 0.04), (0, 0, 0), BARRA, perm, bevel=0.01)
 oro1 = bb.caja('significado', (1.5, 0.28, 0.21), (0, -0.1, -0.13), ORO, perm, bevel=0.02)
 aparecer(barra1, 0.2, 0.75)
 aparecer(oro1, 0.35, 0.9)
@@ -517,7 +523,7 @@ CAP_L = 0.16
 EXT_L = 0.018
 BAR_W = 1.75
 
-barra2 = bb.caja('barra_cond', (BAR_W, 0.34, 0.04), (0, YC, 0), LAM, cond, bevel=0.01)
+barra2 = bb.caja('barra_cond', (BAR_W, 0.34, 0.04), (0, YC, 0), BARRA, cond, bevel=0.01)
 oro2 = bb.caja('sdo', (0.8, 0.26, 0.2), (0, YC - 0.05, -0.126), ORO, cond, bevel=0.02)
 
 T2A = 3.75  # aparición del aparato de condensación
@@ -583,7 +589,7 @@ aparecer(a_id, 7.25, 7.65)
 
 S.etiqueta('e2_snte1', 'Snte.<sup>1</sup>', (0, -0.2, -0.13), parent=g_amo, clase='snte')
 S.etiqueta('e2_snte2', 'Snte.<sup>2</sup>', (0, -0.2, -0.13), parent=g_esc, clase='snte')
-S.etiqueta('e2_snte3', 'Snte.<sup>3</sup>', (XC, -0.1, ZB2 + 0.42), clase='snte')
+S.etiqueta('e2_snte3', 'Snte.<sup>3</sup>', (XC, -0.1, ZB2 + 0.36), clase='snte')
 S.etiqueta('e2_sdo', 'Sdo.', (XC, YC - 0.21, ZB2 - 0.126), clase='sdo')
 
 
@@ -616,18 +622,17 @@ for p in listones.data.polygons:
     p.use_smooth = False
 tablero = bb.caja('tablero', (W_, 0.03, H_), (0, 0.015, H_ / 2), M('barro'), panel)
 
-BAR3 = (W_ + 0.2) / BAR_W
-INNER3 = 3.3                  # fuera de cuadro en las tres posiciones del lector: siguen a los lados
-DL = INNER3 - INNER2
+BAR3 = (W_ + 0.12) / BAR_W
 
 # cámaras del estado 3 (el slider de azimut gira alrededor de la vertical que pasa por el objetivo)
 RH3 = 24.0
 ELEV3 = math.radians(5.0)
-# el objetivo va 0,25 m a la derecha del panel: el dispositivo queda algo a la izquierda y no roza el panel de
-# texto del visor (sobre todo incrustado en la diapositiva, 1920×904)
-LOOK3 = Vector((XC + 0.25, 0.0, ZB2 - 0.01))
+# el objetivo va 0,35 m a la derecha del panel y 0,08 m por debajo de la barra: el dispositivo queda a la izquierda y
+# arriba, y en ningún azimut (±40°) el estante roza la tarjeta de texto, ni incrustado (1920×904) ni a pantalla
+# completa (16:9); el alto visible (2,15 m) es el mayor que lo cumple con márgenes (comprobado por proyección).
+LOOK3 = Vector((XC + 0.35, 0.0, ZB2 - 0.08))
 CAM3 = LOOK3 + Vector((0, -RH3, RH3 * math.tan(ELEV3)))
-VIS_H3 = 2.3                   # alto visible (m) a la distancia del objetivo
+VIS_H3 = 2.15                  # alto visible (m) a la distancia del objetivo
 AZ = 40.0
 
 
@@ -779,11 +784,15 @@ for a in (a_si, a_ii, a_sd, a_id):
     desaparecer(a, T3A, T3A + 0.35)
 S.clave(barra2, T3A, esc=(1, 1, 1))
 S.clave(barra2, T3A + 0.6, esc=(BAR3, 1, 1))
+# AMO y ESCLAVO entran en el dispositivo (van hacia los cantos del panel y se desvanecen): en los estados 3 y 4
+# no queda ningún lateral en la escena, así que nada asoma por los bordes en ningún punto del deslizador
+# (antes se apartaban a ±3,3 m y, con el lector a ±40°, un trozo de ESCLAVO/AMO entraba en el cuadro incrustado).
 for g, lado in ((g_amo, -1), (g_esc, 1)):
     p = Vector(g.location)
+    q = Vector((lado * (W_ / 2 - 0.2), p.y, p.z))
     fijar(g, loc=tuple(p))
-    S.clave(g, T3A, loc=tuple(p))
-    S.clave(g, T3A + 0.8, loc=tuple(p + Vector((lado * DL, 0, 0))))
+    S.clave(g, T3A, loc=tuple(p), esc=(1, 1, 1))
+    S.clave(g, T3A + 0.8, loc=tuple(q), esc=T3)
 for cp in viajeras:
     desaparecer(cp, T3A + 0.15, T3A + 0.55)
 fijar(panel, esc=T3)
@@ -796,9 +805,8 @@ fijar(txtB, esc=T3)
 # Las etiquetas HTML no cambian con el deslizador: un «Snte.³» fijo rotularía mal AMO (Snte.¹) y ESCLAVO (Snte.²)
 # vistos de lado. Se usa una leyenda que vale para las tres posiciones del lector.
 S.etiqueta('e3_leyenda', 'Snte.<sup>1</sup> desde la izquierda · <b>Snte.<sup>3</sup> de frente</b> · '
-           'Snte.<sup>2</sup> desde la derecha', (XC, -0.2, ZB2 + Z_PB + H_ + 0.15), clase='snte')
-S.etiqueta('e3_nota', 'dispositivo didáctico genérico; no reproduce obras de Cruz-Diez ni de Le Parc',
-           (XC - 0.85, 0.0, ZB2 - 0.36), clase='nota')
+           'Snte.<sup>2</sup> desde la derecha', (XC, -0.2, ZB2 + Z_PB + H_ + 0.085), clase='snte')
+# (la aclaración sobre Cruz-Diez / Le Parc está en la diapositiva 20: no se rotula en la escena)
 
 # ---------------------------------------------------------------- estado 4: MAQUINOSCRITO (mismos listones)
 T4A = 10.6
@@ -813,7 +821,8 @@ for a in avisos:
     print('[condensacion] AVISO', a)
 
 # ================================================================ estados
-FRENTE = dict(cam=(0.0, -38.0, 0.0), look=(0.0, 0.0, 0.0), fov=6.5)
+# cámara horizontal 0,52 m por debajo del centro de la figura: la figura sube en el cuadro y deja libre la tarjeta
+FRENTE = dict(cam=(0.0, -38.0, -0.52), look=(0.0, 0.0, -0.52), fov=6.3)
 
 
 def acercar(cam, look, k):
@@ -821,11 +830,11 @@ def acercar(cam, look, k):
     return tuple(look + (cam - look) / k), tuple(look)
 
 
-c1_, l1_ = acercar((XP - 1.4, -7.4, ZB1 + 2.3), (XP + 0.05, 0.0, ZB1 - 0.05), 1.33)
+c1_, l1_ = acercar((XP - 1.4, -7.4, ZB1 + 2.3 - 0.15), (XP + 0.05, 0.0, ZB1 - 0.05 - 0.15), 1.33)
 E1 = dict(cam=c1_, look=l1_, fov=30)
 # cámara y objetivo 0,28 m más abajo: la fila sube en el cuadro y «Snte.²» no toca el panel de texto
 # (en la diapositiva el visor mide 1920×904 y el panel crece con el deslizador)
-c2_, l2_ = acercar((XC - 0.9, -7.0, ZB2 + 1.25 - 0.28), (XC + 0.24, 0.0, ZB2 - 0.1 - 0.28), 1.25)
+c2_, l2_ = acercar((XC - 0.9, -7.0, ZB2 + 1.25 - 0.46), (XC + 0.24, 0.0, ZB2 - 0.1 - 0.46), 1.25)
 E2 = dict(cam=c2_, look=l2_, fov=30)
 E3 = dict(cam=tuple(CAM3), look=tuple(LOOK3), fov=2 * math.degrees(math.atan(VIS_H3 / 2 / (CAM3 - LOOK3).length)))
 SLIDER_LECTOR = {'tipo': 'azimut', 'min': -AZ, 'max': AZ, 'etiqueta': 'posición del lector',
@@ -857,12 +866,12 @@ S.estado('El lector dentro',
          'Desde la izquierda, AMO; desde la derecha, ESCLAVO; de frente, AMOSCLAVO. Ninguna vista sola es la obra: '
          'el desplazamiento del lector, «comparable a la lectura», condensa las tres.',
          'Sarduy sobre Cruz-Diez · l. 320-321 · l. 353-359',
-         etiquetas=['e3_leyenda', 'e2_sdo', 'e3_nota'], t1=10.3, orbita=False, slider=SLIDER_LECTOR, **E3)
+         etiquetas=['e3_leyenda', 'e2_sdo'], t1=10.3, orbita=False, slider=SLIDER_LECTOR, **E3)
 S.estado('Maquinoscrito',
          'El mismo mecanismo: MÁQUINA desde la izquierda, MANUSCRITO desde la derecha y, de frente, '
          'el tercer término, MAQUINOSCRITO.',
          'Cabrera Infante, «maquinoscrito» · l. 341-342',
-         etiquetas=['e3_leyenda', 'e2_sdo', 'e3_nota'], t1=12.1, orbita=False, slider=SLIDER_LECTOR, **E3)
+         etiquetas=['e3_leyenda', 'e2_sdo'], t1=12.1, orbita=False, slider=SLIDER_LECTOR, **E3)
 
 # ---------------------------------------------------------------- recuento
 tris = 0

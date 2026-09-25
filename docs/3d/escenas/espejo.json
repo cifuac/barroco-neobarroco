@@ -11,7 +11,7 @@
    "ref": "Sarduy 1972 · b] Espejo (§4 b)",
    "cam": "cam_0",
    "look": "look_0",
-   "fov": 7.0,
+   "fov": 7.2,
    "t1": 0,
    "etiquetas": [
     "lbl_reductor"
@@ -26,7 +26,7 @@
    "ref": "§4 b",
    "cam": "cam_1",
    "look": "look_1",
-   "fov": 34,
+   "fov": 46,
    "t1": 2.0,
    "etiquetas": [
     "lbl_sala",
@@ -53,7 +53,7 @@
    "orbita": true,
    "slider": {
     "tipo": "azimut",
-    "min": -38,
+    "min": -30,
     "max": 12,
     "etiqueta": "puntos de vista (la ciudad leibniziana)",
     "min_txt": "izquierda",
@@ -67,7 +67,7 @@
    "ref": "§4 b",
    "cam": "cam_3",
    "look": "look_3",
-   "fov": 38,
+   "fov": 46,
    "t1": 10.0,
    "etiquetas": [
     "lbl_pantalla",
@@ -87,10 +87,10 @@
   {
    "nombre": "Pantalla y carencia",
    "texto": "Retirada la pantalla, aparece la carencia: el trayecto gira en torno a esa ausencia. «Reflejo necesariamente pulverizado»; «arte del destronamiento y la discusión».",
-   "ref": "§4 b · Díaz 2011, ap. 6 (ap. 6)",
+   "ref": "§4 b · Díaz 2011, ap. 6",
    "cam": "cam_4",
    "look": "look_4",
-   "fov": 40,
+   "fov": 46,
    "t1": 13.6,
    "etiquetas": [
     "lbl_carencia",
@@ -101,7 +101,7 @@
    "orbita": true,
    "slider": {
     "tipo": "azimut",
-    "min": -38,
+    "min": -22,
     "max": 10,
     "etiqueta": "otro punto de vista, otro reflejo",
     "min_txt": "izquierda",
@@ -124,7 +124,7 @@
    "clase": ""
   },
   "lbl_vaneyck": {
-   "html": "Van Eyck, 1434 (aún no barroco) · Góngora: «aunque cóncavo fiel»",
+   "html": "Van Eyck, 1434 (aún no barroco)<span style=\"display:block;margin-top:.35em\">Góngora: «aunque cóncavo fiel»</span>",
    "clase": "nota"
   },
   "lbl_logos": {
@@ -158,6 +158,49 @@
   "lbl_destronado": {
    "html": "logos destronado",
    "clase": "nota"
+  }
+ },
+ "estudio": {
+  "materiales": {
+   "estuco": {
+    "color": "#D2CABD",
+    "roughness": 0.86
+   },
+   "estuco_moldura": {
+    "color": "#B5AEA2",
+    "roughness": 0.7
+   },
+   "soporte_zocalo": {
+    "color": "#45484C",
+    "roughness": 0.5,
+    "clearcoat": 0.4
+   },
+   "soporte_suelo": {
+    "color": "#9E9990",
+    "roughness": 0.42,
+    "clearcoat": 0.45
+   },
+   "marco": {
+    "color": "#2F3134",
+    "roughness": 0.3,
+    "metalness": 0,
+    "clearcoat": 1
+   },
+   "hueco": {
+    "color": "#1E1915",
+    "emissive": "#000000",
+    "emissiveIntensity": 0,
+    "roughness": 1,
+    "clearcoat": 0
+   },
+   "vaho": {
+    "color": "#FFFFFF",
+    "opacity": 0.84,
+    "roughness": 0.95,
+    "metalness": 0,
+    "clearcoat": 0,
+    "envMapIntensity": 0.5
+   }
   }
  }
 }

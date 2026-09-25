@@ -11,7 +11,7 @@
    "ref": "Figura 3 según Sarduy 1972, reconstrucción · §2 c",
    "cam": "cam_0",
    "look": "look_0",
-   "fov": 6.5,
+   "fov": 6.3,
    "t1": 0,
    "etiquetas": [
     "lbl_p_perm",
@@ -86,12 +86,11 @@
    "ref": "Sarduy sobre Cruz-Diez · §2 c",
    "cam": "cam_3",
    "look": "look_3",
-   "fov": 5.465802333713535,
+   "fov": 5.109825749976896,
    "t1": 10.3,
    "etiquetas": [
     "lbl_e3_leyenda",
-    "lbl_e2_sdo",
-    "lbl_e3_nota"
+    "lbl_e2_sdo"
    ],
    "orbita": false,
    "slider": {
@@ -110,12 +109,11 @@
    "ref": "Cabrera Infante, «maquinoscrito» · §2 c",
    "cam": "cam_4",
    "look": "look_4",
-   "fov": 5.465802333713535,
+   "fov": 5.109825749976896,
    "t1": 12.1,
    "etiquetas": [
     "lbl_e3_leyenda",
-    "lbl_e2_sdo",
-    "lbl_e3_nota"
+    "lbl_e2_sdo"
    ],
    "orbita": false,
    "slider": {
@@ -209,10 +207,7 @@
   "lbl_e3_leyenda": {
    "html": "Snte.<sup>1</sup> desde la izquierda · <b>Snte.<sup>3</sup> de frente</b> · Snte.<sup>2</sup> desde la derecha",
    "clase": "snte"
-  },
-  "lbl_e3_nota": {
-   "html": "dispositivo didáctico genérico; no reproduce obras de Cruz-Diez ni de Le Parc",
-   "clase": "nota"
   }
- }
+ },
+ "estudio": {}
 }

@@ -42,7 +42,7 @@
     "lbl_obj4",
     "lbl_obj5",
     "lbl_etc",
-    "lbl_e_snte",
+    "lbl_e1_snte",
     "lbl_e3_sdo"
    ],
    "orbita": true,
@@ -64,7 +64,7 @@
     "lbl_obj4",
     "lbl_obj5",
     "lbl_etc",
-    "lbl_e_snte",
+    "lbl_e1_snte",
     "lbl_e3_desorden"
    ],
    "orbita": true,
@@ -80,12 +80,17 @@
    "fov": 34,
    "t1": 5.1,
    "etiquetas": [
+    "lbl_mamp1",
+    "lbl_mamp2",
+    "lbl_mamp3",
+    "lbl_mamp4",
     "lbl_mamp5",
     "lbl_etc",
     "lbl_lect1",
     "lbl_lect2",
     "lbl_lect3",
     "lbl_lect4",
+    "lbl_e3_snte",
     "lbl_e_vacio"
    ],
    "orbita": true,
@@ -173,15 +178,15 @@
    "clase": "grande sdo"
   },
   "lbl_e_sdo_foco": {
-   "html": "Sdo.<br>foco presente",
+   "html": "<span style=\"display:inline-block;line-height:1.22\">Sdo.<br>foco presente</span>",
    "clase": "sdo"
   },
   "lbl_e_snte_foco": {
-   "html": "<s>Snte.</s><br>foco ausente",
+   "html": "<span style=\"display:inline-block;line-height:1.22\"><s>Snte.</s><br>foco ausente</span>",
    "clase": "tachado"
   },
   "lbl_cita1974": {
-   "html": "<span style=\"color:var(--azogue)\">lectura posterior<br>Sarduy 1974, cit. por Díaz 2011</span>",
+   "html": "<span style=\"display:inline-block;line-height:1.3;color:var(--azogue)\">lectura posterior<br>Sarduy 1974, cit. por Díaz 2011</span>",
    "clase": "nota"
   },
   "lbl_e_vacio": {
@@ -189,6 +194,10 @@
    "clase": "grande"
   },
   "lbl_e3_snte": {
+   "html": "<s>Snte.</s>",
+   "clase": "grande tachado"
+  },
+  "lbl_e1_snte": {
    "html": "<s>Snte.</s>",
    "clase": "grande tachado"
   },
@@ -217,8 +226,8 @@
    "clase": "snte"
   },
   "lbl_obj5": {
-   "html": "Snte.<sup>5</sup> · por venir",
-   "clase": "snte nota"
+   "html": "Snte.<sup>5</sup> · <i style=\"color:var(--azogue)\">por venir</i>",
+   "clase": "snte"
   },
   "lbl_tab1": {
    "html": "Snte.<sup>1</sup>",
@@ -257,8 +266,8 @@
    "clase": "snte"
   },
   "lbl_mamp5": {
-   "html": "¿lo que vendría a cerrarla?",
-   "clase": "nota"
+   "html": "<i>¿lo que vendría a cerrarla?</i>",
+   "clase": "snte"
   },
   "lbl_snte1": {
    "html": "Snte.<sup>1</sup>",
@@ -307,6 +316,30 @@
   "lbl_kep_vacio": {
    "html": "foco vacío",
    "clase": "nota"
+  }
+ },
+ "estudio": {
+  "materiales": {
+   "azogue_linea": {
+    "opacity": 0.995
+   },
+   "logos": {
+    "opacity": 0.995
+   },
+   "hueco_kepler": {
+    "opacity": 0.995
+   },
+   "significado": {
+    "roughness": 0.45
+   },
+   "cristal": {
+    "color": "#F4EEE3",
+    "opacity": 0.24
+   },
+   "fantasma": {
+    "color": "#2F3134",
+    "opacity": 0.62
+   }
   }
  }
 }

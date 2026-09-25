@@ -20,7 +20,7 @@ def conv(txt):
     return out
 if __name__ == '__main__':
     docs = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'docs')
-    archivos = glob.glob(docs + '/3d/escenas/*.json') + glob.glob(docs + '/svg/*.svg')
+    archivos = sys.argv[1:] or (glob.glob(docs + '/3d/escenas/*.json') + glob.glob(docs + '/svg/*.svg'))
     for f in archivos:
         s = open(f, encoding='utf-8').read(); t = conv(s)
         if t != s:

@@ -19,6 +19,19 @@ random.seed(1972)
 S = bb.Escena('espejo', 'Espejo: tres reflejos', dur=14)
 M = bb.mat
 C = 'CONSTANT'
+# ajustes del visor «galería clara» (docs/3d/estudio.js): estuco en gris piedra para que la capilla no se funda con el
+# papel; molduras algo más oscuras; marco y hueco en tinta (sin café); vaho lechoso casi opaco y mate (se ve la «opacidad»).
+S.estudio = {
+    'materiales': {
+        'estuco': {'color': '#D2CABD', 'roughness': 0.86},
+        'estuco_moldura': {'color': '#B5AEA2', 'roughness': 0.7},
+        'soporte_zocalo': {'color': '#45484C', 'roughness': 0.5, 'clearcoat': 0.4},
+        'soporte_suelo': {'color': '#9E9990', 'roughness': 0.42, 'clearcoat': 0.45},
+        'marco': {'color': '#2F3134', 'roughness': 0.3, 'metalness': 0, 'clearcoat': 1},
+        'hueco': {'color': '#1E1915', 'emissive': '#000000', 'emissiveIntensity': 0, 'roughness': 1, 'clearcoat': 0},
+        'vaho': {'color': '#FFFFFF', 'opacity': 0.84, 'roughness': 0.95, 'metalness': 0, 'clearcoat': 0, 'envMapIntensity': 0.5},
+    },
+}
 TINY = 0.0001
 ESC = 0.56          # escala global (la cámara del estado 0 debe quedar a ≤ 40 m: OrbitControls.maxDistance)
 
@@ -45,8 +58,10 @@ def mat_prop(nombre, hexcol, met=0.0, rough=0.5, emi=None, emis=0.0, coat=0.0):
 
 
 ESTUCO = mat_prop('estuco', '#E2D9C8', rough=0.82)
+ESTUCO_M = mat_prop('estuco_moldura', '#EDE6DA', rough=0.7)   # pilastras y cornisas (otro tono: la capilla se lee como volumen)
 EMB = M('significante')                  # emblemas: nácar con barniz
-SOP = M('soporte')                       # grafito
+SOP = M('soporte', 'soporte_zocalo')     # zócalos
+SUELO = M('soporte', 'soporte_suelo')    # losa del suelo
 MARCO = mat_prop('marco', '#2B2019', rough=0.38, coat=0.6)
 FONDO = mat_prop('cartela', '#2A1E17', rough=0.9)
 ESPEJO = M('espejo')                     # azogue pulido
@@ -233,15 +248,15 @@ for nom, alfa in MUROS.items():
     grupos[nom] = g
     L = SLADO + 2 * T * math.tan(math.radians(22.5))
     estuco.append(bb.caja(nom + '_muro', (L, T, H), (0, T / 2, H / 2), ESTUCO, g))
-    estuco.append(bb.caja(nom + '_cornisa1', (L, 0.12, 0.12), (0, -0.04, H - 0.06), ESTUCO, g, bevel=0.012))
-    estuco.append(bb.caja(nom + '_cornisa2', (L, 0.07, 0.07), (0, -0.02, H - 0.2), ESTUCO, g, bevel=0.01))
+    estuco.append(bb.caja(nom + '_cornisa1', (L, 0.12, 0.12), (0, -0.04, H - 0.06), ESTUCO_M, g, bevel=0.012))
+    estuco.append(bb.caja(nom + '_cornisa2', (L, 0.07, 0.07), (0, -0.02, H - 0.2), ESTUCO_M, g, bevel=0.01))
     soporte.append(bb.caja(nom + '_zocalo', (L, 0.06, 0.38), (0, -0.02, 0.19), SOP, g, bevel=0.01))
 
 # pilastras en las esquinas (incluidas las dos del corte)
 for beta in (22.5, 67.5, 112.5, 157.5, 202.5, 337.5):
     b = math.radians(beta)
     rc = A / math.cos(math.radians(22.5)) - 0.02
-    p = bb.caja('pilastra_%d' % int(beta), (0.26, 0.1, H - 0.02), (rc * math.cos(b), rc * math.sin(b), H / 2 - 0.01), ESTUCO, None, bevel=0.015)
+    p = bb.caja('pilastra_%d' % int(beta), (0.26, 0.1, H - 0.02), (rc * math.cos(b), rc * math.sin(b), H / 2 - 0.01), ESTUCO_M, None, bevel=0.015)
     p.rotation_euler = (0, 0, b - math.pi / 2)
     estuco.append(p)
 
@@ -251,14 +266,14 @@ g8 = bmesh.ops.create_cone(bm, cap_ends=True, segments=8, radius1=(A + T + 0.2) 
                            radius2=(A + T + 0.2) / math.cos(math.radians(22.5)), depth=0.24)
 bmesh.ops.rotate(bm, verts=g8['verts'], cent=(0, 0, 0), matrix=Matrix.Rotation(math.radians(22.5), 3, 'Z'))
 bmesh.ops.translate(bm, vec=(0, 0, -0.12), verts=g8['verts'])
-soporte.append(objeto('suelo', bm, SOP, liso=False))
+soporte.append(objeto('suelo', bm, SUELO, liso=False))
 
 # cartelas oscuras con filete de nácar + emblemas
 EMBLEMAS = [  # (muro, tipo, x local, z)
-    ('diag_i', 'voluta', 0.0, 2.38), ('diag_i', 'tabla', 0.0, 1.18),
-    ('diag_d', 'elipse', 0.0, 2.38), ('diag_d', 'nucleo', 0.0, 1.18),
-    ('izq', 'monada', 0.0, 1.85), ('der', 'abierto', 0.0, 1.85),
-]
+    ('diag_i', 'voluta', -0.5, 2.38), ('diag_i', 'tabla', -0.5, 1.18),
+    ('diag_d', 'elipse', 0.5, 2.38), ('diag_d', 'nucleo', 0.5, 1.18),
+    ('izq', 'monada', 0.3, 1.85), ('der', 'abierto', -0.3, 1.85),
+]   # los de los muros diagonales, corridos hacia el frente; los laterales, hacia el fondo (encuadres más limpios)
 emb_obs, emb_centros = {}, {}
 for muro, tipo, x, z in EMBLEMAS:
     g = grupos[muro]
@@ -441,7 +456,7 @@ OFF_V = 0.024              # el vaho flota sobre las miniaturas (que quedan deba
 PV, _ = cap(VC2.x, VC2.y, OFF_V)
 bm = bmesh.new()
 NR, NS = 9, 72
-V_CEN, V_BOR = Vector(bb.lin('#B8B2A8')[:3]), Vector(bb.lin('#3A3E41')[:3])
+V_CEN, V_BOR = Vector(bb.lin('#E4E2DE')[:3]), Vector(bb.lin('#9A9EA1')[:3])   # vaho lechoso → borde gris azogue
 colv = {}
 
 
@@ -616,15 +631,16 @@ bb.polilinea_punteada('trayecto_guiones', tr_pts, guion=0.1, hueco=0.07, r=0.016
 # ---------------------------------------------------------------- etiquetas
 CF = Vector((-0.6, 0.5, 0.0))        # centro del anillo-logos caído (estado 4)
 SF = 0.55                            # escala de los segmentos caídos
-S.etiqueta('reductor', 'reflejo reductor', (0, YB - 0.3, ZC + 1.12), clase='serif')
+S.etiqueta('reductor', 'reflejo reductor', (0, YB - 0.3, ZC + 1.25), clase='serif')
 S.etiqueta('opaco', 'opacidad', (-1.04, YB - 0.2, ZC + 0.44), clase='serif')
 S.etiqueta('sala', 'la sala, reducida', (-1.24, YB - 0.2, ZC - 0.36), clase='')
-S.etiqueta('vaneyck', 'Van Eyck, 1434 (aún no barroco) · Góngora: «aunque cóncavo fiel»', (-0.3, YB - 0.2, ZC - 1.03), clase='nota')
-S.etiqueta('logos', 'logos exterior', (RC.x + 2.6, RC.y - 0.3, RC.z + 0.9), clase='serif')
-S.etiqueta('dios', 'el dios jesuita · el rey', (RC.x + RL + 1.05, RC.y - 0.3, RC.z + 0.15), clase='nota')
+S.etiqueta('vaneyck', 'Van Eyck, 1434 (aún no barroco)<span style="display:block;margin-top:.35em">Góngora: «aunque cóncavo fiel»</span>',
+           (-1.3, YB - 0.2, ZC - 0.8), clase='nota')
+S.etiqueta('logos', 'logos exterior', (RC.x + 3.05, RC.y - 0.3, RC.z + 1.0), clase='serif')
+S.etiqueta('dios', 'el dios jesuita · el rey', (RC.x + RL + 1.35, RC.y - 0.3, RC.z + 0.15), clase='nota')
 S.etiqueta('puntos', 'infinitud de puntos de vista', (0.0, YB - RPV - 0.1, 0.95), clase='trayecto')
 S.etiqueta('pantalla', 'el logos: una pantalla', (0, A - 0.45, ZC + 1.05), clase='serif')
-S.etiqueta('pulverizado', 'reflejo pulverizado', (-1.95, A - 1.0, ZC + 1.72), clase='serif')
+S.etiqueta('pulverizado', 'reflejo pulverizado', (-1.95, A - 1.0, ZC + 1.45), clase='serif')
 S.etiqueta('carencia', 'carencia', (0, A - 0.2, ZC), clase='grande')
 S.etiqueta('trayecto', 'trayecto dividido por la ausencia', (-0.35, A - 0.45, ZC - 1.12), clase='trayecto')
 S.etiqueta('destronado', 'logos destronado', (CF.x, CF.y - 0.1, 0.05), clase='nota')
@@ -752,12 +768,25 @@ def vista(cam, look, fov):
     return dict(cam=tuple(c * ESC for c in cam), look=tuple(c * ESC for c in look), fov=fov)
 
 
+def orbita(look, az, el, dist):
+    """Cámara a `dist` de `look`, girada `az` grados hacia la derecha (+X) y elevada `el` grados."""
+    a, e = math.radians(az), math.radians(el)
+    return (look[0] + dist * math.sin(a) * math.cos(e), look[1] - dist * math.cos(a) * math.cos(e), look[2] + dist * math.sin(e))
+
+
+# Encuadres calculados para que funcionen en 2,12:1 (incrustado) y 16:9 (pantalla completa): lo del estado a la
+# izquierda de la tarjeta de texto y sobre la barra de estados; ningún emblema cortado por el borde.
 D0 = 39.0 / ESC            # distancia del tele (≤ 40 m reales)
-FRENTE = vista((0.0, -D0 * math.cos(math.radians(4.5)), 2.55 + D0 * math.sin(math.radians(4.5))), (0.0, 0, 2.55), 7.0)
-CERCA = vista((1.05, A - 5.0, 2.12), (0.62, A, 1.70), 34)
-VISTA = vista((2.6, -10.8, 7.8), (1.9, 1.0, 2.35), 38)     # frontal alta: los 5 muros, los 6 emblemas y el logos
-NEO = vista((2.0, -7.0, 4.0), (1.25, 1.8, 1.8), 38)
-NEO2 = vista((1.9, -7.4, 4.9), (1.15, 1.5, 1.45), 40)      # incluye el anillo caído en el suelo
+L0 = (1.4, 0.0, 2.25)
+FRENTE = vista(orbita(L0, 5, 10, D0), L0, 7.2)              # tele, algo desde la derecha y arriba: la capilla como volumen
+CERCA = vista((0.8, 0.1, 1.8), (0.3, A, 1.8), 46)           # el espejo de cerca; los emblemas quedan fuera de cuadro
+#                                                            (distancia ≥ 1,5 m reales: OrbitControls.minDistance)
+L2 = (1.8, 0.5, 1.65)
+VISTA = vista(orbita(L2, 4, 20, 14.86), L2, 38)             # frontal alta: los 5 muros, los 6 emblemas y el logos
+L3 = (1.75, 1.0, 1.6)
+NEO = vista(orbita(L3, 8, 12, 7.2), L3, 46)
+L4 = (1.8, 0.6, 1.4)
+NEO2 = vista(orbita(L4, 8, 16, 6.8), L4, 46)                # incluye el anillo caído en el suelo
 
 # todo lo construido cuelga de una raíz escalada (las cámaras de los estados se crean después, ya en metros reales)
 raiz = bb.grupo('raiz')
@@ -778,7 +807,7 @@ S.estado('Reflejo significante',
          'Barroco histórico: universo descentrado «pero aún armónico», en consonancia con un logos exterior. '
          'Ninguna vista agota la ciudad leibniziana; la estructura la contiene en potencia.',
          'l. 852-867', etiquetas=['logos', 'dios', 'puntos'], t1=3.8,
-         slider={'tipo': 'azimut', 'min': -38, 'max': 12, 'etiqueta': 'puntos de vista (la ciudad leibniziana)',
+         slider={'tipo': 'azimut', 'min': -30, 'max': 12, 'etiqueta': 'puntos de vista (la ciudad leibniziana)',
                  'min_txt': 'izquierda', 'max_txt': 'derecha'}, **VISTA)
 S.estado('Pulverización',
          'Neobarroco: reflejo estructural de «la inarmonía». El espejo se pulveriza en torno a un hueco; '
@@ -790,9 +819,9 @@ S.estado('Pulverización',
 S.estado('Pantalla y carencia',
          'Retirada la pantalla, aparece la carencia: el trayecto gira en torno a esa ausencia. '
          '«Reflejo necesariamente pulverizado»; «arte del destronamiento y la discusión».',
-         'l. 871-883 · Díaz 2011, ap. 6 (l. 1487-1504)',
+         'l. 871-883 · Díaz 2011, ap. 6',
          etiquetas=['carencia', 'trayecto', 'destronado', 'pulverizado'], t1=13.6,
-         slider={'tipo': 'azimut', 'min': -38, 'max': 10, 'etiqueta': 'otro punto de vista, otro reflejo',
+         slider={'tipo': 'azimut', 'min': -22, 'max': 10, 'etiqueta': 'otro punto de vista, otro reflejo',
                  'min_txt': 'izquierda', 'max_txt': 'derecha'}, **NEO2)
 
 S.exportar()

@@ -291,6 +291,9 @@ class Escena:
         bpy.ops.wm.read_factory_settings(use_empty=True)
         self.id, self.titulo, self.fondo = id, titulo, fondo
         self.estados, self.etiquetas = [], {}
+        # ajustes del visor web para esta escena (ver docs/3d/estudio.js): p. ej.
+        # {'materiales': {'estuco': {'color': '#DCD2C2', 'roughness': .7}}, 'exposicion': 1.0, 'sombra': .2}
+        self.estudio = {}
         sc = bpy.context.scene
         sc.render.fps = FPS
         sc.frame_start = 0
@@ -442,11 +445,12 @@ class Escena:
             'duracion': sc.frame_end / FPS,
             'estados': [{k: v for k, v in e.items() if not k.startswith('_')} for e in self.estados],
             'etiquetas': self.etiquetas,
+            'estudio': self.estudio,
         }
         with open(os.path.join(OUT3D, 'escenas', self.id + '.json'), 'w', encoding='utf-8') as fh:
             json.dump(man, fh, ensure_ascii=False, indent=1)
         # 3) pósters por estado
-        if posters:
+        if posters and os.environ.get('BB_SIN_POSTERS') != '1':
             self._posters(res)
         print(f'[bb] exportado {self.id}: {len(self.estados)} estados → {glb}')
 

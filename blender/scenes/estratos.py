@@ -5,9 +5,9 @@ superficie de lectura arriba (z = 0), renglones a lo largo de X, apilados en Y (
 En el estado 0 el bloque está de pie (rot. X +90°): la superficie mira a -Y, como una página.
 
 Estratos (de arriba abajo):
-  capa0  superficie: el texto visible (marfil, renglones de tinta)      → cita (placas magenta encima)
-  capa1  texto en filigrana (nácar, versos en sepia)                    → parodia: Góngora sobre Lope
-  capa2-5 geología del texto (piedra); en el estado 3 las tiñe desde abajo la reminiscencia (magenta fundido)
+  capa0  superficie: el texto visible (marfil, renglones de tinta)      → cita (placas carmín encima)
+  capa1  texto en filigrana (laca grafito, versos claros)               → parodia: Góngora sobre Lope
+  capa2-5 geología del texto (piedra); en el estado 3 las tiñe desde abajo la reminiscencia (carmín fundido)
 Gramas (estado 4): palíndromo en tipos de tinta con arcos de lectura; grama sémico: dos indicadores
 convergen hacia una cámara bajo el último renglón («mal de ojo», oro).
 Red en volumen (estado 5): despiece vertical con hilos; descripción en condicional (l. 459-462).
@@ -177,19 +177,31 @@ def palabras(x0, x1, lmin=0.1, lmax=0.42, gap=0.05):
 
 # ---------------------------------------------------------------- materiales
 PAPEL = M('lamina')                         # superficie: el texto visible
-NACAR = M('significante')                   # texto en filigrana
-TINTA = mat_hex('tinta_renglon', '#3A322B', rough=0.5)
-SEPIA = mat_hex('sepia_renglon', '#7A4024', rough=0.55)
+NACAR = M('significante')                   # texto en filigrana (laca grafito en el visor)
+TINTA = mat_hex('tinta_renglon', '#2A2B2F', rough=0.5)
+# versos de Lope: claros sobre la laca grafito (marca de agua); rol «otro» → conserva este color
+SEPIA = mat_hex('verso_filigrana', '#EFE9DD', rough=0.55)
 VELO = mat_hex('papel_contraluz', '#F1EADC', rough=0.45, emi='#F3EDE2', emis=0.5, alpha=0.36)   # único translúcido (luz a contraluz)
 MAG = M('ajeno')
-COSTURA = mat_hex('costura', '#F3EDE2', rough=0.5)
+COSTURA = mat_hex('hilo_costura', '#F6F1E8', rough=0.5)     # pespunte claro sobre el carmín de la cita
 CIAN = M('trayecto')
 ORO = M('significado')
 BERM = M('ausencia')
 HUECO = mat_hex('hueco', '#1A1310', rough=0.95)
 
-COL_PIEDRA = ['#E9E1D2', '#CFC6B8', '#B9AFA1', '#A59B8E', '#92887C', '#7F766B']
-COL_TINTE = [None, None, '#C69EA2', '#C27A91', '#C65A8A', '#D4448A']   # la reminiscencia tiñe hacia arriba
+# piedra neutra (papel → azogue), sin tonos café; tinte: del carmín pálido al carmín pleno
+COL_PIEDRA = ['#E9E1D2', '#CFC6B8', '#C4C2BD', '#A9A8A4', '#8E8D8A', '#747370']
+COL_TINTE = [None, None, '#C08DA3', '#A65B7D', '#8E3162', '#78164A']   # la reminiscencia tiñe hacia arriba
+
+# ajustes del visor «galería clara» (docs/3d/estudio.js) sólo para esta escena
+S.estudio = {
+    'materiales': {
+        'lamina': {'color': '#FFFDF9'},                                  # la página se despega del fondo papel
+        'tinta_renglon': {'clearcoat': 0.0, 'roughness': 0.85, 'envMapIntensity': 0.3},    # sin brillo: oscuros en toda la lámina
+        'ajeno': {'clearcoat': 0.1, 'clearcoatRoughness': 0.5, 'roughness': 0.75, 'envMapIntensity': 0.5},   # carmín parejo, sin reflejo lechoso
+        'hueco': {'roughness': 0.55, 'clearcoat': 0.3, 'emissiveIntensity': 0.06},
+    },
+}
 MAT_BASE = [PAPEL, NACAR] + [mat_hex(f'estrato{k}', COL_PIEDRA[k], rough=0.8) for k in range(2, 6)]
 MAT_TINTE = [PAPEL, NACAR] + [mat_hex(f'tinte{k}', COL_TINTE[k], rough=0.55, coat=0.25) for k in range(2, 6)]
 
@@ -220,6 +232,15 @@ for k in range(6):
         llenas_t[k] = bb.caja(f'losa{k}_tinte', (W, D, H), (0, 0, zc(k)), MAT_TINTE[k], capas[k], bevel=BEV)
     cortadas[k] = bb.caja(f'losa{k}_corte', (W, Y1 - YC, H), (0, (YC + Y1) / 2, zc(k)), MAT_BASE[k], capas[k], bevel=BEV)
 velo = bb.caja('losa0_velo', (W, D, H), (0, 0, zc(0)), VELO, capas[0], bevel=BEV)
+# filete de las 12 aristas del velo: sin él, la hoja translúcida levantada casi no se distingue del fondo papel
+bm = bmesh.new()
+_hx, _hy, _hz = W / 2 + 0.004, D / 2 + 0.004, H / 2 + 0.004
+_v = [Vector((sx * _hx, sy * _hy, sz * _hz)) for sx in (-1, 1) for sy in (-1, 1) for sz in (-1, 1)]
+for _a in range(8):
+    for _b in range(_a + 1, 8):
+        if sum(1 for i in range(3) if _v[_a][i] != _v[_b][i]) == 1:
+            tubo_bm(bm, [_v[_a], _v[_b]], 0.0075, 6)
+filete = bb._obj_from_bm('filete_velo', bm, mat_hex('filete_velo', '#56626A', rough=0.5), capas[0], (0, 0, zc(0)))
 
 # cámara oval bajo el último renglón (grama sémico): hueco por Boolean en las losas cortadas
 XC, ZC = -0.85, -0.5
@@ -241,8 +262,9 @@ for k in (1, 2, 3):
     except Exception:
         pass
     bb.aplicar(ob)
-    for p in ob.data.polygons:
-        p.use_smooth = False
+    mats = ob.data.materials
+    for p in ob.data.polygons:        # paredes de la cámara lisas; el resto, facetas vivas
+        p.use_smooth = mats[p.material_index] is not None and mats[p.material_index].name.startswith('hueco')
 bpy.data.objects.remove(cort)
 
 # rebanada frontal que cae en el estado 4 (colores finales)
@@ -298,14 +320,16 @@ for j in range(13):
 lope = malla('renglones_filigrana', bm, SEPIA, capas[1])
 
 # ---------------------------------------------------------------- citas: placas magenta de borde vivo, con costura
-CITAS = [('rulfo', 1, -0.95, 1.1, 'una frase de Rulfo', 2.5),
-         ('hugues', 4, 0.8, 0.7, 'Víctor Hugues · Carpentier', -3.0),
-         ('rocamadour', 6, -0.55, 0.76, 'Rocamadour · Cortázar', 3.0),
-         ('cruz', 8, 0.95, 0.7, 'Artemio Cruz · Fuentes', -2.0)]
+# (clave, renglón, x, largo, rótulo, giro, desplazamiento del rótulo (dx, dy)): los rótulos se abren hacia
+# afuera (arriba-izquierda, arriba-derecha, abajo-izquierda, abajo-derecha) para no pisarse entre sí
+CITAS = [('rulfo', 1, -0.95, 1.1, 'una frase de Rulfo', 2.5, (-0.3, 0.43)),
+         ('hugues', 4, 0.8, 0.7, 'Víctor Hugues · Carpentier', -3.0, (0.3, 0.3)),
+         ('rocamadour', 6, -0.55, 0.76, 'Rocamadour · Cortázar', 3.0, (-0.3, -0.37)),
+         ('cruz', 8, 0.95, 0.7, 'Artemio Cruz · Fuentes', -2.0, (0.25, -0.37))]
 PH, PT = 0.25, 0.05
 ZP = ztop(0) + BZ + PT / 2
 citas = []
-for clave, i, x, L, html, giro in CITAS:
+for clave, i, x, L, html, giro, (ldx, ldy) in CITAS:
     placa = bb.caja('cita_' + clave, (L, PH, PT), (0, 0, 0), MAG, None)
     ix, iy = L / 2 - 0.036, PH / 2 - 0.036
     rect = [(-ix, -iy, PT / 2 + 0.002), (ix, -iy, PT / 2 + 0.002), (ix, iy, PT / 2 + 0.002),
@@ -315,7 +339,7 @@ for clave, i, x, L, html, giro in CITAS:
     g.parent = capas[0]
     g.location = (x, YL[i], ZP)
     g.rotation_euler = (0, 0, math.radians(giro))
-    S.etiqueta('c_' + clave, html, (x, YL[i] + 0.08, ZP + 0.22), parent=capas[0], clase='ajeno')
+    S.etiqueta('c_' + clave, html, (x + ldx, YL[i] + ldy, ZP + 0.05), parent=capas[0], clase='ajeno')
     citas.append(g)
 
 # ---------------------------------------------------------------- gramas fonéticos: palíndromo (l. 655)
@@ -333,7 +357,7 @@ xs = [v + sh for v in xs]
 y9 = YL[9]
 # letras sueltas: comparten malla por letra; el grupo sólo se TRASLADA (aparcado dentro de la losa 1,
 # emerge por el renglón 9 y queda suspendido sobre él en el estado 4): el exportador no hornea a los hijos.
-Z_PAL_ARRIBA = ztop(0) + 0.3                   # base de las letras, suspendidas sobre su renglón
+Z_PAL_ARRIBA = ztop(0) + 0.4                   # base de las letras, suspendidas sobre su renglón (por encima de los de atrás)
 Z_PAL_ABAJO = ztop(1) - 0.186                  # aparcado dentro de la losa 1 (opaca)
 pal = bb.grupo('palindromo', (0, y9, Z_PAL_ABAJO), capas[1])
 letras = [c for c in FRASE if c != ' ']
@@ -410,9 +434,9 @@ for n, (a, b, ua, ub) in enumerate(ARCOS_RED):
         gs = bmesh.ops.create_icosphere(bm, subdivisions=2, radius=0.042)
         bmesh.ops.translate(bm, vec=v, verts=gs['verts'])
     hilos.append(bb._obj_from_bm(f'hilo{n:02d}', bm, CIAN, bloque, tuple(p)))
-for m, (k, ua, ub) in enumerate(GAPS_RED):
-    p = Vector((ua, Y0 + 0.22, ztop(k) - H + DZ[k]))
-    q = Vector((ub, Y0 + 0.32, ztop(k + 1) + DZ[k + 1]))
+for m, (k, ua, ub) in enumerate(GAPS_RED):     # por delante de las caras frontales: se leen enteros
+    p = Vector((ua, Y0 - 0.05, ztop(k) - H + DZ[k] + 0.03))
+    q = Vector((ub, Y0 - 0.05, ztop(k + 1) + DZ[k + 1] - 0.03))
     bm = bmesh.new()
     tubo_bm(bm, [Vector((0, 0, 0)), q - p], 0.013, 8)
     for v in (Vector((0, 0, 0)), q - p):
@@ -423,28 +447,29 @@ for m, (k, ua, ub) in enumerate(GAPS_RED):
 # ---------------------------------------------------------------- anclas de rótulos (coords. del padre)
 LBL_RECEPTOR = (-0.3, 1.9, 0.12)
 LBL_GONGORA = (-1.0, 1.75, zc(0))
-LBL_LOPE = (-0.6, -1.8, zc(1))
-LBL_MARCA = (3.1, 0.9, 0.1)
+LBL_LOPE = (-0.5, -1.75, zc(1) - 0.4)    # ante la cara frontal, sin tapar los versos que asoman
+LBL_MARCA = (3.55, 0.6, 0.1)            # a la derecha de la lámina levantada, en dos líneas
 LBL_CITA_SUP = (-0.5, 1.9, 0.15)
-LBL_REMIN = (3.1, -1.5, -1.75)
+LBL_REMIN = (4.1, -1.5, -0.75)          # a la derecha de los estratos teñidos, por encima de la tarjeta
 LBL_EJEMPLOS = (-2.35, -1.62, zc(5) - 0.08)
 LBL_IND1 = (xi1 - 0.3, YC - 0.05, -0.2)
 LBL_IND2 = (xi2 + 0.42, YC - 0.05, -0.2)
-LBL_SEMICO = (XC + 1.45, YC - 0.05, ZC + 0.02)
+LBL_SEMICO = (XC + 1.68, YC - 0.05, ZC - 0.2)     # sobre la piedra, lejos de «traspiés…»
 LBL_RCOND = (0.6, 1.95, zc(0) + 0.3)
+LBL_RX, LBL_RY, LBL_RZ = -3.0, -0.6, 0.1   # rótulos del despiece: a la izquierda de cada estrato
 
 # ---------------------------------------------------------------- etiquetas
-# estado 0
-S.etiqueta('lectura', 'lectura lineal', (-2.5, 1.375, 0.05), parent=capas[0], clase='trayecto')
+# estado 0: junto a la punta de la flecha (a la izquierda chocaría con el canto en pantalla completa)
+S.etiqueta('lectura', 'lectura lineal', (2.75, 1.375, 0.05), parent=capas[0], clase='trayecto')
 # estado 1
 S.etiqueta('receptor', 'texto receptor: García Márquez, <i>Cien años de soledad</i>', LBL_RECEPTOR, parent=capas[0], clase='snte')
 # estado 2
 S.etiqueta('gongora', 'Góngora: el romance visible', LBL_GONGORA, parent=capas[0], clase='serif')
 S.etiqueta('lope', 'Lope: el romance anterior, debajo', LBL_LOPE, parent=capas[1], clase='serif')
-S.etiqueta('marca', 'filigrana: la marca de agua, visible a contraluz', LBL_MARCA, parent=capas[0], clase='nota')
+S.etiqueta('marca', 'filigrana: la marca de agua,<br>visible a contraluz', LBL_MARCA, parent=capas[0], clase='nota')
 # estado 3
 S.etiqueta('cita_sup', 'cita: marcas visibles en la superficie', LBL_CITA_SUP, parent=capas[0], clase='ajeno')
-S.etiqueta('remin', 'reminiscencia: tiñe desde abajo, sin aflorar', LBL_REMIN, parent=bloque, clase='serif')
+S.etiqueta('remin', 'reminiscencia:<br>tiñe desde abajo, sin aflorar', LBL_REMIN, parent=bloque, clase='serif')
 S.etiqueta('ejemplos', 'Lisandro Otero, <i>La situación</i> · Amelia Peláez', LBL_EJEMPLOS, parent=capas[5], clase='ajeno')
 # estado 4
 S.etiqueta('fonetico', 'grama fonético: un palíndromo, legible en los dos sentidos', (xs[12], y9, Z0 + ALTO_ARCO + 0.16), parent=capas[0], clase='trayecto')
@@ -453,9 +478,9 @@ S.etiqueta('ind2', '«traspiés en<br>la alabanza»', LBL_IND2, parent=bloque, c
 S.etiqueta('ojo', '«mal de ojo»', (XC, YC - 0.05, ZC - 0.42), parent=bloque, clase='grande sdo')
 S.etiqueta('semico', 'grama sémico, bajo la línea · Lezama, <i>Paradiso</i>', LBL_SEMICO, parent=bloque, clase='nota')
 # estado 5
-S.etiqueta('r0', 'superficie y citas', (-2.95, 0, zc(0)), parent=capas[0], clase='ajeno')
-S.etiqueta('r1', 'texto en filigrana', (-2.95, 0, zc(1)), parent=capas[1], clase='snte')
-S.etiqueta('r3', 'estratos teñidos: reminiscencia', (-2.95, 0, zc(3)), parent=capas[3], clase='ajeno')
+S.etiqueta('r0', 'superficie y citas', (LBL_RX, LBL_RY, zc(0) + LBL_RZ), parent=capas[0], clase='ajeno')
+S.etiqueta('r1', 'texto en filigrana', (LBL_RX, LBL_RY, zc(1) + LBL_RZ), parent=capas[1], clase='snte')
+S.etiqueta('r3', 'estratos teñidos: reminiscencia', (LBL_RX - 0.3, LBL_RY, zc(3) + LBL_RZ), parent=capas[3], clase='ajeno')
 S.etiqueta('rcond', 'Sarduy, en condicional: «se presentaría… como una red»', LBL_RCOND, parent=capas[0], clase='nota')
 
 # ---------------------------------------------------------------- línea de tiempo
@@ -504,11 +529,13 @@ def fijar_interpolacion():
 
 
 R90, R0 = (math.radians(90), 0, 0), (0, 0, 0)
-LIFT = 0.5
+LIFT = 0.75
 # ── estado 1 (0 → 2.5 s): la página se acuesta; las citas se pegan encima
-S.clave(bloque, 0, rot=R90, interp=C)
-S.clave(bloque, 0.25, rot=R90)
-S.clave(bloque, 1.5, rot=R0)
+# de pie, la página se apoya en el suelo de sombras (sin alzarla, su borde inferior lo atravesaba)
+ZUP = 0.3
+S.clave(bloque, 0, loc=(0, 0, ZUP), rot=R90, interp=C)
+S.clave(bloque, 0.25, loc=(0, 0, ZUP), rot=R90)
+S.clave(bloque, 1.5, loc=(0, 0, 0), rot=R0)
 S.clave(lect, 0, esc=1.0, interp=C)
 S.clave(lect, 0.1, esc=1.0)
 S.clave(lect, 0.4, esc=OFF)
@@ -539,6 +566,8 @@ S.clave(llenas[0], 0, esc=1.0, interp=C)
 salto(llenas[0], 3.0, 1.0, OFF)
 S.clave(velo, 0, esc=OFF, interp=C)
 salto(velo, 3.0, OFF, 1.0)
+S.clave(filete, 0, esc=OFF, interp=C)
+salto(filete, 3.0, OFF, 1.0)
 for k in range(6):
     S.clave(capas[k], 0, loc=(0, 0, 0), interp=C)
 S.clave(capas[0], 3.0, loc=(0, 0, 0))
@@ -548,6 +577,7 @@ S.clave(capas[0], 3.8, loc=(0, 0, LIFT))
 S.clave(capas[0], 4.0, loc=(0, 0, LIFT))
 S.clave(capas[0], 4.55, loc=(0, 0, 0))
 salto(velo, 4.6, 1.0, OFF)
+salto(filete, 4.6, 1.0, OFF)
 salto(llenas[0], 4.6, OFF, 1.0)
 for k, t in zip((5, 4, 3, 2), (4.9, 5.25, 5.6, 5.95)):
     S.clave(llenas[k], 0, esc=1.0, interp=C)
@@ -657,12 +687,21 @@ for clave, t_on in [('receptor', 1.5),
     aparcar(clave, t_on)
 
 # ---------------------------------------------------------------- estados
-FRENTE = dict(cam=(0, -46, -0.35), look=(0, 0, -0.35), fov=6.8)
-CITA = dict(cam=(-0.57, -7.29, 4.95), look=(1.8, 0.0, -1.47), fov=34)
-FILI = dict(cam=(1.07, -4.09, 8.3), look=(1.5, 0.0, -0.92), fov=34)
+def camara(look, az, el, dist, fov):
+    """Cámara orbital: azimut desde el frente (-Y; negativo = desde la izquierda), elevación y distancia."""
+    a, e = math.radians(az), math.radians(el)
+    cam = (look[0] + dist * math.cos(e) * math.sin(a), look[1] - dist * math.cos(e) * math.cos(a), look[2] + dist * math.sin(e))
+    return dict(cam=tuple(round(v, 3) for v in cam), look=look, fov=fov)
+
+
+# encuadres pensados para 2,12:1 (incrustado) y 16:9 (pantalla completa): el objeto queda a la izquierda de
+# la tarjeta de texto (abajo a la derecha) y por encima de la barra de estados; el título de la pantalla completa, libre
+FRENTE = camara((1.05, 0.3, -0.02), -13, 8, 31, 9.8)      # página de frente, apenas girada: se ve el canto de los estratos
+CITA = camara((1.0, -0.55, -0.55), -12, 52, 10.5, 30)
+FILI = camara((1.15, -0.3, -0.3), -12, 45, 11.2, 30)
 REMI = dict(cam=(-4.14, -7.34, 2.07), look=(1.2, 0.0, -1.06), fov=32)
-GRAM = dict(cam=(0.72, -6.8, 0.68), look=(0.26, -0.27, -0.12), fov=32)
-RED = dict(cam=(-4.95, -9.49, 4.73), look=(1.7, 0.0, 0.05), fov=36)
+GRAM = camara((1.25, -0.4, -0.2), -10, 9, 8.2, 32)
+RED = camara((1.2, 0.0, 0.25), -18, 22, 11.2, 36)
 
 S.estado('Superficie',
          'La página de frente: renglones paralelos y regulares, un solo sentido de lectura. Debajo hay otros textos.',

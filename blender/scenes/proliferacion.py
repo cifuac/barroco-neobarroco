@@ -10,6 +10,7 @@ import sys, os, math, random
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'lib'))
 import bb
 import bpy, bmesh
+import numpy as np
 from mathutils import Vector, Matrix
 
 random.seed(1972)
@@ -194,11 +195,18 @@ LAM = M('lamina')
 FANT = M('fantasma')
 CRISTAL = mat_local('cristal', '#B9C6CC', 0.0, 0.08, 0.0, alpha=0.32)
 AZOGUE = mat_local('azogue_linea', '#9AA4A8', 0.6, 0.28, 0.9)
-NEUTRO = mat_local('gris_neutro', '#8A8A8A', 0.0, 0.55, 0.35)
+VACIO_K = M('ausencia', 'hueco_kepler')   # el foco vacío de Kepler: la misma ausencia (bermellón) que el Snte. tachado
 SOL = M('logos')
 # el arco es la cadena de significantes: nácar (como en svg/fig2.svg), levemente emisivo para que el punteado se lea
 # igual en el plano y tendido; el cian queda reservado a la lectura (rayos radiales/deceptivos)
 ARCO = mat_local('arco_nacar', '#CFC6B8', 0.0, 0.45, 0.55)
+# ajustes del estudio: el oro menos espejado (el pan de oro no se lee como retícula de facetas), el cristal sin matiz
+# celeste (velo de papel: se lee sobre la laca oscura) y el contorno «por venir» con contraste suficiente sobre el papel
+S.estudio = {'materiales': {'azogue_linea': {'opacity': 0.995}, 'logos': {'opacity': 0.995},
+                            'hueco_kepler': {'opacity': 0.995},
+                            'significado': {'roughness': 0.45},
+                            'cristal': {'color': '#F4EEE3', 'opacity': 0.24},
+                            'fantasma': {'color': '#2F3134', 'opacity': 0.62}}}
 MAG = 'color:var(--magenta-claro);font-style:italic'      # palabras citadas de Carpentier / Abreu (cita = magenta)
 
 
@@ -240,36 +248,161 @@ def proy(cam, look, fov, p, W=1920, H=1080):
     return ((v.dot(r) / (zc * t * W / H) + 1) / 2 * W, (1 - v.dot(u) / (zc * t)) / 2 * H)
 
 
-def encuadre(nombre, puntos, az, el, fov, rect, look0=(0, 0.4, 0.5), dist=9.0):
-    """Cámara que encaja `puntos` [(Vector, pad_x, pad_y) en px] dentro de rect=(x0,y0,x1,y1) px,
-    vista desde azimut/elevación dados (grados; az=0 → de frente, desde -Y)."""
-    a, e = math.radians(az), math.radians(el)
-    dv = Vector((math.cos(e) * math.sin(a), -math.cos(e) * math.cos(a), math.sin(e)))
-    look = Vector(look0)
-    for _ in range(120):
-        cam = look + dv * dist
-        bx0 = by0 = 1e9
-        bx1 = by1 = -1e9
-        for p, px, py in puntos:
-            x, y = proy(cam, look, fov, p)
-            bx0, bx1 = min(bx0, x - px), max(bx1, x + px)
-            by0, by1 = min(by0, y - py), max(by1, y + py)
-        ratio = max((bx1 - bx0) / (rect[2] - rect[0]), (by1 - by0) / (rect[3] - rect[1]))
-        wpp = 2 * dist * math.tan(math.radians(fov) / 2) / 1080
-        f = -dv
-        r = f.cross(Vector((0, 0, 1))).normalized()
-        u = r.cross(f)
-        look = look + r * (((bx0 + bx1) / 2 - (rect[0] + rect[2]) / 2) * wpp * 0.8) \
-                    - u * (((by0 + by1) / 2 - (rect[1] + rect[3]) / 2) * wpp * 0.8)
-        dist = min(max(dist * ratio ** 0.5, 2.0), 38.5)
-    cam = look + dv * dist
-    print(f'[encuadre] {nombre}: cam={tuple(round(c, 2) for c in cam)} look={tuple(round(c, 2) for c in look)} '
-          f'dist={dist:.2f} bbox=({bx0:.0f},{by0:.0f})-({bx1:.0f},{by1:.0f})')
-    return dict(cam=tuple(cam), look=tuple(look), fov=fov)
-
-
 def lbl(clave):
     return bpy.data.objects['lbl_' + clave]
+
+
+# ---------------------------------------------------------------- encuadre para las dos vistas del visor
+# El fov es vertical y común a las dos vistas; en unidades (u, v) = coordenadas de cámara / (z·tan(fov/2)) un punto
+# cae en el mismo sitio en ambas; sólo cambian el ancho visible y el tamaño relativo de los rótulos (px fijos).
+#   pantalla completa: 1920×1080 · libre x 70-1190, y 125-975 (título arriba; tarjeta desde x≈1229; barra abajo-izq.)
+#   incrustado: 1920×904 (bajo la cabecera de 176 px) · libre x 60-1150, y 22-805 (tarjeta desde x≈1180; barra y≥821)
+VISTAS = [(1920, 1080, (70, 125, 1190, 975)), (1920, 904, (60, 22, 1150, 805))]
+import re
+
+
+def pad_etq(clave):
+    """Semiancho y semialto (px) aproximados del rótulo HTML, según su clase (ver docs/3d/visor.css)."""
+    d = S.etiquetas['lbl_' + clave]
+    lineas = re.split(r'<br\s*/?>', d['html'])
+    lh = 1.25 if 'line-height' in d['html'] else 1.0
+
+    def largo(s):
+        s = re.sub(r'<sup>.*?</sup>', 'x', s)
+        return len(re.sub(r'<[^>]+>', '', s))
+    n = max(largo(x) for x in lineas)
+    cl = d['clase'].split()
+    if 'grande' in cl:
+        fs, k, px, py = 40.3, 0.43, 0.64, 0.18
+    elif 'serif' in cl:
+        fs, k, px, py = 34.6, 0.43, 1.1, 0.64
+    elif 'nota' in cl:
+        fs, k, px, py = 19.2, 0.47, 0.0, 0.0
+    else:
+        fs, k, px, py = 23.4, 0.48, 1.1, 0.64
+    return (n * k + px) * fs / 2 + 4, (len(lineas) * lh + py) * fs / 2 + 4
+
+
+def puntos_visibles(t, etiquetas=(), excluir=()):
+    """Vértices (muestreados) de las mallas visibles en el instante t y anclas de los rótulos, con su semitamaño en px."""
+    sc = bpy.context.scene
+    sc.frame_set(S.f(t))
+    dg = bpy.context.evaluated_depsgraph_get()
+    out = []
+    for ob in sc.objects:
+        if ob.type != 'MESH' or any(ob.name.startswith(e) for e in excluir):
+            continue
+        ev = ob.evaluated_get(dg)
+        mw = ev.matrix_world.copy()
+        if abs(mw.to_3x3().determinant()) < 1e-3:       # oculto por escala
+            continue
+        me = ev.to_mesh()
+        vs = me.vertices
+        paso = max(1, len(vs) // 400)
+        for i in range(0, len(vs), paso):
+            out.append((mw @ vs[i].co, 0.0, 0.0))
+        ev.to_mesh_clear()
+    for k in etiquetas:
+        pw, ph = pad_etq(k)
+        out.append((lbl(k).matrix_world.translation.copy(), pw, ph))
+    return out
+
+
+XR = 1860          # borde derecho utilizable por encima de la tarjeta (px, ambas vistas)
+MARGEN_T = 34      # aire sobre la tarjeta de texto (px)
+
+
+def encuadre(nombre, t, etiquetas, az, el, fov, extra=(), look0=(0, 0.4, 0.5), dist=10.0, excluir=(), dmax=60.0, sesgo=0.2,
+             tarjeta=None):
+    """Cámara vista desde azimut/elevación (grados; az=0 → de frente, desde -Y) que encaja lo visible en t
+    (mallas + rótulos) en la zona libre de AMBAS vistas, lo más grande posible. En vertical, `sesgo` reparte el margen
+    sobrante (0 = arriba del todo, 0,5 = centrado): algo alto, porque en la diapositiva el visor tiene más aire arriba.
+    tarjeta: (y_pantalla_completa, y_incrustado), borde superior de la tarjeta de texto de ese estado (px del visor).
+    Con ella la zona libre es una L: por encima de la tarjeta la figura puede llegar hasta x = XR."""
+    a, e = math.radians(az), math.radians(el)
+    dv = Vector((math.cos(e) * math.sin(a), -math.cos(e) * math.cos(a), math.sin(e)))
+    pts = puntos_visibles(t, etiquetas, excluir) + list(extra)
+    T = math.tan(math.radians(fov) / 2)
+    P3 = np.array([[p.x, p.y, p.z] for p, _, _ in pts])
+    PW = np.array([pw for _, pw, _ in pts])
+    PH = np.array([ph for _, _, ph in pts])
+    n = len(pts)
+    LU, HU, LV, HV = np.full(n, -9.0), np.full(n, 9.0), np.full(n, -9.0), np.full(n, 9.0)   # unidades de semialto
+    tarj = []                                   # por vista: (tope u, tope v) de la esquina de la tarjeta, por punto
+    for j, (W, H, (x0, y0, x1, y1)) in enumerate(VISTAS):
+        h2 = H / 2
+        LU = np.maximum(LU, (x0 - W / 2) / h2 + PW / h2)
+        HU = np.minimum(HU, ((XR if tarjeta else x1) - W / 2) / h2 - PW / h2)
+        LV = np.maximum(LV, (y0 - h2) / h2 + PH / h2)
+        HV = np.minimum(HV, (y1 - h2) / h2 - PH / h2)
+        if tarjeta:
+            tarj.append(((x1 - W / 2) / h2 - PW / h2, (tarjeta[j] - MARGEN_T - h2) / h2 - PH / h2))
+    look = Vector(look0)
+    f = -dv
+    r = f.cross(Vector((0, 0, 1))).normalized()
+    up = r.cross(f)
+    Fv, Rv, Uv = np.array(f), np.array(r), np.array(up)
+
+    def uv(cam):
+        w = P3 - np.array(cam)
+        z = np.maximum(w @ Fv, 1e-3)
+        return (w @ Rv) / (z * T), -(w @ Uv) / (z * T)
+
+    def rect(s, cu, cv):
+        return np.max(LU - s * cu), np.min(HU - s * cu), np.max(LV - s * cv), np.min(HV - s * cv)
+
+    def tope_u(s, cu, cv, tv, hu):
+        """Mayor traslación horizontal que deja todo fuera de la tarjeta, con la vertical tv."""
+        for AU, BV in tarj:
+            m = tv > BV - s * cv
+            if np.any(m):
+                hu = min(hu, float(np.min((AU - s * cu)[m])))
+        return hu
+
+    def factible(s, cu, cv):
+        lu, hu, lv, hv = rect(s, cu, cv)
+        if lu > hu or lv > hv:
+            return False
+        return tope_u(s, cu, cv, lv, hu) >= lu      # la zona libre baja-izquierda: basta probar la esquina (lu, lv)
+
+    def traslacion(s, cu, cv):
+        lu, hu, lv, hv = rect(s, cu, cv)
+        if not tarj:
+            return (lu + hu) / 2, lv + sesgo * (hv - lv)
+        obj = lv + sesgo * (hv - lv)
+        mejor = None
+        for tv in np.linspace(lv, max(hv, lv), 61):
+            tp = tope_u(s, cu, cv, tv, hu)
+            if tp >= lu and (mejor is None or abs(tv - obj) < mejor[0]):
+                mejor = (abs(tv - obj), (lu + tp) / 2, tv)
+        return (lu, lv) if mejor is None else (mejor[1], mejor[2])
+
+    for _ in range(90):
+        cam = look + dv * dist
+        cu, cv = uv(cam)
+        s0, s1 = 0.05, 20.0
+        for _ in range(40):
+            sm = (s0 + s1) / 2
+            s0, s1 = (sm, s1) if factible(sm, cu, cv) else (s0, sm)
+        s = s0
+        du, dvv = traslacion(s, cu, cv)
+        look = look + r * (-du * dist * T * 0.7) + up * (dvv * dist * T * 0.7)
+        dist = min(max(dist / s ** 0.6, 2.0), dmax)
+    cam = look + dv * dist
+    cu, cv = uv(cam)
+    cs = list(zip(cu.tolist(), cv.tolist()))
+    for W, H, _ in VISTAS:
+        h2 = H / 2
+        xs = [W / 2 + c[0] * h2 + sg * p[1] for c, p in zip(cs, pts) for sg in (-1, 1)]
+        ys = [h2 + c[1] * h2 + sg * p[2] for c, p in zip(cs, pts) for sg in (-1, 1)]
+        print(f'[encuadre] {nombre} {W}x{H}: x {min(xs):.0f}-{max(xs):.0f}  y {min(ys):.0f}-{max(ys):.0f}')
+        if tarjeta:
+            j = 0 if H == 1080 else 1
+            x1, yc = VISTAS[j][2][2], tarjeta[j] - MARGEN_T
+            dentro = sum(1 for c, p in zip(cs, pts) if W / 2 + c[0] * h2 + p[1] > x1 + 1 and h2 + c[1] * h2 + p[2] > yc + 1)
+            print(f'[encuadre] {nombre} {W}x{H}: puntos sobre la tarjeta = {dentro}')
+    print(f'[encuadre] {nombre}: cam={tuple(round(c, 2) for c in cam)} look={tuple(round(c, 2) for c in look)} dist={dist:.2f}')
+    return dict(cam=tuple(cam), look=tuple(look), fov=fov)
 
 
 # ================================================================ geometría del arco (figura 2)
@@ -375,7 +508,7 @@ plinto_e = bb.grupo('estela_plinto', (0, 0, 0), estela)
 bb.caja('estela_plinto_malla', (1.12, 0.46, 0.06), (0, 0, -0.03), GRAF, plinto_e, bevel=0.012)
 sdo_g = bb.grupo('sdo', (0, 0, 0), estela)
 bb.caja('sdo_bloque', (BW, BD, BH), (0, 0, BH / 2), ORO, sdo_g, bevel=0.03)
-barra = bb.caja('barra', (BW * 1.25, 0.07, 0.035), (0, 0, BH + 0.05), LAM, estela, bevel=0.01)
+barra = bb.caja('barra', (BW * 1.25, 0.07, 0.035), (0, 0, BH + 0.05), M('soporte', 'grafito_barra'), estela, bevel=0.01)
 SNTE_Z0 = BH + 0.1 + BH / 2
 snte_g = bb.grupo('snte_ausente', (0, 0, SNTE_Z0), estela)
 caja_punteada('snte_hueco', (BW, BD, BH), (0, 0, 0), BERM, snte_g)
@@ -387,11 +520,12 @@ fusionar(snte_g, 'snte_ausente_malla')
 S.etiqueta('e_snte', '<s>Snte.</s>', (0, -0.2, 0), snte_g, 'grande tachado')
 S.etiqueta('e_sdo', 'Sdo.', (0, -0.2, BH / 2), sdo_g, 'grande sdo')
 S.etiqueta('e_desorden', 'Sdo. «desorden»', (0, -0.2, BH / 2), sdo_g, 'grande sdo')
-S.etiqueta('e_sdo_foco', 'Sdo.<br>foco presente', (0, -0.55, 0.0), sdo_g, 'sdo')        # al pie del foco, en la vista cenital
-S.etiqueta('e_snte_foco', '<s>Snte.</s><br>foco ausente', (0, 0.55, 0.0), snte_g, 'tachado')   # arriba: con el círculo, no pisa al del Sdo.
-S.etiqueta('cita1974', '<span style="color:var(--azogue)">lectura posterior<br>Sarduy 1974, cit. por Díaz 2011</span>', (0, -1.3, 0.1), orb, 'nota')   # en el lado abierto, abajo
+S.etiqueta('e_sdo_foco', '<span style="display:inline-block;line-height:1.22">Sdo.<br>foco presente</span>', (0.15, -0.64, 0.0), sdo_g, 'sdo')        # al pie del foco, en la vista cenital (a la derecha: aire respecto al arranque del arco)
+S.etiqueta('e_snte_foco', '<span style="display:inline-block;line-height:1.22"><s>Snte.</s><br>foco ausente</span>', (-0.3, 0.6, 0.0), snte_g, 'tachado')   # arriba: con el círculo, no pisa al del Sdo.
+S.etiqueta('cita1974', '<span style="display:inline-block;line-height:1.3;color:var(--azogue)">lectura posterior<br>Sarduy 1974, cit. por Díaz 2011</span>', (0, -1.3, 0.1), orb, 'nota')   # en el lado abierto, abajo
 S.etiqueta('e_vacio', 'ningún Sdo.', (0, -0.55, 0.0), estela, 'grande')
 S.etiqueta('e3_snte', '<s>Snte.</s>', (0, 0, BH / 2 + 0.24), snte_g, 'grande tachado')
+S.etiqueta('e1_snte', '<s>Snte.</s>', (BW / 2 + 0.3, -BD / 2, 0.0), snte_g, 'grande tachado')   # a la derecha del hueco (vista oblicua)
 S.etiqueta('e3_sdo', 'Sdo.', (0, -0.62, 0.0), sdo_g, 'grande sdo')
 S.etiqueta('e3_desorden', 'Sdo. «desorden»', (0, -0.62, 0.0), sdo_g, 'grande sdo')
 
@@ -525,7 +659,7 @@ fusionar(o4, 'armario_malla')
 
 # --- Snte.⁵: contorno vacío «por venir» sobre un plinto que espera
 o5 = objeto(4, 'obj_por_venir', 0)
-caja_punteada('venir_contorno', (0.46, 0.46, 0.8), (0, 0, 0.4), FANT, o5, guion=0.08, hueco=0.06, r=0.012)
+caja_punteada('venir_contorno', (0.46, 0.46, 0.8), (0, 0, 0.4), FANT, o5, guion=0.08, hueco=0.06, r=0.017)
 fusionar(o5, 'por_venir_malla')
 
 ALTO = [0.66, 1.0, 1.14, 1.8, 0.8]
@@ -537,7 +671,8 @@ for n, o in enumerate(OBJS):
     elif n < 4:
         S.etiqueta(f'obj{n + 1}', f'Snte.<sup>{n + 1}</sup> · <span style="{MAG}">{NOM[n]}</span>', (0, 0, ALTO[n] + 0.2), o, 'snte')
     else:
-        S.etiqueta(f'obj{n + 1}', f'Snte.<sup>{n + 1}</sup> · por venir', (0, 0, ALTO[n] + 0.2), o, 'snte nota')
+        # por encima de la caja (no sobre su cara superior): los guiones del contorno se leen enteros
+        S.etiqueta(f'obj{n + 1}', f'Snte.<sup>{n + 1}</sup> · <i style="color:var(--azogue)">por venir</i>', (0.4, 0, ALTO[n] + 0.4), o, 'snte')
 
 # ---------------------------------------------------------------- tablillas genéricas (estados 3-5)
 DESORDEN = [(-18, 5), (24, -4), (-10, -6), (16, 6)]      # giro e inclinación en la lectura deceptiva
@@ -547,12 +682,13 @@ for n in range(4):
     bb.caja(f'tab{n + 1}_placa', (0.52, 0.1, 0.36), (0, 0, 0.18), NACAR, g, bevel=0.02)
     fuera = Vector((math.cos(TH_S[n]), math.sin(TH_S[n]), 0))
     # en la vista cenital (estados 4-5) el rótulo queda por fuera del arco, como en la figura
-    S.etiqueta(f'tab{n + 1}', f'Snte.<sup>{n + 1}</sup>', tuple(fuera * (PL_R[n] + 0.3) + Vector((0, 0, 0.2))), g, 'snte')
-    S.etiqueta(f'mamp{n + 1}', f'<span style="{MAG}">{MAMP[n]}</span>', tuple(fuera * (PL_R[n] + 0.42) + Vector((0, 0, 0.1))), g, 'nota')
+    # (más lejos cuanto más horizontal: a los lados el rótulo se extiende hacia la tablilla)
+    S.etiqueta(f'tab{n + 1}', f'Snte.<sup>{n + 1}</sup>', tuple(fuera * (PL_R[n] + 0.3 + 0.16 * abs(fuera.x)) + Vector((0, 0, 0.2))), g, 'snte')
+    S.etiqueta(f'mamp{n + 1}', f'<span style="{MAG}">{MAMP[n]}</span>', tuple(fuera * (PL_R[n] + (0.42 if n < 2 else 0.3)) + Vector((0, 0, 0.1 if n < 2 else 0.3))), g, 'nota')
     TABS.append(g)
 fuera5 = Vector((math.cos(TH_S[4]), math.sin(TH_S[4]), 0))
-S.etiqueta('tab5', 'Snte.<sup>5</sup>', tuple(fuera5 * (PL_R[4] + 0.3) + Vector((0, 0, 0.2))), o5, 'snte')
-S.etiqueta('mamp5', '¿lo que vendría a cerrarla?', (0, 0, 1.0), o5, 'nota')
+S.etiqueta('tab5', 'Snte.<sup>5</sup>', tuple(fuera5 * (PL_R[4] + 0.3 + 0.16 * abs(fuera5.x)) + Vector((0, 0, 0.2))), o5, 'snte')
+S.etiqueta('mamp5', '<i>¿lo que vendría a cerrarla?</i>', (0.86, 0, 0.5), o5, 'snte')   # a la derecha del contorno vacío
 
 # ---------------------------------------------------------------- etiquetas de la figura plana (estado 0)
 LBL0 = [(-1.27, 0.0), (-1.1, 0.62), (-0.3, 1.17), (0.73, 1.04), (1.14, 0.57)]   # medidas sobre el escaneo (× R)
@@ -613,7 +749,7 @@ for t, k in muestras(TM0, TM1):
 x, y = P(TH_ETC, 0, 1.2)
 clave(lbl('etc'), 0, loc=(x, y, 0.1), interp=C)
 for t, k in muestras(TM0, TM1):
-    x, y = P(TH_ETC, k, 1 + 0.36 / ejes(k)[0])
+    x, y = P(TH_ETC, k, 1 + (0.36 + 0.18 * k) / ejes(k)[0])
     clave(lbl('etc'), t, loc=(x, y, 0.1), interp=L)
 for n, g in enumerate(BASES):
     x, y = P(TH_S[n], 0, F_N[n])
@@ -645,48 +781,30 @@ for n, g in enumerate(TABS):
     clave(g, T3F, rot=rot_d)
     clave(g, T4P, rot=(0, 0, 0))
 ver(sdo_g, (T2 + 0.03, T2 + 0.3, 1.0, TINY), (T3F, T4P, TINY, 1.0), inicial=1.0)
+# sin Sdo. no hay fracción: la barra se va y el hueco tachado baja al plinto vacío (no queda flotando)
+ver(barra, (T2 + 0.03, T2 + 0.3, 1.0, TINY), inicial=1.0)
+SNTE_Z3 = BH / 2 + 0.015                       # el contorno apoyado sobre el plinto del centro
+Y_SNTE4 = 0.45                                 # con el círculo, el hueco queda detrás del Sdo. (arriba en la vista cenital)
+
+
+def z_snte4(k):
+    return BH / 2 + 0.015 + 0.1 * k
+
 
 # estado 4 · dos focos: la fracción se desdobla; el arco se vuelve elíptico y sigue abierto
-ver(barra, (TM0, TM0 + 0.35, 1.0, TINY), inicial=1.0)
 clave(sdo_g, 0, loc=(0, 0, 0), interp=C)
 clave(plinto_e, 0, loc=(0, 0, 0), interp=C)
 clave(snte_g, 0, loc=(0, 0, SNTE_Z0), interp=C)
+clave(snte_g, T2 + 0.03, loc=(0, 0, SNTE_Z0))
+clave(snte_g, T2 + 0.3, loc=(0, 0, SNTE_Z3))
+clave(snte_g, T3F, loc=(0, 0, SNTE_Z3))
 for t, k in muestras(TM0, TM1):
     c = ejes(k)[2]
     clave(sdo_g, t, loc=(-c, 0, 0), interp=L)
     clave(plinto_e, t, loc=(-c, 0, 0), interp=L)
-    clave(snte_g, t, loc=(c, 0, SNTE_Z0 - k * (SNTE_Z0 - BH / 2) + 0.12 * k), interp=L)
+    clave(snte_g, t, loc=(c, Y_SNTE4 * (1 - k), z_snte4(k)), interp=L)
 
-# ================================================================ encuadres (cámaras calculadas para caber en el 60 % izquierdo)
-RECT = (90, 130, 1070, 955)
-
-
-def pts_arco(k, paso=10):
-    out = []
-    for gdeg in range(-15, 195, paso):
-        x, y = P(math.radians(gdeg), k)
-        out.append((Vector((x, y, ZARC)), 6, 6))
-    return out
-
-
-def pts_eslabones(k, altos, lbl_pad=None, lbl_z=None):
-    out = []
-    for n in range(5):
-        c = mundo_base(n, k)
-        for j in range(8):
-            t = 2 * math.pi * j / 8
-            out.append((c + Vector((PL_R[n] * math.cos(t), PL_R[n] * math.sin(t), -0.06)), 0, 0))
-        out.append((c + Vector((0, 0, altos[n])), 0, 0))
-        if lbl_pad:
-            out.append((c + Vector((0, 0, lbl_z[n])), lbl_pad[n], 26))
-    return out
-
-
-def pt_etc(k):
-    x, y = P(TH_ETC, k, 1.2 if k == 0 else 1 + 0.36 / ejes(k)[0])
-    return (Vector((x, y, ZARC + 0.1)), 50, 30)
-
-
+# ================================================================ encuadres (cámaras calculadas para la zona libre de ambas vistas)
 def ejes_cam(cam, look):
     f = (Vector(look) - Vector(cam)).normalized()
     r = f.cross(Vector((0, 0, 1))).normalized()
@@ -694,31 +812,48 @@ def ejes_cam(cam, look):
 
 
 def desproy(E, x, y, prof):
-    """Punto del mundo que se ve en el píxel (x, y) a la profundidad `prof` (m) de la cámara E."""
+    """Punto del mundo que se ve en el píxel (x, y) de la vista 1920×1080 a la profundidad `prof` (m) de la cámara E."""
     cam, look = Vector(E['cam']), Vector(E['look'])
     f, r, u = ejes_cam(cam, look)
     wpp = 2 * prof * math.tan(math.radians(E['fov']) / 2) / 1080
     return cam + f * prof + r * ((x - 960) * wpp) - u * ((y - 540) * wpp), wpp
 
 
-LBL_OBJ = [175, 215, 200, 130, 130]
-p1 = pts_arco(0) + pts_eslabones(0, ALTO, LBL_OBJ, [a + 0.2 for a in ALTO]) + [pt_etc(0), (Vector((0, 0, 0.9)), 70, 30)]
-CADENA = encuadre('cadena', p1, -16, 34, 34, RECT)
-RADIAL = encuadre('radial', p1 + [(Vector((0, -0.62, 0.0)), 170, 30)], -6, 36, 34, RECT)
+AZ_CAD, EL_CAD = float(os.environ.get('AZ_CAD', -12)), float(os.environ.get('EL_CAD', 34))
+AZ_DEC, EL_DEC = float(os.environ.get('AZ_DEC', -12)), float(os.environ.get('EL_DEC', 42))
+E_FIG = ['snte1', 'snte2', 'snte3', 'snte4', 'snte5', 'etc', 'e_snte', 'e_sdo']
+E_OBJ = ['obj1', 'obj2', 'obj3', 'obj4', 'obj5', 'etc']
+# en la vista oblicua el rótulo del Snte. va al lado del hueco: dentro de él, su fondo y la tachadura HTML se cruzaban
+# con la barra 3D de tachadura; encima, tapaba el arco y los rayos
+E_CAD = E_OBJ + ['e1_snte', 'e3_sdo']
+E_RAD = E_OBJ + ['e1_snte', 'e3_desorden']
+E_DEC = ['mamp1', 'mamp2', 'mamp3', 'mamp4', 'mamp5', 'etc', 'lect1', 'lect2', 'lect3', 'lect4', 'e3_snte', 'e_vacio']
+E_FOC = ['tab1', 'tab2', 'tab3', 'tab4', 'tab5', 'etc', 'e_sdo_foco', 'e_snte_foco', 'cita1974']
+E_KEP = ['kepler', 'kep_sol', 'kep_vacio', 'tab1', 'tab2', 'tab3', 'tab4', 'tab5', 'e_sdo_foco', 'e_snte_foco', 'etc']
+
+# figura plana, de frente y casi ortogonal; la cámara queda apenas por debajo del suelo invisible del visor
+# (que sólo recibe sombras): visto de canto, ese suelo dibujaría una raya de sombra bajo la figura
+FRENTE = encuadre('figura', 0, E_FIG, 0, -3.0, 7.0, look0=(0, 0, 1.4), dist=39.5)
+# Cadena y Lectura radial comparten cámara (entre ambas no hay motivo para moverla); la zona libre en L aprovecha
+# el espacio sobre la tarjeta (bordes superiores medidos: 684 px a pantalla completa, 549 px incrustado)
+CADENA = encuadre('cadena', T2, sorted(set(E_CAD + E_RAD)), AZ_CAD, EL_CAD, 34, tarjeta=(684, 549))
+RADIAL = dict(CADENA)
 
 # ---------------------------------------------------------------- lectura deceptiva (estado 3)
 # Los mismos rayos radiales del estado 2, pero cada uno se queda corto y a otra altura: no convergen (l. 255-275).
 # Delante del lugar vacío del Sdo., la lista de lecturas que se anulan unas a otras, tachadas y en el orden del texto (l. 269-270).
 RAYOS3 = []
 LECT = ['Banquete', 'Ojo Profiláctico', 'Primitivismo', 'Ritualidad']
-R_FIN = [0.8, 0.8, 1.05, 1.0]          # distancia al eje a la que se detiene cada rayo
-DESV = [0.0, 0.0, 0.0, 0.0]            # radiales, como en la lectura radial
-H_FIN = [0.22, 1.25, 0.62, 1.0]        # alturas finales, todas distintas: no se encuentran
+# Cada rayo apunta al centro vacío y se detiene antes, a otra altura y en otro punto: no convergen. Ninguno sube
+# (en la vista oblicua un rayo que sube parece alejarse del centro) ni termina sobre el arco o junto a otro plinto.
+R_FIN = [0.95, 0.8, 1.05, 0.75]        # distancia al eje a la que se detiene cada rayo
+DESV = [0.0, 0.0, 0.15, 0.0]           # el 3.º, casi en la visual de la cámara, se desvía un poco para no verse de punta
+H_FIN = [0.2, 0.5, 0.3, 0.4]           # alturas finales, todas distintas
 for n in range(4):
     base = mundo_base(n, 0, 0.0)
     u = Vector((-base.x, -base.y, 0)).normalized()
     pp = Vector((-u.y, u.x, 0))
-    a = base + u * (PL_R[n] * 0.6) + Vector((0, 0, 0.36))
+    a = base + u * (PL_R[n] * 0.6 + 0.12) + Vector((0, 0, 0.45))     # nace por delante y por encima de la tablilla
     b = -u * R_FIN[n] + pp * DESV[n] + Vector((0, 0, H_FIN[n]))
     g = rayo(f'rayo_deceptivo_{n + 1}', tuple(a), tuple(b), r=0.016, punta=True)
     fusionar(g, f'rayo_deceptivo_{n + 1}_malla')
@@ -733,87 +868,70 @@ for n, (g, a, b) in enumerate(RAYOS3):
     t0 = T2 + 0.5 + 0.08 * n
     ver(g, (t0, t0 + 0.35, (TINY, 1, 1), 1.0), (T3F, T3F + 0.12, 1.0, (TINY, 1, 1)), (T3F + 0.12, T3F + 0.15, (TINY, 1, 1), T3))
 
-p3 = pts_arco(0) + pts_eslabones(0, [0.4] * 4 + [0.8], [0, 0, 0, 0, 150], [0.62] * 4 + [1.0]) + [pt_etc(0)]
-for n in range(4):
-    fu = Vector((math.cos(TH_S[n]), math.sin(TH_S[n]), 0))
-    p3.append((mundo_base(n, 0) + fu * (PL_R[n] + 0.42) + Vector((0, 0, 0.1)), 90, 20))
-p3 += [(b, 0, 0) for g, a, b in RAYOS3] + [(p, 125, 24) for p in PT_LECT] + [(Vector((0, -0.55, 0)), 110, 28)]
-p3 = [q for q in p3 if not (q[1] == 90 and q[2] == 20)]   # sin rótulos de tablilla en este estado
-DECEP = encuadre('deceptiva', p3, -12, 42, 34, RECT)
+DECEP = encuadre('deceptiva', T3F, E_DEC, AZ_DEC, EL_DEC, 34, tarjeta=(721, 557))
 
 # ---------------------------------------------------------------- dos focos (estado 4): vista casi cenital
 # la elipse ha de leerse como deformación de la figura, no como efecto de perspectiva: cámara casi perpendicular al plano
-c1 = ejes(1)[2]
-p4 = pts_arco(1) + pts_eslabones(1, [0.4] * 4 + [0.8]) + [pt_etc(1)]
-for n in range(5):
-    fu = Vector((math.cos(TH_S[n]), math.sin(TH_S[n]), 0))
-    p4.append((mundo_base(n, 1) + fu * (PL_R[n] + 0.3) + Vector((0, 0, 0.2)), 60, 24))
-p4 += [(Vector((-c1, -0.55, 0.0)), 90, 36), (Vector((c1, -0.55, 0.0)), 90, 36), (Vector((0, -1.3, 0.16)), 160, 30)]
-FOCOS = encuadre('focos', p4, 0, 76, 34, RECT)
+FOCOS = encuadre('focos', TM1, E_FOC, 0, 76, 34)
 
 # ---------------------------------------------------------------- Kepler (miniatura aparte: otro trazo, sin rótulos Snte.)
 # Misma cámara que «Dos focos»: la miniatura flota arriba a la derecha, sobre el panel, de cara a la cámara.
 E_K = 0.5                                        # la elipse de la miniatura (inscrita en el círculo, como en Kepler)
 fK, rK, uK = ejes_cam(FOCOS['cam'], FOCOS['look'])
 dK = (Vector(FOCOS['look']) - Vector(FOCOS['cam'])).length * 0.72
-KPOS, wppK = desproy(FOCOS, 1480, 320, dK)
-RK = 180 * wppK
+# centro en (u, v) = (1,0, -0,5) semialtos y radio 0,3: en ambas vistas queda sobre la tarjeta, con el rótulo encima de ella
+KPOS, wppK = desproy(FOCOS, 960 + 1.0 * 540, 540 - 0.5 * 540, dK)
+RK = 0.3 * 540 * wppK
 kep = bb.grupo('kepler', tuple(KPOS))
 kep.rotation_mode = 'QUATERNION'
 kep.rotation_quaternion = (-fK).to_track_quat('-Y', 'Z')
 kep_orb = toro('kepler_orbita', RK, 0.011 * RK / 0.78, (0, 0, 0), AZOGUE, kep, nu=128, nv=8, plano='XZ')
 kep_sol = bb.esfera('kepler_sol', 0.075 * RK / 0.78, (0, 0, 0), SOL, kep, subdiv=3)
 kep_vac = bb.grupo('kepler_foco_vacio', (0, 0, 0), kep)
-toro('kepler_foco_vacio_anillo', 0.055 * RK / 0.78, 0.008 * RK / 0.78, (0, 0, 0), NEUTRO, kep_vac, nu=32, nv=6, plano='XZ')
+# el anillo del foco vacío es más ancho que el sol: con el círculo lo rodea (los dos focos coinciden) y se ve siempre
+toro('kepler_foco_vacio_anillo', 0.115 * RK / 0.78, 0.012 * RK / 0.78, (0, 0, 0), VACIO_K, kep_vac, nu=48, nv=8, plano='XZ')
 S.etiqueta('kepler', 'Kepler, <em>Astronomia nova</em> (1609)', (0, 0, -RK * 1.25), kep, 'serif')
-S.etiqueta('kep_sol', 'sol', (0, 0, 0.2 * RK), kep_sol, 'nota')
-S.etiqueta('kep_vacio', 'foco vacío', (0, 0, -0.22 * RK), kep, 'nota')   # ancla propia: con el círculo, los dos focos coinciden en el centro
+S.etiqueta('kep_sol', 'sol', (0, 0, 0.27 * RK), kep_sol, 'nota')
+S.etiqueta('kep_vacio', 'foco vacío', (0, 0, -0.27 * RK), kep, 'nota')   # ancla propia: con el círculo, los dos focos coinciden en el centro
 ver(kep, (TK_A0, TK_A1, TINY, 1.0))
 clave(kep_orb, 0, esc=1.0, interp=C)
 clave(kep_sol, 0, loc=(0, 0, 0), interp=C)
 clave(kep_vac, 0, loc=(0, 0, 0), interp=C)
-clave(lbl('kep_vacio'), 0, loc=(0, 0, -0.22 * RK), interp=C)
-ver(kep_vac, (TK0, TK0 + 0.3, TINY, 1.0))
+clave(lbl('kep_vacio'), 0, loc=(0, 0, -0.27 * RK), interp=C)
 for t, k in muestras(TK0, TK1):
     e = E_K * k
     bk = math.sqrt(1 - e * e)                     # semieje menor relativo; el mayor no cambia (elipse inscrita)
     clave(kep_orb, t, esc=(1.0, 1.0, bk), interp=L)
     clave(kep_sol, t, loc=(-e * RK, 0, 0), interp=L)
     clave(kep_vac, t, loc=(e * RK, 0, 0), interp=L)
-    clave(lbl('kep_vacio'), t, loc=(e * RK, 0, -0.22 * RK), interp=L)
+    clave(lbl('kep_vacio'), t, loc=(e * RK, 0, -0.27 * RK), interp=L)
 KEPLER = dict(FOCOS)
 
-ZC0 = Z0 + 0.235     # la figura sube un poco: la punta de flecha no debe rozar el panel (también incrustado, 1920×904)
-FRENTE = dict(cam=(-0.165, -39.5, ZC0), look=(-0.165, 0, ZC0), fov=7.0)
-
 # ================================================================ estados
-E_FIG = ['snte1', 'snte2', 'snte3', 'snte4', 'snte5', 'etc', 'e_snte', 'e_sdo']
-E_OBJ = ['obj1', 'obj2', 'obj3', 'obj4', 'obj5', 'etc']
-
 S.estado('Figura 2',
          'El significante de un significado dado queda tachado; una cadena de significantes, que progresa metonímicamente, traza una órbita a su alrededor. En la figura, el arco queda <b>abierto</b>: etc.',
          'Sarduy 1972 · figura 2 (l. 211-228)', etiquetas=E_FIG, orbita=False, t1=0, **FRENTE)
 S.estado('Cadena',
          'Carpentier, <em>El siglo de las luces</em>: reloj de sol vuelto reloj de luna, balanza para pesar gatos, telescopio por una luceta rota, astrónomo sobre un armario. La cadena sigue abierta.',
-         'l. 230-239', etiquetas=E_OBJ + ['e_snte', 'e3_sdo'], t1=T1, **CADENA)
+         'l. 230-239', etiquetas=E_CAD, t1=T1, **CADENA)
 S.estado('Lectura radial',
          'De cada objeto la lectura vuelve al centro: el significado, «desorden», está presente; su significante nunca se escribe. Se infiere.',
-         'l. 211-217 · l. 230-233 · rayos: añadido didáctico', etiquetas=E_OBJ + ['e_snte', 'e3_desorden'], t1=T2,
+         'l. 211-217 · l. 230-233 · rayos: añadido didáctico', etiquetas=E_RAD, t1=T2,
          pregunta='¿Y si las lecturas no convergieran en ningún centro?', **RADIAL)
 S.estado('Lectura deceptiva',
          'Abreu, <em>Mampulorio</em>: cucharas, un vaso, un ojo sobre una piel. Las lecturas no convergen: los significantes, en vez de completarse, se anulan unos a otros. El centro no se llena.',
-         'l. 255-275', etiquetas=['mamp5', 'etc', 'lect1', 'lect2', 'lect3', 'lect4', 'e_vacio'],
+         'l. 255-275', etiquetas=E_DEC,
          t1=T3F, **DECEP)
 S.estado('Dos focos',
          'Lectura posterior: el significante tachado se vuelve un segundo centro, ausente, junto al significado. El círculo se deforma en elipse, que sigue abierta.',
          'Sarduy 1974, cit. por Díaz 2011 (l. 1470-1483)',
-         etiquetas=['tab1', 'tab2', 'tab3', 'tab4', 'tab5', 'etc', 'e_sdo_foco', 'e_snte_foco', 'cita1974'], t1=TM1,
+         etiquetas=E_FOC, t1=TM1,
          slider={'tipo': 'tiempo', 't0': TM0, 't1': TM1, 'etiqueta': 'excentricidad',
                  'min_txt': 'círculo: un centro', 'max_txt': 'elipse: dos focos'}, **FOCOS)
 S.estado('Kepler',
          'Kepler: el trayecto de los astros, que se suponía circular, pierde su centro único «para hacerse doble». Más tarde Sarduy llamará <em>retombée</em> a este parecido: «isomorfía no contigua».',
          'l. 64-67 · Sarduy 1974, cit. por Díaz 2011, l. 1503-1509',
-         etiquetas=['kepler', 'kep_sol', 'kep_vacio', 'tab1', 'tab2', 'tab3', 'tab4', 'tab5', 'e_sdo_foco', 'e_snte_foco', 'etc'], t1=TK1,
+         etiquetas=E_KEP, t1=TK1,
          slider={'tipo': 'tiempo', 't0': TK0, 't1': TK1, 'etiqueta': 'la órbita de Kepler',
                  'min_txt': 'círculo', 'max_txt': 'elipse'}, **KEPLER)
 
@@ -824,4 +942,5 @@ for ob in bpy.data.objects:
         ob.data.calc_loop_triangles()
         tri += len(ob.data.loop_triangles)
 print(f'[proliferacion] guiones={len(GUIONES)} triángulos={tri} objetos={len(bpy.data.objects)}')
+bpy.context.scene.frame_set(0)
 S.exportar(posters=os.environ.get('POSTERS', '1') != '0')

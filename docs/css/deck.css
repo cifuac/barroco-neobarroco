@@ -139,11 +139,12 @@ body.pie-claro .pie { color: #7a6a5c; } body.pie-claro .pie .num, body.pie-claro
 
 /* 3D incrustado */
 .con3d { padding: 70px 90px 110px; }
-.con3d .cabecera3d { position: absolute; left: 120px; top: 72px; z-index: 5; max-width: 900px; pointer-events: none; }
+.con3d .cabecera3d { position: absolute; left: 120px; top: 82px; z-index: 5; max-width: 900px; pointer-events: none; }
 .con3d .cabecera3d h2 { font-size: 62px; margin-bottom: 0; }
 .con3d::after { content: ""; position: absolute; left: 120px; right: 120px; top: 175px; height: 1px; background: linear-gradient(90deg, rgba(212,166,42,.5), rgba(212,166,42,0) 70%); z-index: 4; }
 .embed3d { position: absolute; left: 0; right: 0; top: 176px; bottom: 0; background: var(--tinta) center/cover no-repeat; }
-.embed3d iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.embed3d iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: transparent; color-scheme: normal; }
+.embed3d.vivo { background-image: none !important; }
 
 /* díptico */
 .diptico { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1fr; }

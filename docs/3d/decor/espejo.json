@@ -1,0 +1,70 @@
+{
+ "imagenes": [
+  {
+   "src": "imagenes/espejo-convexo.webp",
+   "pie": "Espejo convexo: la sala, reducida",
+   "tipo": "cuadro",
+   "ancho": 2.159,
+   "pos": [
+    3.588,
+    2.227,
+    -0.417
+   ],
+   "mira": "cam_0",
+   "estados": [
+    0
+   ]
+  },
+  {
+   "src": "imagenes/boveda.webp",
+   "tipo": "disco",
+   "recorte": [
+    0.08,
+    0.08,
+    0.92,
+    0.92
+   ],
+   "pie": "Un solo punto de vista: el logos",
+   "ancho": 2.407,
+   "pos": [
+    4.346,
+    2.131,
+    -0.954
+   ],
+   "mira": "cam_2",
+   "estados": [
+    2
+   ]
+  },
+  {
+   "src": "imagenes/fragmentos.webp",
+   "marco": "fino",
+   "tipo": "cuadro",
+   "ancho": 0.678,
+   "pos": [
+    -1.206,
+    2.009,
+    -0.072
+   ],
+   "mira": "cam_3",
+   "estados": [
+    3
+   ]
+  },
+  {
+   "src": "imagenes/telon.webp",
+   "pie": "La pantalla y la carencia",
+   "tipo": "cuadro",
+   "ancho": 0.74,
+   "pos": [
+    -0.974,
+    0.913,
+    0.301
+   ],
+   "mira": "cam_4",
+   "estados": [
+    4
+   ]
+  }
+ ]
+}

@@ -1,0 +1,21 @@
+[
+ {
+  "src": "imagenes/contraluz.webp",
+  "estado": 2,
+  "der": 0.78,
+  "y": 0.5,
+  "dist": 1.1,
+  "alto": 0.4,
+  "marco": "fino",
+  "pie": "A contraluz: el otro texto"
+ },
+ {
+  "src": "imagenes/tinta.webp",
+  "estado": 3,
+  "y": 0.66,
+  "dist": 1.0,
+  "alto": 0.3,
+  "marco": "fino",
+  "der": 0.78
+ }
+]

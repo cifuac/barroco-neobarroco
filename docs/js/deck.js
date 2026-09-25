@@ -72,7 +72,7 @@
       const n = est[Math.min(paso, est.length - 1)];
       const f = document.createElement('iframe');
       f.src = `3d/visor.html?e=${e3.dataset.escena}&s=${n}&embed=1${e3.dataset.panel === '0' ? '&panel=0' : ''}${temaQS}`;
-      f.title = e3.dataset.titulo || 'Esquema 3D';
+      f.setAttribute('aria-label', e3.dataset.titulo || 'Esquema 3D');
       f.setAttribute('allow', 'fullscreen');
       e3.appendChild(f);
       e3._iframe = f; e3._estado = n;
@@ -90,7 +90,7 @@
     sl.querySelectorAll('.embed3d').forEach((e3) => {
       if (!e3._iframe) return;
       try { e3._iframe.contentWindow.postMessage({ type: 'liberar' }, '*'); } catch (e) {}
-      e3._iframe.remove(); e3._iframe = null; e3._estado = null;
+      e3._iframe.remove(); e3._iframe = null; e3._estado = null; e3.classList.remove('vivo');
     });
   }
   function enviar3D(e3, msg) { try { e3._iframe.contentWindow.postMessage(msg, '*'); } catch (e) {} }
@@ -98,7 +98,7 @@
     const d = ev.data || {};
     if (d.fuente !== 'visor3d') return;
     if (d.type === 'tecla') teclado({ key: d.key, preventDefault() {}, target: document.body });
-    if (d.type === 'listo') { const e3 = slides[idx].querySelector('.embed3d'); if (e3 && e3._iframe && e3._estado != null) enviar3D(e3, { type: 'estado', n: e3._estado }); }
+    if (d.type === 'listo') { const e3 = slides[idx].querySelector('.embed3d'); if (e3) e3.classList.add('vivo'); if (e3 && e3._iframe && e3._estado != null) enviar3D(e3, { type: 'estado', n: e3._estado }); }
   });
   function abrir3D() {
     const e3 = slides[idx].querySelector('.embed3d');
