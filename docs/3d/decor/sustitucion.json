@@ -1,3 +1,34 @@
 {
- "imagenes": []
+ "imagenes": [
+  {
+   "src": "imagenes/columnas.webp",
+   "pie": "Del clásico al barroco",
+   "tipo": "cuadro",
+   "ancho": 2.177,
+   "pos": [
+    -5.161,
+    0.998,
+    -3.449
+   ],
+   "mira": "cam_3",
+   "estados": [
+    3
+   ]
+  },
+  {
+   "src": "imagenes/papaya.webp",
+   "pie": "Una fuente con forma de papaya",
+   "tipo": "cuadro",
+   "ancho": 2.755,
+   "pos": [
+    -6.345,
+    0.711,
+    -3.982
+   ],
+   "mira": "cam_7",
+   "estados": [
+    7
+   ]
+  }
+ ]
 }

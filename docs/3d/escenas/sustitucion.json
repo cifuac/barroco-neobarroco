@@ -221,10 +221,11 @@
  "estudio": {
   "materiales": {
    "vidrio": {
-    "color": "#56626A",
-    "opacity": 0.1,
-    "roughness": 0.2,
-    "envMapIntensity": 0.9
+    "color": "#7E918B",
+    "opacity": 0.06,
+    "roughness": 0.12,
+    "clearcoat": 1,
+    "envMapIntensity": 1.2
    },
    "calido": {
     "color": "#A3245F",

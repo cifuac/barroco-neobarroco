@@ -150,7 +150,7 @@ limbo('snte1', [(0, True), (3.1, False), (5.25, True)], (0, YF, 0), padre_escala
 # ---------------------------------------------------------------- ajustes del estudio (tema claro)
 S.estudio = {
     'materiales': {
-        'vidrio': {'color': '#56626A', 'opacity': 0.1, 'roughness': 0.2, 'envMapIntensity': 0.9},
+        'vidrio': {'color': '#7E918B', 'opacity': 0.06, 'roughness': 0.12, 'clearcoat': 1, 'envMapIntensity': 1.2},
         'calido': {'color': '#A3245F', 'opacity': 0.065, 'roughness': 0.25, 'emissive': '#A3245F',
                    'emissiveIntensity': 0.08, 'envMapIntensity': 0.8},
     },
