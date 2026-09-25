@@ -140,7 +140,7 @@ function crear(d, img, scene, nodos, piso) {
   if (d.pos) grupo.position.fromArray(d.pos);
   // apoyadas en el suelo del estudio: la figura se para sobre él; el calco queda tendido sobre él
   if (d.tipo === 'figura' && d.apoyo === 'suelo') grupo.position.y = piso + alto / 2 + (d.elevar || 0);
-  if (d.tipo === 'calco') grupo.position.y = piso + 0.004 + (d.elevar || 0);
+  if (d.tipo === 'calco' && !d.rot) grupo.position.y = piso + 0.004 + (d.elevar || 0);   // con «rot» propio, respeta «pos» (p. ej. un velo sobre un muro)
   const base = grupo.position.clone();
   if ((d.tipo === 'suelo' || d.tipo === 'calco') && !d.rot) grupo.rotation.x = -Math.PI / 2;
   if (d.tipo === 'calco' && d.giro) grupo.rotation.z = d.giro * DEG;

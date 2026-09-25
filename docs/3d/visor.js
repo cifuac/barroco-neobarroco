@@ -4,7 +4,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 import { prepararRender, montarEstudio, precargarTexturas } from './estudio.js?v=10';
-import { montarDecor, estadoDecor, inmediatoDecor, animarDecor } from './decor.js?v=10';
+import { montarDecor, estadoDecor, inmediatoDecor, animarDecor } from './decor.js?v=11';
 
 const qs = new URLSearchParams(location.search);
 if (qs.get('tema')) document.documentElement.dataset.tema = qs.get('tema');

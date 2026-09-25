@@ -16,7 +16,27 @@
    ],
    "sombra": false,
    "estados": [
+    0,
+    1,
+    2
+   ]
+  },
+  {
+   "src": "imagenes/recortes/vaho.webp",
+   "tipo": "calco",
+   "ancho": 0.4,
+   "pos": [
+    -0.11,
+    1.16,
+    -1.42
+   ],
+   "rot": [
+    0,
+    0,
     0
+   ],
+   "estados": [
+    1
    ]
   },
   {
