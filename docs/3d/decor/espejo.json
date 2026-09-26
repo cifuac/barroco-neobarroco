@@ -66,22 +66,6 @@
    ]
   },
   {
-   "src": "imagenes/recortes/telon.webp",
-   "tipo": "figura",
-   "elevar": 0.134,
-   "apoyo": "suelo",
-   "ancho": 0.611,
-   "pos": [
-    1.372,
-    -0.134,
-    0.133
-   ],
-   "mira": "cam_4",
-   "estados": [
-    4
-   ]
-  },
-  {
    "src": "imagenes/recortes/marco-rayos.webp",
    "tipo": "figura",
    "ancho": 1.304,
@@ -1718,6 +1702,34 @@
    ],
    "estados": [
     3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/cortina.webp",
+   "tipo": "figura",
+   "ancho": 0.44,
+   "pos": [
+    0.74,
+    1.07,
+    -1.36
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ],
+   "desde": [
+    -0.62,
+    0,
+    0
+   ],
+   "giroDesde": [
+    0,
+    0,
+    0
+   ],
+   "estados": [
     4
    ]
   }
