@@ -16,11 +16,17 @@
 //     "opacidad": 1,                         // máxima (fondo: 0.85 por defecto)
 //     "lavado": 0.35,                        // velo de papel sobre la imagen, 0..1 (fondo: 0.35 por defecto; resto: 0)
 //     "pie": "Van Eyck, <i>El matrimonio Arnolfini</i>, 1434"  // rótulo opcional bajo la imagen
-// } ] }
+//     "desde": [dx, dy, dz], "giroDesde": grados              // al aparecer, parte desde pos+desde (y giro z extra) y llega a pos
+// } ],
+//   "ocultar": [ { "prefijos": ["faceta"], "estados": [3, 4] } ]  // piezas del modelo 3D que se ocultan en esos estados
+// }
 import * as THREE from 'three';
 import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
 const items = [];
+if (typeof window !== "undefined") window.__decor = items;   // inspección desde la consola
+const reglas = [];
+function aplicarReglas(n) { for (const r of reglas) for (const o of r.objs) o.visible = !r.estados.includes(n); }
 const v = new THREE.Vector3();
 const DEG = Math.PI / 180;
 
@@ -79,6 +85,12 @@ export async function montarDecor({ id, scene, nodos, archivo, piso = 0, estado 
   try { const r = await fetch(`decor/${archivo || id}.json`, { cache: 'no-cache' }); if (!r.ok) return 0; dec = await r.json(); }
   catch (e) { return 0; }
   items.nodos = nodos;
+  reglas.length = 0;
+  for (const r of dec.ocultar || []) {
+    const objs = Object.entries(nodos).filter(([k, o]) => (r.prefijos || []).some((p) => k.startsWith(p))).map(([, o]) => o);
+    reglas.push({ objs, estados: r.estados || [] });
+  }
+  aplicarReglas(estado());
   const ld = new THREE.ImageLoader();
   // se descargan en paralelo; cada una aparece (con fundido) cuando llega
   await Promise.all((dec.imagenes || []).map(async (d0) => {
@@ -87,7 +99,7 @@ export async function montarDecor({ id, scene, nodos, archivo, piso = 0, estado 
       const img = await ld.loadAsync(d.src);
       const it = crear(d, img, scene, nodos, piso);
       const n = estado();
-      if (!d.estados || d.estados.includes(n)) { it.meta = 1; if (it.pie) it.pie.element.classList.add('on'); }
+      if (!d.estados || d.estados.includes(n)) { it.meta = 1; it.anim = 0; if (it.pie) it.pie.element.classList.add('on'); }
       items.push(it);
     } catch (e) { console.warn('imagen no disponible', d.src, e); }
   }));
@@ -103,8 +115,11 @@ function crear(d, img, scene, nodos, piso) {
   let lamina;
   if (d.tipo === 'figura') {
     // figura recortada (PNG/WebP con transparencia): de pie, sin marco, con sombra de su silueta
-    lamina = new THREE.Mesh(new THREE.PlaneGeometry(ancho, alto),
-      new THREE.MeshStandardMaterial({ map: tex, roughness: 0.62, metalness: 0, transparent: true, alphaTest: 0.4, side: THREE.DoubleSide }));
+    const mat = d.brillo   // vidrio de espejo: pulido, con brillo especular que cambia con la inclinación
+      ? new THREE.MeshPhysicalMaterial({ map: tex, roughness: 0.12, metalness: 0.25, clearcoat: 1, clearcoatRoughness: 0.04,
+          envMapIntensity: 1.4, transparent: true, alphaTest: 0.4, side: THREE.DoubleSide })
+      : new THREE.MeshStandardMaterial({ map: tex, roughness: 0.62, metalness: 0, transparent: true, alphaTest: 0.4, side: THREE.DoubleSide });
+    lamina = new THREE.Mesh(new THREE.PlaneGeometry(ancho, alto), mat);
     lamina.castShadow = d.sombra !== false; lamina.receiveShadow = false;
   } else if (d.tipo === 'calco') {
     // dibujo a tinta apoyado en el suelo (el papel ya fue retirado): recibe las sombras de los objetos
@@ -155,7 +170,7 @@ function crear(d, img, scene, nodos, piso) {
     grupo.add(pie);
   }
   const mats = []; grupo.traverse((o) => { if (o.isMesh) { const ms = Array.isArray(o.material) ? o.material : [o.material]; ms.forEach((m) => { m.transparent = true; mats.push(m); }); } });
-  const it = { d, grupo, base, mats, pie, op: 0, meta: 0, opMax };
+  const it = { d, grupo, base, mats, pie, op: 0, meta: 0, opMax, anim: 1, rotBase: grupo.rotation.clone() };
   if (d.mira && d.mira !== 'camara' && nodos[d.mira]) {
     const nLook = d.mira.startsWith('cam_') ? nodos['look_' + d.mira.slice(4)] : null;
     if (d.tipo === 'figura' && d.apoyo === 'suelo') { // de pie: sólo gira en torno a la vertical, hacia la cámara de ese estado
@@ -178,22 +193,30 @@ function aplicarOpacidad(it, op) {
 
 // estado n: qué imágenes deben verse (con retraso opcional para acompañar a la cámara)
 export function estadoDecor(n, retrasoMs = 0) {
+  aplicarReglas(n);
   for (const it of items) {
     const ver = !it.d.estados || it.d.estados.includes(n);
     clearTimeout(it._t);
-    if (!ver) { it.meta = 0; if (it.pie) it.pie.element.classList.remove('on'); }
+    if (!ver) { it.meta = 0; it.anim = 0; if (it.pie) it.pie.element.classList.remove('on'); }
     else {
-      const encender = () => { it.meta = 1; if (it.pie) it.pie.element.classList.add('on'); };
-      if (retrasoMs) it._t = setTimeout(encender, retrasoMs); else encender();
+      const encender = () => { if (it.meta === 0) it.anim = 0; it.meta = 1; if (it.pie) it.pie.element.classList.add('on'); };
+      if (retrasoMs && it.d.tipo !== 'figura') it._t = setTimeout(encender, retrasoMs); else encender();   // las figuras cambian en el acto
     }
   }
 }
-export function inmediatoDecor() { for (const it of items) aplicarOpacidad(it, it.meta); }
+export function inmediatoDecor() { for (const it of items) { aplicarOpacidad(it, it.meta); it.anim = 1; } }
 
 export function animarDecor(dt, camera) {
   for (const it of items) {
     if (it.d.ancla && items.nodos[it.d.ancla]) { items.nodos[it.d.ancla].getWorldPosition(v); it.grupo.position.copy(v).add(it.base); }
     if (it.d.mira === 'camara') { v.copy(camera.position); v.y = it.grupo.position.y; it.grupo.lookAt(v); }
+    if (it.d.desde) {   // entrada animada (p. ej. las esquirlas del espejo que estalla)
+      if (it.anim < 1 && it.meta > 0) it.anim = Math.min(1, it.anim + dt / 1.6);
+      const k = 1 - Math.pow(1 - it.anim, 3), r = 1 - k;
+      it.grupo.position.set(it.base.x + it.d.desde[0] * r, it.base.y + it.d.desde[1] * r, it.base.z + it.d.desde[2] * r);
+      const gd = Array.isArray(it.d.giroDesde) ? it.d.giroDesde : [0, 0, it.d.giroDesde || 0];
+      it.grupo.rotation.set(it.rotBase.x + gd[0] * DEG * r, it.rotBase.y + gd[1] * DEG * r, it.rotBase.z + gd[2] * DEG * r);
+    }
     // las figuras recortadas usan corte por transparencia: aparecen y desaparecen sin fundido (si no, «saltan» a mitad del fundido)
     if (it.d.tipo === 'figura') { if (it.op !== it.meta) aplicarOpacidad(it, it.meta); }
     else if (Math.abs(it.meta - it.op) > 0.002) aplicarOpacidad(it, it.op + (it.meta - it.op) * Math.min(1, dt * 3.5));

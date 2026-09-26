@@ -80,6 +80,1661 @@
    "estados": [
     4
    ]
+  },
+  {
+   "src": "imagenes/recortes/marco-rayos.webp",
+   "tipo": "figura",
+   "ancho": 1.304,
+   "pos": [
+    0.0,
+    1.04,
+    -1.435
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ],
+   "sombra": false,
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-00.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.0842,
+   "pos": [
+    0.6968,
+    1.3089,
+    -1.2213
+   ],
+   "rot": [
+    -16.6,
+    -18.1,
+    -19.8
+   ],
+   "desde": [
+    -0.6016,
+    -0.3175,
+    -0.2097
+   ],
+   "giroDesde": [
+    16.6,
+    18.1,
+    19.8
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-01.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.0824,
+   "pos": [
+    0.756,
+    1.1333,
+    -1.1621
+   ],
+   "rot": [
+    29.1,
+    25.9,
+    18.7
+   ],
+   "desde": [
+    -0.658,
+    -0.1318,
+    -0.2681
+   ],
+   "giroDesde": [
+    -29.1,
+    -25.9,
+    -18.7
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-02.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1007,
+   "pos": [
+    0.4769,
+    1.1313,
+    -0.9375
+   ],
+   "rot": [
+    47.8,
+    20.7,
+    -61.0
+   ],
+   "desde": [
+    -0.3148,
+    -0.1828,
+    -0.4919
+   ],
+   "giroDesde": [
+    -47.8,
+    -20.7,
+    61.0
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-03.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1154,
+   "pos": [
+    0.7943,
+    1.1441,
+    -1.1759
+   ],
+   "rot": [
+    -14.7,
+    -11.2,
+    -69.1
+   ],
+   "desde": [
+    -0.623,
+    -0.181,
+    -0.2527
+   ],
+   "giroDesde": [
+    14.7,
+    11.2,
+    69.1
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-04.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1355,
+   "pos": [
+    0.4705,
+    1.3182,
+    -1.2937
+   ],
+   "rot": [
+    -10.7,
+    -49.7,
+    -6.9
+   ],
+   "desde": [
+    -0.2141,
+    -0.4046,
+    -0.1341
+   ],
+   "giroDesde": [
+    10.7,
+    49.7,
+    6.9
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-05.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1026,
+   "pos": [
+    0.3881,
+    0.8772,
+    -0.9616
+   ],
+   "rot": [
+    -29.4,
+    31.1,
+    -41.7
+   ],
+   "desde": [
+    -0.3185,
+    0.0767,
+    -0.4654
+   ],
+   "giroDesde": [
+    29.4,
+    -31.1,
+    41.7
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-06.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1319,
+   "pos": [
+    0.7636,
+    0.9572,
+    -1.0243
+   ],
+   "rot": [
+    47.4,
+    -29.3,
+    23.6
+   ],
+   "desde": [
+    -0.6519,
+    -0.0582,
+    -0.4019
+   ],
+   "giroDesde": [
+    -47.4,
+    29.3,
+    -23.6
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-07.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1062,
+   "pos": [
+    0.4631,
+    1.0934,
+    -1.2528
+   ],
+   "rot": [
+    26.6,
+    -39.3,
+    -10.0
+   ],
+   "desde": [
+    -0.3184,
+    -0.1697,
+    -0.1726
+   ],
+   "giroDesde": [
+    -26.6,
+    39.3,
+    10.0
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-08.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.2234,
+   "pos": [
+    0.5151,
+    1.0045,
+    -0.9256
+   ],
+   "rot": [
+    27.0,
+    -2.6,
+    75.8
+   ],
+   "desde": [
+    -0.3356,
+    -0.1824,
+    -0.499
+   ],
+   "giroDesde": [
+    -27.0,
+    2.6,
+    -75.8
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-09.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.0714,
+   "pos": [
+    0.4454,
+    0.645,
+    -1.2599
+   ],
+   "rot": [
+    31.8,
+    -35.0,
+    26.7
+   ],
+   "desde": [
+    -0.4261,
+    0.2787,
+    -0.1639
+   ],
+   "giroDesde": [
+    -31.8,
+    35.0,
+    -26.7
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-10.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.0513,
+   "pos": [
+    0.4812,
+    0.4556,
+    -0.9846
+   ],
+   "rot": [
+    -38.3,
+    -46.3,
+    31.7
+   ],
+   "desde": [
+    -0.4794,
+    0.3683,
+    -0.4384
+   ],
+   "giroDesde": [
+    38.3,
+    46.3,
+    -31.7
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-11.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.0788,
+   "pos": [
+    0.606,
+    0.9285,
+    -0.901
+   ],
+   "rot": [
+    25.7,
+    28.2,
+    33.1
+   ],
+   "desde": [
+    -0.5685,
+    -0.0835,
+    -0.5212
+   ],
+   "giroDesde": [
+    -25.7,
+    -28.2,
+    -33.1
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-12.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1502,
+   "pos": [
+    0.57,
+    0.5762,
+    -0.8905
+   ],
+   "rot": [
+    28.5,
+    33.5,
+    -84.6
+   ],
+   "desde": [
+    -0.5242,
+    0.1983,
+    -0.5309
+   ],
+   "giroDesde": [
+    -28.5,
+    -33.5,
+    84.6
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-13.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.0934,
+   "pos": [
+    0.1439,
+    0.5951,
+    -0.9242
+   ],
+   "rot": [
+    5.4,
+    17.7,
+    1.2
+   ],
+   "desde": [
+    -0.1906,
+    0.3331,
+    -0.4964
+   ],
+   "giroDesde": [
+    -5.4,
+    -17.7,
+    -1.2
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-14.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.033,
+   "pos": [
+    0.369,
+    0.5952,
+    -1.0776
+   ],
+   "rot": [
+    36.5,
+    34.2,
+    78.8
+   ],
+   "desde": [
+    -0.3855,
+    0.3267,
+    -0.3422
+   ],
+   "giroDesde": [
+    -36.5,
+    -34.2,
+    -78.8
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-15.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.141,
+   "pos": [
+    0.0773,
+    0.3344,
+    -1.1916
+   ],
+   "rot": [
+    -19.8,
+    -37.9,
+    84.3
+   ],
+   "desde": [
+    -0.1552,
+    0.5078,
+    -0.2274
+   ],
+   "giroDesde": [
+    19.8,
+    37.9,
+    -84.3
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-16.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.044,
+   "pos": [
+    0.473,
+    0.4551,
+    -1.2834
+   ],
+   "rot": [
+    -11.0,
+    -29.6,
+    -21.3
+   ],
+   "desde": [
+    -0.5023,
+    0.3716,
+    -0.1348
+   ],
+   "giroDesde": [
+    11.0,
+    29.6,
+    21.3
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-17.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1831,
+   "pos": [
+    -0.1169,
+    0.7668,
+    -1.4054
+   ],
+   "rot": [
+    1.0,
+    -3.8,
+    -3.6
+   ],
+   "desde": [
+    0.0106,
+    0.0031,
+    -0.012
+   ],
+   "giroDesde": [
+    -1.0,
+    3.8,
+    3.6
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-18.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.0861,
+   "pos": [
+    0.2146,
+    0.5211,
+    -1.1207
+   ],
+   "rot": [
+    -43.4,
+    -13.8,
+    -5.7
+   ],
+   "desde": [
+    -0.3016,
+    0.4429,
+    -0.2959
+   ],
+   "giroDesde": [
+    43.4,
+    13.8,
+    5.7
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-19.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.0861,
+   "pos": [
+    -0.1182,
+    0.5591,
+    -0.8712
+   ],
+   "rot": [
+    -42.2,
+    23.1,
+    8.2
+   ],
+   "desde": [
+    0.0404,
+    0.3948,
+    -0.5446
+   ],
+   "giroDesde": [
+    42.2,
+    -23.1,
+    -8.2
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-20.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.119,
+   "pos": [
+    0.1602,
+    0.3336,
+    -1.2859
+   ],
+   "rot": [
+    -47.2,
+    -41.3,
+    31.8
+   ],
+   "desde": [
+    -0.304,
+    0.5563,
+    -0.1291
+   ],
+   "giroDesde": [
+    47.2,
+    41.3,
+    -31.8
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-21.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1319,
+   "pos": [
+    -0.1105,
+    0.5404,
+    -1.1449
+   ],
+   "rot": [
+    -47.9,
+    46.2,
+    37.2
+   ],
+   "desde": [
+    -0.0947,
+    0.2844,
+    -0.2693
+   ],
+   "giroDesde": [
+    47.9,
+    -46.2,
+    -37.2
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-22.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.13,
+   "pos": [
+    -0.046,
+    0.4069,
+    -0.8636
+   ],
+   "rot": [
+    -37.3,
+    29.9,
+    61.2
+   ],
+   "desde": [
+    -0.0666,
+    0.579,
+    -0.5498
+   ],
+   "giroDesde": [
+    37.3,
+    -29.9,
+    -61.2
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-23.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1264,
+   "pos": [
+    -0.2859,
+    0.498,
+    -0.9583
+   ],
+   "rot": [
+    -34.1,
+    48.6,
+    -44.4
+   ],
+   "desde": [
+    0.1018,
+    0.4495,
+    -0.4543
+   ],
+   "giroDesde": [
+    34.1,
+    -48.6,
+    44.4
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-24.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.13,
+   "pos": [
+    -0.1735,
+    0.3376,
+    -1.0304
+   ],
+   "rot": [
+    19.0,
+    -45.5,
+    -76.0
+   ],
+   "desde": [
+    -0.0985,
+    0.5916,
+    -0.3814
+   ],
+   "giroDesde": [
+    -19.0,
+    45.5,
+    76.0
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-25.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1117,
+   "pos": [
+    -0.0679,
+    0.3705,
+    -1.2139
+   ],
+   "rot": [
+    37.7,
+    35.8,
+    52.6
+   ],
+   "desde": [
+    -0.1821,
+    0.5101,
+    -0.1971
+   ],
+   "giroDesde": [
+    -37.7,
+    -35.8,
+    -52.6
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-26.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.119,
+   "pos": [
+    -0.2263,
+    0.6836,
+    -1.135
+   ],
+   "rot": [
+    30.8,
+    25.5,
+    22.2
+   ],
+   "desde": [
+    0.1082,
+    0.3647,
+    -0.2752
+   ],
+   "giroDesde": [
+    -30.8,
+    -25.5,
+    -22.2
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-27.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1319,
+   "pos": [
+    -0.5037,
+    0.6285,
+    -1.0733
+   ],
+   "rot": [
+    7.1,
+    48.2,
+    -84.2
+   ],
+   "desde": [
+    0.3114,
+    0.4335,
+    -0.3361
+   ],
+   "giroDesde": [
+    -7.1,
+    -48.2,
+    84.2
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-28.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.0842,
+   "pos": [
+    -0.2161,
+    0.3392,
+    -0.9786
+   ],
+   "rot": [
+    39.4,
+    -6.1,
+    36.0
+   ],
+   "desde": [
+    0.011,
+    0.6733,
+    -0.43
+   ],
+   "giroDesde": [
+    -39.4,
+    6.1,
+    -36.0
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-29.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1062,
+   "pos": [
+    -0.3054,
+    1.0779,
+    -1.3994
+   ],
+   "rot": [
+    -0.8,
+    -5.9,
+    -0.9
+   ],
+   "desde": [
+    0.0179,
+    -0.0095,
+    -0.0084
+   ],
+   "giroDesde": [
+    0.8,
+    5.9,
+    0.9
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-30.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.0861,
+   "pos": [
+    -0.6312,
+    1.1759,
+    -1.2044
+   ],
+   "rot": [
+    38.5,
+    -36.5,
+    63.4
+   ],
+   "desde": [
+    0.5607,
+    -0.0416,
+    -0.2026
+   ],
+   "giroDesde": [
+    -38.5,
+    36.5,
+    -63.4
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-31.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.0989,
+   "pos": [
+    -0.8454,
+    0.9703,
+    -1.2003
+   ],
+   "rot": [
+    9.0,
+    10.8,
+    -15.9
+   ],
+   "desde": [
+    0.7593,
+    0.1457,
+    -0.2059
+   ],
+   "giroDesde": [
+    -9.0,
+    -10.8,
+    15.9
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-32.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1685,
+   "pos": [
+    -0.6932,
+    0.7903,
+    -0.9687
+   ],
+   "rot": [
+    -45.0,
+    41.8,
+    -35.4
+   ],
+   "desde": [
+    0.5338,
+    0.3889,
+    -0.4367
+   ],
+   "giroDesde": [
+    45.0,
+    -41.8,
+    35.4
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-33.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.196,
+   "pos": [
+    -0.8167,
+    1.0568,
+    -0.9926
+   ],
+   "rot": [
+    -9.3,
+    13.1,
+    46.6
+   ],
+   "desde": [
+    0.5942,
+    0.1736,
+    -0.412
+   ],
+   "giroDesde": [
+    9.3,
+    -13.1,
+    -46.6
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-34.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.0751,
+   "pos": [
+    -0.7339,
+    1.213,
+    -1.039
+   ],
+   "rot": [
+    -2.3,
+    16.5,
+    56.4
+   ],
+   "desde": [
+    0.6872,
+    -0.065,
+    -0.3648
+   ],
+   "giroDesde": [
+    2.3,
+    -16.5,
+    -56.4
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-35.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1026,
+   "pos": [
+    -0.4067,
+    1.2506,
+    -1.2219
+   ],
+   "rot": [
+    -10.9,
+    -19.9,
+    -17.2
+   ],
+   "desde": [
+    0.3243,
+    -0.022,
+    -0.1811
+   ],
+   "giroDesde": [
+    10.9,
+    19.9,
+    17.2
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-36.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.0659,
+   "pos": [
+    -0.5782,
+    0.9944,
+    -1.1755
+   ],
+   "rot": [
+    20.6,
+    -10.4,
+    -51.4
+   ],
+   "desde": [
+    0.4775,
+    0.2324,
+    -0.2267
+   ],
+   "giroDesde": [
+    -20.6,
+    10.4,
+    51.4
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-37.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1227,
+   "pos": [
+    -0.6685,
+    1.1274,
+    -1.2311
+   ],
+   "rot": [
+    44.5,
+    -46.6,
+    41.3
+   ],
+   "desde": [
+    0.5613,
+    0.1891,
+    -0.1703
+   ],
+   "giroDesde": [
+    -44.5,
+    46.6,
+    -41.3
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-38.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.0897,
+   "pos": [
+    -0.675,
+    1.335,
+    -1.0217
+   ],
+   "rot": [
+    7.6,
+    -25.0,
+    69.5
+   ],
+   "desde": [
+    0.6796,
+    -0.1842,
+    -0.3789
+   ],
+   "giroDesde": [
+    -7.6,
+    25.0,
+    -69.5
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-39.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.141,
+   "pos": [
+    -0.3136,
+    1.6484,
+    -1.0456
+   ],
+   "rot": [
+    6.9,
+    38.2,
+    -54.5
+   ],
+   "desde": [
+    0.3292,
+    -0.4271,
+    -0.3542
+   ],
+   "giroDesde": [
+    -6.9,
+    -38.2,
+    54.5
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-40.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.0421,
+   "pos": [
+    -0.5753,
+    1.1943,
+    -0.8643
+   ],
+   "rot": [
+    -39.9,
+    32.0,
+    -73.1
+   ],
+   "desde": [
+    0.5414,
+    0.0389,
+    -0.5347
+   ],
+   "giroDesde": [
+    39.9,
+    -32.0,
+    73.1
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-41.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1978,
+   "pos": [
+    0.0121,
+    1.3267,
+    -1.3815
+   ],
+   "rot": [
+    -3.6,
+    -2.5,
+    0.3
+   ],
+   "desde": [
+    0.008,
+    -0.0065,
+    -0.0167
+   ],
+   "giroDesde": [
+    3.6,
+    2.5,
+    -0.3
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-42.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1154,
+   "pos": [
+    -0.1822,
+    1.5051,
+    -1.0157
+   ],
+   "rot": [
+    -39.4,
+    2.3,
+    -30.8
+   ],
+   "desde": [
+    0.2582,
+    -0.3817,
+    -0.3817
+   ],
+   "giroDesde": [
+    39.4,
+    -2.3,
+    30.8
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-43.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1374,
+   "pos": [
+    0.0531,
+    1.449,
+    -1.0713
+   ],
+   "rot": [
+    -8.4,
+    -17.2,
+    -88.3
+   ],
+   "desde": [
+    0.0907,
+    -0.2579,
+    -0.3253
+   ],
+   "giroDesde": [
+    8.4,
+    17.2,
+    88.3
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-44.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1282,
+   "pos": [
+    -0.322,
+    1.5547,
+    -0.9294
+   ],
+   "rot": [
+    -41.4,
+    -25.3,
+    -10.3
+   ],
+   "desde": [
+    0.4264,
+    -0.3462,
+    -0.4664
+   ],
+   "giroDesde": [
+    41.4,
+    25.3,
+    10.3
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-45.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.2015,
+   "pos": [
+    -0.0752,
+    1.6278,
+    -1.1279
+   ],
+   "rot": [
+    24.7,
+    25.5,
+    28.3
+   ],
+   "desde": [
+    0.2528,
+    -0.3543,
+    -0.2671
+   ],
+   "giroDesde": [
+    -24.7,
+    -25.5,
+    -28.3
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-46.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1136,
+   "pos": [
+    0.0477,
+    1.6014,
+    -1.0523
+   ],
+   "rot": [
+    -39.2,
+    -48.3,
+    69.9
+   ],
+   "desde": [
+    0.0585,
+    -0.5064,
+    -0.3419
+   ],
+   "giroDesde": [
+    39.2,
+    48.3,
+    -69.9
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-47.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1209,
+   "pos": [
+    0.3037,
+    1.4342,
+    -1.0682
+   ],
+   "rot": [
+    49.9,
+    -36.0,
+    54.6
+   ],
+   "desde": [
+    -0.1188,
+    -0.3008,
+    -0.3252
+   ],
+   "giroDesde": [
+    -49.9,
+    36.0,
+    -54.6
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-48.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1099,
+   "pos": [
+    0.3494,
+    1.4091,
+    -1.1175
+   ],
+   "rot": [
+    21.1,
+    41.2,
+    -88.0
+   ],
+   "desde": [
+    -0.071,
+    -0.2657,
+    -0.2751
+   ],
+   "giroDesde": [
+    -21.1,
+    -41.2,
+    88.0
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-49.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1136,
+   "pos": [
+    0.2341,
+    1.581,
+    -1.1728
+   ],
+   "rot": [
+    -42.7,
+    31.7,
+    88.9
+   ],
+   "desde": [
+    0.0259,
+    -0.3945,
+    -0.219
+   ],
+   "giroDesde": [
+    42.7,
+    -31.7,
+    -88.9
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-50.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1044,
+   "pos": [
+    0.3541,
+    1.2622,
+    -0.9209
+   ],
+   "rot": [
+    -47.9,
+    42.3,
+    -9.6
+   ],
+   "desde": [
+    -0.2433,
+    -0.2268,
+    -0.4701
+   ],
+   "giroDesde": [
+    47.9,
+    -42.3,
+    9.6
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-51.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1227,
+   "pos": [
+    0.4726,
+    1.3222,
+    -1.2839
+   ],
+   "rot": [
+    -14.7,
+    -11.8,
+    5.5
+   ],
+   "desde": [
+    -0.2812,
+    -0.3179,
+    -0.1063
+   ],
+   "giroDesde": [
+    14.7,
+    11.8,
+    -5.5
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-52.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1117,
+   "pos": [
+    0.4532,
+    1.3039,
+    -0.8821
+   ],
+   "rot": [
+    -13.1,
+    -22.0,
+    0.3
+   ],
+   "desde": [
+    -0.2563,
+    -0.2483,
+    -0.5073
+   ],
+   "giroDesde": [
+    13.1,
+    22.0,
+    -0.3
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  },
+  {
+   "src": "imagenes/recortes/esquirla-53.webp",
+   "tipo": "figura",
+   "brillo": true,
+   "ancho": 0.1209,
+   "pos": [
+    0.4294,
+    1.6988,
+    -1.0835
+   ],
+   "rot": [
+    -41.0,
+    -44.3,
+    73.8
+   ],
+   "desde": [
+    -0.1492,
+    -0.6744,
+    -0.3051
+   ],
+   "giroDesde": [
+    41.0,
+    44.3,
+    -73.8
+   ],
+   "estados": [
+    3,
+    4
+   ]
+  }
+ ],
+ "ocultar": [
+  {
+   "prefijos": [
+    "faceta",
+    "marco_espejo",
+    "espejo_entero",
+    "mini_",
+    "opacidad_"
+   ],
+   "estados": [
+    3,
+    4
+   ]
   }
  ]
 }
