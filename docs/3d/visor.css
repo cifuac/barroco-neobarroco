@@ -108,3 +108,32 @@ html.embed-html, html.embed-html body, .embed.visor { background: transparent; }
 .slider[hidden], .pregunta[hidden], .error[hidden] { display: none; }
 @media (max-width: 1100px) { .ayuda { display: none; } }
 .panel { z-index: 3; } .estados, .cabeza, .ayuda, .pantalla-v { z-index: 4; }
+
+/* ---------------------------------------------------------------- tipografía editorial (rótulos y tarjetas) */
+/* rótulos: peso normal, un velo de papel suave en vez de «píldora» con sombra */
+.etq { font-weight: 400; font-size: clamp(12px, 1.02vw, 21px); line-height: 1.18; letter-spacing: .012em; color: #2A241F;
+  padding: .14em .42em .18em; border-radius: 3px;
+  background: rgba(248,244,236,.74); box-shadow: 0 0 0 1px rgba(30,25,21,.05);
+  -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+  text-shadow: 0 0 1px rgba(248,244,236,.9); }
+.etq.sdo { color: var(--oro); font-weight: 400; font-variant: small-caps; letter-spacing: .07em; font-size: clamp(13px, 1.1vw, 23px); }
+.etq.snte, .etq.tachado { font-variant: small-caps; letter-spacing: .05em; }
+.etq.trayecto { color: var(--cian); font-weight: 400; font-style: italic; letter-spacing: .005em; }
+.etq.ajeno { color: var(--magenta); font-style: italic; }
+.etq.nota { background: none; box-shadow: none; padding: 0; font-size: clamp(11px, .9vw, 19px); color: #6B5F55;
+  text-shadow: 0 0 3px #F6F1E8, 0 0 8px rgba(246,241,232,.9); }
+.etq.grande { background: none; box-shadow: none; font-size: clamp(18px, 2vw, 42px); color: #1E1915;
+  text-shadow: 0 0 4px #F6F1E8, 0 0 10px rgba(246,241,232,.9); }
+.etq.pie { background: none; box-shadow: none; padding: 0; font-size: clamp(10px, .78vw, 15px); color: #6B5F55;
+  text-shadow: 0 0 3px #F6F1E8, 0 0 8px rgba(246,241,232,.9); }
+
+/* tarjetas: más aire, jerarquía clara */
+.panel { padding: 1.05vw 1.35vw 1.05vw; border-radius: 10px; background: rgba(251,248,242,.94);
+  box-shadow: 0 0 0 1px rgba(30,25,21,.06), 0 18px 44px rgba(60,40,20,.10); }
+.panel::before { width: 28px; height: 1.5px; margin-bottom: .85em; }
+.pregunta { font-family: var(--f-titulo); font-weight: 400; font-style: italic; font-size: clamp(13px, 1.14vw, 24px); line-height: 1.22; margin-bottom: .55em; }
+.texto { font-size: clamp(11.5px, .98vw, 21px); line-height: 1.5; color: #2A241F; text-wrap: pretty; -webkit-hyphens: auto; hyphens: auto; }
+.texto b { font-weight: 700; }
+.ref { font-weight: 400; font-variant: small-caps; text-transform: lowercase; letter-spacing: .09em; font-size: clamp(9.5px, .74vw, 15px);
+  color: #8A7F74; opacity: 1; margin-top: .95em; }
+.slider-etq { font-weight: 400; font-variant: small-caps; text-transform: lowercase; letter-spacing: .07em; font-size: clamp(10px, .8vw, 17px); }
